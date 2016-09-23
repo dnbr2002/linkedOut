@@ -2,76 +2,61 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./lidb.sqlite');
 
 
-
-exports.AuthenticateUser = AuthenticateUser;
-function AuthenticateUser(Obj){
-    return new Promise(
-            (resolve, reject) => {
-            //logic
-            var table = "User";
-    var where = " WHERE email = '" + obj + "'";
-    var sql = "SELECT PK_User, Name FROM " + table + where + ";";
-    //console.log(sql);
-    db.all(sql, function (err, rows) {
-        if (err) {
-            //console.log(err);
-            reject("failed!");
-            return;
-        }
-        //console.log("typeof rows " + (typeof rows[0]));
-        if(typeof rows[0] === "undefined"){
-            reject("failed!");
-            return;
-        }else{
-            // console.log("PK_User " + rows[0].PK_User);
-            // console.log("Name " + rows[0].Name);
-            // console.log("obj " + obj);
-
-            if(rows[0].Name == obj){
-                // console.log("row id" + rows.PK_User);
-                // console.log("username " +rows.Name  + " pk " + rows.PK_User);
-                resolve(rows[0].PK_User);
+exports.dbAuthenticateUser = dbAuthenticateUser;
+function dbAuthenticateUser(jsonObj) {
+    return new Promise(function (resolve, reject) {
+        var sqlJson = JSON.parse(jsonObj);
+            console.log("Email: " + sqlJson[0].email + " Password: " + sqlJson[0].password);
+        var stmt=db.prepare("SELECT PK_User, UserName, Email FROM User where Email=? and Password=?;");
+        stmt.all([sqlJson[0].email,sqlJson[0].password],function (err, rows) {
+           // console.log("SQL Row: "+rows[0].email);
+            if (err) {
+                console.log(err);
+                reject("logon failed!");
                 return;
-            }else{
+            }
+            else if (rows == 0) {
+                console.log("fail");
                 reject("failed!");
                 return;
             }
-
-        }
-
-        //console.log(rows);
-        //resolve(row);
-    });
-});
-};
-
-
-
-exports.selectHomeFeed =selectHomeFeed;
-function selectHomeFeed(userId) {
-    return new Promise(
-            (resolve, reject) => {
-            db.all("select u.name, u.pk_user, p.postpic, p.posttime, c.text  from user u, post p, comment c " +
-            "where u.pk_user = p.posterid and  u.pk_user =c.commenterid and p.pk_post = c.postid and " +
-            "u.pk_user in ( select followeeId from following where followerId = ?) order by posttime desc", userId,
-            function (err, rows) {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                    return false;
-                }
+            /*
+            else if (rows[0].email == sqlJson[0].email && rows[0].password == sqlJson[0].password) {
+                console.log("row id: " + rows[0].PK_User);
+                console.log("username: " + rows[0].username);
+                console.log("success!!")
                 resolve(rows);
+            }
+            */
+            else
+                {
+                console.log("PK: "+ rows[0].PK_User+"  UserName: "+rows[0].UserName);
+                resolve(rows);
+            }
+        });
+
+    });
+}
+
+
+exports.dbAddToCommentTable=dbAddToCommentTable;
+function dbAddToCommentTable(jsonStr) {
+    return new Promise(function (resolve, reject) {
+        var sqlJson = JSON.parse(jsonStr);
+        console.log("postid:" + sqlJson[0].postUser + "PostPic:" + sqlJson[0].postData + "PostComment:" + sqlJson[0].postComment);
+        db.run("Insert into Comment (CommenterId, PostId, Text) values (?,(Select PK_Post from Post where posterid=? and postpic=?),?);",
+            sqlJson[0].postUser, sqlJson[0].postUser, sqlJson[0].postData, sqlJson[0].postComment, function (err) {
+                if (err) {
+                    reject(err);
+                    console.log(err);
+                }
+                else {
+                    console.log("success");
+                    resolve();
+
+                }
             });
-}).then(
-        (rows) => {
-        console.log("selectUserFeeds rows: " + rows);
-    var jsonrows = JSON.stringify(rows);
-    console.log("selectUserFeeds json: " + jsonrows);
-    return jsonrows;
+    });
 }
-).catch(
-        (err) => {
-        console.log(err);
-});
-}
+
 
