@@ -27,6 +27,23 @@ app.get('/AuthUser/:username/:password', function (req, res) {
 });
 */
 
+app.run('/AuthUser', function(req, res) {
+	console.log("email: "+req.body.email);
+	console.log("password: "+req.body.password);
+	var UserCred = {
+		email: req.body.email,
+		password: req.body.password
+	}
+	console.log("AuthenticateUser json obj:"+ UserCred.email + "," + UserCred.password);
+	jsonStr = '[' + JSON.stringify(UserCred) + ']';
+	console.log("jSONStr: " + jsonStr);
+	dbAuthenticateUser(jsonStr);
+	res.end;
+	//res.sendFile(__dirname + '/public/partials/home.html');
+});
+
+/*
+
 app.post('/AuthUser', function(req, res) {
 	console.log("email: "+req.body.email);
 	console.log("password: "+req.body.password);
@@ -38,8 +55,10 @@ app.post('/AuthUser', function(req, res) {
 	jsonStr = '[' + JSON.stringify(UserCred) + ']';
 	console.log("jSONStr: " + jsonStr);
 	dbAuthenticateUser(jsonStr);
-	res.sendFile(__dirname + '/public/partials/home.html');
+	res.end;
+	//res.sendFile(__dirname + '/public/partials/home.html');
 	});
+	*/
 
 
 /*

@@ -50,7 +50,3 @@ app.controller('PageCtrl', function (/* $scope, $location, $http */) {
     selector: "a[data-toggle=tooltip]"
   })
 });
-<<<<<<< HEAD
-
-=======
->>>>>>> a5ab097e78f90ca71c31c0a6b797995e3f6dcc7b
