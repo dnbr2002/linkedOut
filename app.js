@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use('/', express.static('public'));
 
-
+dbManager();
 
 // Import Express library
 // var express = require('express');

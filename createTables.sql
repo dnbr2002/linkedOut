@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS certifications (
     REFERENCES userauthenticate (userid)
 );
 
+
 CREATE INDEX IF NOT EXISTS fk_userid ON certifications (userid ASC);
 
 DROP TABLE IF EXISTS posts ;
@@ -165,6 +166,7 @@ CREATE INDEX IF NOT EXISTS fk_skill ON endorsements (userid ASC, skillid ASC);
 
 DROP TABLE IF EXISTS experience ;
 
+
 CREATE TABLE IF NOT EXISTS experience (
   userid INTEGER(11) NOT NULL,
   experienceid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -221,6 +223,7 @@ CREATE INDEX IF NOT EXISTS fk_userid ON following (userid ASC);
 
 CREATE INDEX IF NOT EXISTS fk_organisationid ON following (organisationid ASC);
 
+
 DROP TABLE IF EXISTS honorsandawards ;
 
 CREATE TABLE IF NOT EXISTS honorsandawards (
@@ -259,6 +262,7 @@ CREATE TABLE IF NOT EXISTS languages (
 CREATE INDEX IF NOT EXISTS fk_userid ON languages (userid ASC);
 
 
+
 -- -----------------------------------------------------
 -- Table likes
 -- -----------------------------------------------------
@@ -275,9 +279,9 @@ CREATE TABLE IF NOT EXISTS likes (
     REFERENCES posts (postid)
 );
 
-CREATE INDEX IF NOT EXISTS fk_userid ON CMPE_282.likes (userid ASC);
+CREATE INDEX IF NOT EXISTS fk_userid ON likes (userid ASC);
 
-CREATE INDEX IF NOT EXISTS fk_postid ON CMPE_282.likes (postid ASC);
+CREATE INDEX IF NOT EXISTS fk_postid ON likes (postid ASC);
 
 
 -- -----------------------------------------------------
@@ -412,71 +416,10 @@ CREATE TABLE IF NOT EXISTS userdetails (
     REFERENCES userauthenticate (userid)
 );
 
-DROP TRIGGER IF EXISTS comment_count $$
-USE CMPE_282$$
-CREATE
-DEFINER=root@localhost
-TRIGGER comment_count
-AFTER INSERT ON comments
-FOR EACH ROW
-update posts set comments=comments+1 where postid=new.postid$$
 
+DROP TABLE IF EXISTS userdetails ;
 
--- For an example of an INSTEAD OF trigger, consider the following schema: 
-
--- CREATE TABLE customer(
---   cust_id INTEGER PRIMARY KEY,
---   cust_name TEXT,
---   cust_addr TEXT
--- );
--- CREATE VIEW customer_address AS
---    SELECT cust_id, cust_addr FROM customer;
--- CREATE TRIGGER cust_addr_chng
--- INSTEAD OF UPDATE OF cust_addr ON customer_address
--- BEGIN
---   UPDATE customer SET cust_addr=NEW.cust_addr
---    WHERE cust_id=NEW.cust_id;
--- END;
-
-
--- USE CMPE_282;
-
--- DELIMITER $$
-
--- USE CMPE_282$$
--- DROP TRIGGER IF EXISTS CMPE_282.comment_count $$
--- USE CMPE_282$$
--- CREATE
--- DEFINER=root@localhost
--- TRIGGER CMPE_282.comment_count
--- AFTER INSERT ON CMPE_282.comments
--- FOR EACH ROW
--- update posts set comments=comments+1 where postid=new.postid$$
-
-
--- USE CMPE_282$$
--- DROP TRIGGER IF EXISTS CMPE_282.like_count $$
--- USE CMPE_282$$
--- CREATE
--- DEFINER=root@localhost
--- TRIGGER CMPE_282.like_count
--- AFTER INSERT ON CMPE_282.likes
--- FOR EACH ROW
--- update posts set likes=likes+1 where postid=new.postid$$
-
-
--- DELIMITER ;
-
--- SET SQL_MODE=@OLD_SQL_MODE;
--- SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
--- SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
--- ALTER TABLE userdetails add column dob varchar(25);
--- ALTER TABLE userdetails modify column summary varchar(250);
--- alter table userauthenticate add column usertype varchar(3) default 'usr';
--- alter table organisation add column email varchar(40);
-
-CREATE TABLE jobapplications (
+CREATE TABLE IF NOT EXISTS jobapplications (
   applicationid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   userid varchar(45) NOT NULL,
   jobid varchar(45) NOT NULL,
