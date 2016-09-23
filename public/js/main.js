@@ -55,3 +55,9 @@ app.controller('PageCtrl', function (/* $scope, $location, $http */) {
     selector: "a[data-toggle=tooltip]"
   })
 });
+
+app.controller('logonCtrl', function logonCtrl($scope, $http, $routeParams) {
+  console.log("inside logonCtrl:" );
+  $scope.username = 'User1@fakeemail.com';
+  $scope.password = 'User1';
+});

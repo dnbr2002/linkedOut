@@ -44,4 +44,3 @@ Insert Into photo (PhotoName, Mimetype) values ('reboot.jpg','Image/Jpeg');
 
 Insert Into messages (MessengerId, MessageeId, Subject, Message) values ('1','2','first subject', 'first message text');
 
-
