@@ -6,6 +6,7 @@ var	path = require('path');
 var app = new express();
 app.use(bodyParser.json());
 var dbManager = require("./db");
+var dbApi = require("./data");
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -112,7 +113,7 @@ app.get('/', function(req, res){
 });
 
 app.post('/login', function(request, response) {  
-    dbManager.loginUser(request.body.email).then(
+    dbApi.loginUser(request.body.email).then(
         user => {
             response.send(user);
         }).catch(err => {

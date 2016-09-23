@@ -82,70 +82,7 @@ loadSqlFile = function (callback) {
     });
 }
  
-exports.loginUser = loginUser;
-function loginUser(userId) {
-    return new Promise(
-            (resolve, reject) => {
-                db.serialize(function () {
-                    db.all("SELECT u.userid, u.username from userauthenticate u where u.username = '" + userId + "'", function (err, rows) {
-                            if (rows.length === 1) {
-                                resolve(rows[0]);
-                            } else {
-                                reject("User does not exist");
-                            }
-                            
-                        });
-                });
-            });
-}
 
-// exports.selectHomeFeed =selectHomeFeed;
-// function selectHomeFeed(userId) {
-//     return new Promise(
-//             (resolve, reject) => {
-//             db.all("select u.name, u.pk_user, p.postpic, p.posttime, c.text  from user u, post p, comment c " +
-//             "where u.pk_user = p.posterid and  u.pk_user =c.commenterid and p.pk_post = c.postid and " +
-//             "u.pk_user in ( select followeeId from following where followerId = ?) order by posttime desc", userId,
-//             function (err, rows) {
-//                 if (err) {
-//                     console.log(err);
-//                     reject(err);
-//                     return false;
-//                 }
-//                 resolve(rows);
-//             });
-// }).then(
-//         (rows) => {
-//         console.log("selectUserFeeds rows: " + rows);
-//     var jsonrows = JSON.stringify(rows);
-//     console.log("selectUserFeeds json: " + jsonrows);
-//     return jsonrows;
-// }
-// ).catch(
-//         (err) => {
-//         console.log(err);
-// });
-// }
-
-// exports.dbAddToCommentTable=dbAddToCommentTable;
-// function dbAddToCommentTable(jsonStr) {
-//     return new Promise(function (resolve, reject) {
-//         var sqlJson = JSON.parse(jsonStr);
-//         console.log("postid:" + sqlJson[0].postUser + "PostPic:" + sqlJson[0].postData + "PostComment:" + sqlJson[0].postComment);
-//         db.run("Insert into Comment (CommenterId, PostId, Text) values (?,(Select PK_Post from Post where posterid=? and postpic=?),?);",
-//             sqlJson[0].postUser, sqlJson[0].postUser, sqlJson[0].postData, sqlJson[0].postComment, function (err) {
-//                 if (err) {
-//                     reject(err);
-//                     console.log(err);
-//                 }
-//                 else {
-//                     console.log("success");
-//                     resolve();
-
-//                 }
-//             });
-//     });
-// }
 
 
 
