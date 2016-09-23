@@ -6,6 +6,7 @@ var	path = require('path');
 var app = new express();
 app.use(bodyParser.json());
 var dbManager = require("./db");
+var dbAccess = require('./data');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -111,15 +112,34 @@ app.get('/', function(req, res){
   res.sendFile('index.html');
 });
 
-app.post('/login', function(request, response) {  
+app.post('/login', function(request, response) {
     dbManager.loginUser(request.body.email).then(
         user => {
             response.send(user);
         }).catch(err => {
                 console.log(err);
                 response.status(500);
-                response.send(err);                
+                response.send(err);
         });
+});
+
+app.post('/adduser', function(req, res) {
+    jsonObj = {};
+    jsonObj['username'] = req.body.username;
+    jsonObj['password'] = req.body.password;
+
+    var p = dbAccess.dbCreateUser(jsonObj);
+
+    p.then(
+        (data) => {
+            console.log('Successful insert');
+            res.status(200).send('success');
+        },
+        (err) => {
+            console.log('Call failed');
+            res.status(500).send('failure');
+        }
+    );
 });
 
 // app.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
