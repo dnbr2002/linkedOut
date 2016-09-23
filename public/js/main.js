@@ -56,11 +56,3 @@ app.controller('PageCtrl', function (/* $scope, $location, $http */) {
   })
 });
 
-<<<<<<< HEAD
-app.controller('logonCtrl', function logonCtrl($scope, $http, $routeParams) {
-  console.log("inside logonCtrl:" );
-  $scope.username = 'User1@fakeemail.com';
-  $scope.password = 'User1';
-});
-=======
->>>>>>> 12d24d11d5b8ed7ee91d4b3f9c9f12ea7a2dad6e
