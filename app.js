@@ -1,12 +1,35 @@
 var express = require('express');
-
-	bodyParser = require('body-parser'),
-	path = require('path');
-
+var	bodyParser = require('body-parser');
+var	path = require('path');
 var app = new express();
 app.use(bodyParser.json());
+var dbManager = require("./db");
+
 
 app.use('/', express.static('public'));
+
+
+// Import Express library
+// var express = require('express');
+// var app = express();
+
+
+// var session = require('express-session')
+// app.use(session({
+//     secret: 'currentUser',
+//     resave: false,
+//     saveUninitialized: false
+// }));
+
+// var multer  = require('multer');
+// var upload = multer({ dest: 'uploads/' });
+
+// // Set up resources directory to server static files
+// app.use(express.static('resources'));
+
+
+
+
 
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
