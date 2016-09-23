@@ -38,7 +38,7 @@ app.post('/AuthUser', function(req, res) {
 	jsonStr = '[' + JSON.stringify(UserCred) + ']';
 	console.log("jSONStr: " + jsonStr);
 	dbAuthenticateUser(jsonStr);
-	res.end;
+	res.sendFile(__dirname + '/public/partials/home.html');
 	});
 
 
