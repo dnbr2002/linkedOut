@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $http, $window, $location, DataService) {
+angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $location, DataService) {
     console.log("loginCtrl called");
     // page.setPage("Login","login-layout");
     $scope.loginIn = function() {
