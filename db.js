@@ -5,7 +5,7 @@ var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database(dbFileName);
 
 
-var init = false;
+var init = true;
 // =======
 // exports.dbAuthenticateUser = dbAuthenticateUser;
 // function dbAuthenticateUser(jsonObj) {
@@ -48,7 +48,7 @@ var init = false;
 
 
 // Main function
-module.exports = function (doRunCreateTables = true) {
+exports.createDB = function (doRunCreateTables = false) {
     console.log("initializing database");
     if (doRunCreateTables && !this.init) {
         db.serialize(function () {
@@ -80,6 +80,23 @@ loadSqlFile = function (callback) {
             callback(data);
         }
     });
+}
+ 
+exports.loginUser = loginUser;
+function loginUser(userId) {
+    return new Promise(
+            (resolve, reject) => {
+                db.serialize(function () {
+                    db.all("SELECT u.userid, u.username from userauthenticate u where u.username = '" + userId + "'", function (err, rows) {
+                            if (rows.length === 1) {
+                                resolve(rows[0]);
+                            } else {
+                                reject("User does not exist");
+                            }
+                            
+                        });
+                });
+            });
 }
 
 // exports.selectHomeFeed =selectHomeFeed;

@@ -7,12 +7,11 @@ var app = new express();
 app.use(bodyParser.json());
 var dbManager = require("./db");
 
-
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use('/', express.static('public'));
 
-dbManager();
+dbManager.createDB();
 
 // Import Express library
 // var express = require('express');
@@ -52,20 +51,20 @@ app.get('/AuthUser/:username/:password', function (req, res) {
 });
 */
 
-app.run('/AuthUser', function(req, res) {
-	console.log("email: "+req.body.email);
-	console.log("password: "+req.body.password);
-	var UserCred = {
-		email: req.body.email,
-		password: req.body.password
-	}
-	console.log("AuthenticateUser json obj:"+ UserCred.email + "," + UserCred.password);
-	jsonStr = '[' + JSON.stringify(UserCred) + ']';
-	console.log("jSONStr: " + jsonStr);
-	dbAuthenticateUser(jsonStr);
-	res.end;
-	//res.sendFile(__dirname + '/public/partials/home.html');
-});
+// app.run('/AuthUser', function(req, res) {
+// 	console.log("email: "+req.body.email);
+// 	console.log("password: "+req.body.password);
+// 	var UserCred = {
+// 		email: req.body.email,
+// 		password: req.body.password
+// 	}
+// 	console.log("AuthenticateUser json obj:"+ UserCred.email + "," + UserCred.password);
+// 	jsonStr = '[' + JSON.stringify(UserCred) + ']';
+// 	console.log("jSONStr: " + jsonStr);
+// 	dbAuthenticateUser(jsonStr);
+// 	res.end;
+// 	//res.sendFile(__dirname + '/public/partials/home.html');
+// });
 
 /*
 
@@ -110,6 +109,17 @@ app.get('/createPost/:postData/:postComment/:postUser', function (req, res) {
 
 app.get('/', function(req, res){
   res.sendFile('index.html');
+});
+
+app.post('/login', function(request, response) {  
+    dbManager.loginUser(request.body.email).then(
+        user => {
+            response.send(user);
+        }).catch(err => {
+                console.log(err);
+                response.status(500);
+                response.send(err);                
+        });
 });
 
 // app.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
