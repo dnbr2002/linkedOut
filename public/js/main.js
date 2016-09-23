@@ -18,7 +18,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     // Home
     .when("/home", {templateUrl: "partials/home.html", controller: "PageCtrl"})
     // Login
-    .when("/", {templateUrl: "partials/login.html", controller: "PageCtrl"})
+    .when("/", {templateUrl: "partials/login.html", controller: "loginCtrl"})
     // Pages
     .when("/network", {templateUrl: "partials/network.html", controller: "PageCtrl"})
     .when("/profile", {templateUrl: "partials/profile.html", controller: "PageCtrl"})
@@ -55,3 +55,4 @@ app.controller('PageCtrl', function (/* $scope, $location, $http */) {
     selector: "a[data-toggle=tooltip]"
   })
 });
+
