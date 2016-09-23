@@ -8,9 +8,9 @@ INSERT INTO User (UserName, FullName,Email,Password, PhotoId) values ('User4', '
 
 INSERT INTO User (UserName, FullName,Email,Password, PhotoId) values ('User5', 'MarcC', 'User5@fakeemail.com','User5',5);
 
-Insert into Post (UserId, Post) values (1,'I am the man!', 6);
+Insert into Post (UserId, Post, PhotoId) values (1,'I am the man!', 6);
 
-Insert into Post (UserId, Post) values (2,'Reboot it!!', 7);
+Insert into Post (UserId, Post, PhotoId) values (2,'Reboot it!!', 7);
 
 Insert into Following (FollowerId, FolloweeId) values (1, 1);
 

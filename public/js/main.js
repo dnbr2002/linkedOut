@@ -1,9 +1,4 @@
 /**
- * AngularJS Tutorial 1
- * @author Nick Kaye <nick.c.kaye@gmail.com>
- */
-
-/**
  * Main AngularJS Web Application
  */
 var app = angular.module('tutorialWebApp', [
@@ -18,12 +13,12 @@ app.config(['$routeProvider', function ($routeProvider) {
     // Home
     .when("/home", {templateUrl: "partials/home.html", controller: "PageCtrl"})
     // Login
-    .when("/", {templateUrl: "partials/login.html", controller: "PageCtrl"})
+    .when("/", {templateUrl: "partials/login.html", controller: "loginCtrl"})
     // Pages
-    .when("/about", {templateUrl: "partials/about.html", controller: "PageCtrl"})
-    .when("/faq", {templateUrl: "partials/faq.html", controller: "PageCtrl"})
-    .when("/pricing", {templateUrl: "partials/pricing.html", controller: "PageCtrl"})
-    .when("/services", {templateUrl: "partials/services.html", controller: "PageCtrl"})
+    .when("/network", {templateUrl: "partials/network.html", controller: "PageCtrl"})
+    .when("/profile", {templateUrl: "partials/profile.html", controller: "profileCtrl"})
+    .when("/jobs", {templateUrl: "partials/jobs.html", controller: "PageCtrl"})
+    .when("/learning", {templateUrl: "partials/learning.html", controller: "PageCtrl"})
     .when("/contact", {templateUrl: "partials/contact.html", controller: "PageCtrl"})
     // Blog
     .when("/blog", {templateUrl: "partials/blog.html", controller: "BlogCtrl"})

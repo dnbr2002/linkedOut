@@ -1,12 +1,17 @@
 var express = require('express');
+
 var	bodyParser = require('body-parser');
 var	path = require('path');
+
 var app = new express();
 app.use(bodyParser.json());
 var dbManager = require("./db");
 
 
+app.use(bodyParser.urlencoded({extended: true}));
+
 app.use('/', express.static('public'));
+
 
 
 // Import Express library
@@ -29,6 +34,55 @@ app.use('/', express.static('public'));
 
 
 
+
+
+/*
+app.get('/AuthUser/:username/:password', function (req, res) {
+	console.log("AuthUser: Username " + req.params.username + ", Password " + req.params.password);
+	var validateUser = {
+		username:  req.params.username,
+		password:  req.params.password
+	};
+	//console.log("AuthenticateUser json obj:"+ validateUser.username + "," + validateUser.password);
+	jSONStr = '[' + JSON.stringify(validateUser) + ']';
+	console.log("jSONStr: " + jSONStr);
+	dbAuthenticateUser(jSONStr);
+	res.end;
+
+});
+*/
+
+app.post('/AuthUser', function(req, res) {
+	console.log("email: "+req.body.email);
+	console.log("password: "+req.body.password);
+	var UserCred = {
+		email: req.body.email,
+		password: req.body.password
+	}
+	console.log("AuthenticateUser json obj:"+ UserCred.email + "," + UserCred.password);
+	jsonStr = '[' + JSON.stringify(UserCred) + ']';
+	console.log("jSONStr: " + jsonStr);
+	dbAuthenticateUser(jsonStr);
+	res.end;
+	});
+
+
+/*
+app.get('/createPost/:postData/:postComment/:postUser', function (req, res) {
+	console.log("createPost:" + req.params.postData + ","+req.params.postComment+"," + req.params.postUser);
+	var createPost = {
+		postData:  req.params.postData,
+		postComment:  req.params.postComment,
+		postUser:  req.params.postUser
+	};
+	console.log("createPost json obj:" + createPost.postData + "," + createPost.postComment + "," + createPost.postUser);
+	jSONStr = '[' + JSON.stringify(createPost) + ']';
+	console.log("jSONStr: " + jSONStr);
+	dbAddToPostsTable(jSONStr);
+	dbAddToCommentTable(jSONStr);
+	res.end();
+});
+*/
 
 
 // view engine setup
