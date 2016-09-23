@@ -18,7 +18,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     // Home
     .when("/home", {templateUrl: "partials/home.html", controller: "PageCtrl"})
     // Login
-    .when("/", {templateUrl: "partials/login.html", controller: "PageCtrl"})
+    .when("/", {templateUrl: "partials/login.html", controller: "loginCtrl"})
     // Pages
     .when("/network", {templateUrl: "partials/network.html", controller: "PageCtrl"})
     .when("/profile", {templateUrl: "partials/profile.html", controller: "PageCtrl"})
@@ -56,8 +56,11 @@ app.controller('PageCtrl', function (/* $scope, $location, $http */) {
   })
 });
 
+<<<<<<< HEAD
 app.controller('logonCtrl', function logonCtrl($scope, $http, $routeParams) {
   console.log("inside logonCtrl:" );
   $scope.username = 'User1@fakeemail.com';
   $scope.password = 'User1';
 });
+=======
+>>>>>>> 12d24d11d5b8ed7ee91d4b3f9c9f12ea7a2dad6e
