@@ -1,9 +1,4 @@
 /**
- * AngularJS Tutorial 1
- * @author Nick Kaye <nick.c.kaye@gmail.com>
- */
-
-/**
  * Main AngularJS Web Application
  */
 var app = angular.module('tutorialWebApp', [
@@ -21,7 +16,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when("/", {templateUrl: "partials/login.html", controller: "loginCtrl"})
     // Pages
     .when("/network", {templateUrl: "partials/network.html", controller: "PageCtrl"})
-    .when("/profile", {templateUrl: "partials/profile.html", controller: "PageCtrl"})
+    .when("/profile", {templateUrl: "partials/profile.html", controller: "profileCtrl"})
     .when("/jobs", {templateUrl: "partials/jobs.html", controller: "PageCtrl"})
     .when("/learning", {templateUrl: "partials/learning.html", controller: "PageCtrl"})
     .when("/contact", {templateUrl: "partials/contact.html", controller: "PageCtrl"})
@@ -55,4 +50,7 @@ app.controller('PageCtrl', function (/* $scope, $location, $http */) {
     selector: "a[data-toggle=tooltip]"
   })
 });
+<<<<<<< HEAD
 
+=======
+>>>>>>> a5ab097e78f90ca71c31c0a6b797995e3f6dcc7b
