@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $http, $window, $location, DataService) {
+angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $location, $rootScope, DataService) {
     console.log("loginCtrl called");
     // page.setPage("Login","login-layout");
     $scope.loginIn = function() {
@@ -22,7 +22,7 @@ angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $http,
 					// $rootScope.userid = response.userid;
 					$location.path('/home');
 					// $rootScope.usertype = response.usertype;
-					// $rootScope.email = response.email;
+					$rootScope.email = response.email;
 					// $rootScope.userName = response.name;
 					// $rootScope.userLastLogin = response.lastLogin;
 					// if($rootScope.usertype == 'usr'){
