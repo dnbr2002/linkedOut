@@ -32,7 +32,7 @@ exports.dbAuthenticateUser = dbAuthenticateUser;
  }
 
 exports.dbCreateUser = dbCreateUser;
-function dbCreateUser(jsonObj) {
+function dbCreateUser(jsonObj, cb) {
     var sql =
         'INSERT INTO USERAUTHENTICATE (USERNAME, PASSWORD, CREATIONDATE) VALUES ('
         + asMyQuote(jsonObj['username'])
@@ -42,14 +42,44 @@ function dbCreateUser(jsonObj) {
         + asMyQuote(new Date())
         +')';
 
-    return doSQL(sql);
+    doSQL(sql, cb);
+}
+
+exports.dbAddCert = dbAddCert;
+function dbAddCert(jsonObj, cb) {
+    var sql =
+        'INSERT INTO CERTIFICATIONS (CNAME, CSTARTDATE, CENDDATE) VALUES ('
+        + asMyQuote(jsonObj.cname)
+        + ", "
+        + asMyQuote(jsonObj.cstartdate)
+        + ", "
+        + asMyQuote(jsonObj.cenddate)
+        +')';
+
+    doSQL(sql, cb);
+}
+
+exports.dbAddComment = dbAddComment;
+function dbAddComment(jsonObj, cb) {
+    var sql =
+        'INSERT INTO COMMENTS (COMMENTBODY, CREATIONDATE, POSTID, USERID) VALUES ('
+        + asMyQuote(jsonObj.commentbody)
+        + ", "
+        + asMyQuote(jsonObj.creationdate)
+        + ", "
+        + asMyQuote(jsonObj.postid)
+        + ", "
+        + asMyQuote(jsonObj.userid)
+        +')';
+
+    doSQL(sql, cb);
 }
 
 function asMyQuote(input) {
     return '\'' + input + '\'';
 }
 
-function doSQL(sqlStr, mydb = db) {
+function doSQL(sqlStr, cb, mydb = db) {
     var p = new Promise((resolve, reject) => {
         mydb.serialize(() => {
             mydb.run(sqlStr, (err) => {
@@ -65,7 +95,14 @@ function doSQL(sqlStr, mydb = db) {
         });
     });
 
-    return p;
+    p.then(
+        (data) => {
+            cb('success');
+        },
+        (err) => {
+            cb(null, err);
+        }
+    );
 }
 
  exports.loginUser = loginUser;

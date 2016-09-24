@@ -128,18 +128,48 @@ app.post('/adduser', function(req, res) {
     jsonObj['username'] = req.body.username;
     jsonObj['password'] = req.body.password;
 
-    var p = dbApi.dbCreateUser(jsonObj);
-
-    p.then(
-        (data) => {
+    dbApi.dbCreateUser(jsonObj, function(data, err) {
+        if (data) {
             console.log('Successful insert');
-            res.status(200).send('success');
-        },
-        (err) => {
+            res.status(200).send(data);
+        } else {
             console.log('Call failed');
             res.status(500).send('failure');
         }
-    );
+    });
+});
+
+app.post('/addcert', function(req, res) {
+    jsonObj = {};
+    json.cname = req.body.cname;
+    json.cstartdate = req.body.cstartdate;
+    json.cenddate = req.body.cenddate;
+
+    dbApi.dbAddCert(jsonObj, function(data, err) {
+        if (data) {
+            console.log('Certification entered successfully');
+            res.status(200).send(data);
+        } else {
+            console.log('Certification insert failed.');
+            res.status(500).send('failure')
+        }
+    });
+});
+
+app.post('/addcomment', function(req, res) {
+    jsonObj = {};
+    jsonObj.commentbody = req.body.commentbody;
+    jsonObj.creationdate = new Date();
+    jsonObj.postid = req.body.postid;
+    jsonObj.userid = req.body.userid;
+
+    dbApi.dbAddComment(jsonObj, function(data, err) {
+        if (data) {
+            res.status(200).send('success');
+        } else {
+            res.status(500).send('failure');
+        }
+    });
 });
 
 // app.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
