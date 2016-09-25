@@ -36,9 +36,11 @@ Create Table following(
 CREATE TABLE comment(
     pk_comment INTEGER NOT NULL PRIMARY KEY,
     postid  int,
+    commenterid INT,
     comment Text,
     commenttime DATETIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN Key(postid) References following(pk_post)
+    FOREIGN Key(postid) References post(pk_post),
+    FOREIGN Key(commenterid) References user(pk_user)
 );
 
 Create Table likes(
