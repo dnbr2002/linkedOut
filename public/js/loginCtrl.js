@@ -22,7 +22,7 @@ angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $locat
 					// $rootScope.userid = response.userid;
 					$location.path('/home');
 					// $rootScope.usertype = response.usertype;
-					$rootScope.email = response.email;
+					$rootScope.email = response.pk_user;
 					// $rootScope.userName = response.name;
 					// $rootScope.userLastLogin = response.lastLogin;
 					// if($rootScope.usertype == 'usr'){
@@ -31,8 +31,8 @@ angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $locat
 					// 	$location.path('/organisation');
 					// }
 				}).error(function(err) {
-				$scope.signInFormError = err.message;
-			});
+				    $scope.signInFormError = err.message;
+			    });
 		}
 	}
 });
