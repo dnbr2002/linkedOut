@@ -3,7 +3,7 @@ var express = require('express');
 var	bodyParser = require('body-parser');
 var	path = require('path');
 
-var app = new express();
+var app = express();
 app.use(bodyParser.json());
 var dbManager = require("./db");
 var dbApi = require("./data");
@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', express.static('public'));
 
 dbManager.createDB();
+// dbManager.populateDB();
 
 // Import Express library
 // var express = require('express');
@@ -113,22 +114,34 @@ app.get('/', function(req, res){
 });
 
 app.post('/login', function(request, response) {
-    dbApi.loginUser(request.body.email).then(
-        user => {
-            response.send(user);
-        }).catch(err => {
-                console.log(err);
-                response.status(500);
-                response.send(err);
-        });
+    // dbApi.loginUser(request.body.email).then(
+    //     user => {
+    //         response.send(user);
+    //     }).catch(err => {
+    //             console.log(err);
+    //             response.status(500);
+    //             response.send(err);
+    //     });
+
+    dbApi.loginUser(request.body.email, function(data, err) {
+        if (data) {
+            console.log("Sending login success");
+            response.status(200).send(data);
+        } else {
+            console.log("Sending login failure");
+            response.status(500).send(err);
+        }
+    });
 });
 
 app.post('/adduser', function(req, res) {
-    jsonObj = {};
-    jsonObj['username'] = req.body.username;
-    jsonObj['password'] = req.body.password;
+    // jsonObj = {};
+    // jsonObj['$username'] = req.body.username;
+    // jsonObj['$password'] = req.body.password;
+    // jsonObj['$fullname'] = req.body.fullname;
+    // jsonObj['$photoid'] = req.body.photoid;
 
-    dbApi.dbCreateUser(jsonObj, function(data, err) {
+    dbApi.dbCreateUser(req.body, function(data, err) {
         if (data) {
             console.log('Successful insert');
             res.status(200).send(data);
@@ -139,30 +152,7 @@ app.post('/adduser', function(req, res) {
     });
 });
 
-app.post('/addcert', function(req, res) {
-    jsonObj = {};
-    json.cname = req.body.cname;
-    json.cstartdate = req.body.cstartdate;
-    json.cenddate = req.body.cenddate;
-
-    dbApi.dbAddCert(jsonObj, function(data, err) {
-        if (data) {
-            console.log('Certification entered successfully');
-            res.status(200).send(data);
-        } else {
-            console.log('Certification insert failed.');
-            res.status(500).send('failure')
-        }
-    });
-});
-
 app.post('/addcomment', function(req, res) {
-    jsonObj = {};
-    jsonObj.commentbody = req.body.commentbody;
-    jsonObj.creationdate = new Date();
-    jsonObj.postid = req.body.postid;
-    jsonObj.userid = req.body.userid;
-
     dbApi.dbAddComment(jsonObj, function(data, err) {
         if (data) {
             res.status(200).send('success');

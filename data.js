@@ -1,89 +1,86 @@
-const dbFileName = "linkedOut.sqlite";
+const dbFileName = "linkedOutSimple.sqlite";
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database(dbFileName);
 
 
 exports.dbAuthenticateUser = dbAuthenticateUser;
-    function dbAuthenticateUser(jsonObj) {
-        return new Promise(function (resolve, reject) {
-            var sqlJson = JSON.parse(jsonObj);
 
-            console.log("Email: " + sqlJson[0].email + " Password: " + sqlJson[0].password);
-            var stmt=db.prepare("SELECT PK_User, UserName, Email FROM User where Email=? and Password=?;");
-            stmt.all([sqlJson[0].email,sqlJson[0].password],function (err, rows) {
-                // console.log("SQL Row: "+rows[0].email);
-                if (err) {
-                    console.log(err);
-                    reject("logon failed!");
-                    return;
-                }
-             else if (rows == 0) {
-                 console.log("fail");
-                 reject("failed!");
-                 return;
-             }
-             else
-                 {
-                 console.log("PK: "+ rows[0].PK_User+"  UserName: "+rows[0].UserName);
-                 resolve(rows);
-             }
-         });
-     });
- }
+function dbAuthenticateUser(jsonObj, cb) {
+    var p = new Promise(function (resolve, reject) {
+        var sqlJson = JSON.parse(jsonObj);
+
+        console.log("Email: " + sqlJson[0].email + " Password: " + sqlJson[0].password);
+
+        var stmt = db.prepare("SELECT pk_user, username, email FROM user where email='?' and password='?';");
+        stmt.all([sqlJson[0].email,sqlJson[0].password], function (err, rows) {
+            // console.log("SQL Row: "+rows[0].email);
+            if (err) {
+                console.log(err);
+                reject("logon failed!");
+                return;
+            } else if (rows == 0) {
+                console.log("fail");
+                reject("failed!");
+                return;
+            } else {
+                console.log("PK: "+ rows[0].PK_User+"  UserName: "+rows[0].UserName);
+                resolve(rows);
+            }
+        });
+    });
+
+    p.then(
+        function(data) {
+            cb(data);
+        },
+        function(err) {
+            cd(null, err);
+        }
+    );
+}
+
+function mapDataElements(jsonObj) {
+    dataObj = {};
+
+    for (key in jsonObj) {
+        dataObj['$' + key] = jsonObj[key];
+    }
+
+    console.log('Mapped as:  ' + JSON.stringify(dataObj));
+    return dataObj;
+}
 
 exports.dbCreateUser = dbCreateUser;
 function dbCreateUser(jsonObj, cb) {
-    var sql =
-        'INSERT INTO USERAUTHENTICATE (USERNAME, PASSWORD, CREATIONDATE) VALUES ('
-        + asMyQuote(jsonObj['username'])
-        + ", "
-        + asMyQuote(jsonObj['password'])
-        + ", "
-        + asMyQuote(new Date())
-        +')';
+    var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD, PHOTOID) VALUES ($username, $fullname, $password, $photoid)";
 
-    doSQL(sql, cb);
-}
+    // var parms = [];
+    // parms.push(jsonObj.username);
+    // parms.push(jsonObj.fullname);
+    // parms.push(jsonObj.password);
+    // parms.push(jsonObj.photoid);
 
-exports.dbAddCert = dbAddCert;
-function dbAddCert(jsonObj, cb) {
-    var sql =
-        'INSERT INTO CERTIFICATIONS (CNAME, CSTARTDATE, CENDDATE) VALUES ('
-        + asMyQuote(jsonObj.cname)
-        + ", "
-        + asMyQuote(jsonObj.cstartdate)
-        + ", "
-        + asMyQuote(jsonObj.cenddate)
-        +')';
-
-    doSQL(sql, cb);
+    doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
 exports.dbAddComment = dbAddComment;
 function dbAddComment(jsonObj, cb) {
-    var sql =
-        'INSERT INTO COMMENTS (COMMENTBODY, CREATIONDATE, POSTID, USERID) VALUES ('
-        + asMyQuote(jsonObj.commentbody)
-        + ", "
-        + asMyQuote(jsonObj.creationdate)
-        + ", "
-        + asMyQuote(jsonObj.postid)
-        + ", "
-        + asMyQuote(jsonObj.userid)
-        +')';
-
-    doSQL(sql, cb);
+    var sql = "Insert Into comment (postid, comment) values (?postid, ?comment)";
+    doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
 function asMyQuote(input) {
     return '\'' + input + '\'';
 }
 
-function doSQL(sqlStr, cb, mydb = db) {
+function doSQL(sqlStr, bindings, cb) {
     var p = new Promise((resolve, reject) => {
-        mydb.serialize(() => {
-            mydb.run(sqlStr, (err) => {
-                console.log('Running:  ' + sqlStr);
+        db.serialize(() => {
+            // var sqlStmt = db.prepare(sqlStr);
+
+            // console.log('Running:  ' + JSON.stringify(sqlStmt));
+
+            db.run(sqlStr, bindings, (err) => {
                 if (err) {
                     console.log('SQL failed:  ' + sqlStr);
                     reject(err);
@@ -105,19 +102,34 @@ function doSQL(sqlStr, cb, mydb = db) {
     );
 }
 
- exports.loginUser = loginUser;
-function loginUser(userId) {
-    return new Promise(
-            (resolve, reject) => {
-                db.serialize(function () {
-                    db.all("SELECT u.userid, u.username from userauthenticate u where u.username = '" + userId + "'", function (err, rows) {
-                            if (rows.length === 1) {
-                                resolve(rows[0]);
-                            } else {
-                                reject("User does not exist");
-                            }
+exports.loginUser = loginUser;
 
-                        });
-                });
+function loginUser(userId, cb) {
+    var p = new Promise(function (resolve, reject) {
+        db.serialize(function () {
+            var sql = "SELECT u.pk_user, u.fullname from user u where u.username = " + asMyQuote(userId);
+
+            console.log(sql);
+
+            db.all(sql, function (err, rows) {
+                if (rows !== undefined && rows.length === 1) {
+                    console.log('User exists')
+                    resolve(rows[0]);
+                } else {
+                    console.log('User does not exist')
+                    reject("User does not exist");
+                }
             });
+        });
+    });
+
+    p.then(
+        function(data) {
+            // console.log('Sending back ' + JSON.stringify(data));
+            cb(data);
+        },
+        function(err) {
+            cb(null, err);
+        }
+    )
 }
