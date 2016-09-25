@@ -69,6 +69,13 @@ function dbAddComment(jsonObj, cb) {
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
+exports.dbAddEducation = dbAddEducation;
+function dbAddEducation(jsonObj, cb) {
+    var sql = "Insert into education (userid, school, datestart, datefinished) values ($userid, $school, $datestart, $datefinished)";
+    doSQL(sql, mapDataElements(jsonObj), cb);
+}
+
+
 function asMyQuote(input) {
     return '\'' + input + '\'';
 }
@@ -94,7 +101,63 @@ function doSQL(sqlStr, bindings, cb) {
 
     p.then(
         (data) => {
+            console.log('Doing callback');
             cb('success');
+        },
+        (err) => {
+            cb(null, err);
+        }
+    );
+}
+
+exports.getUserFeed = getUserFeed;
+function getUserFeed(userid) {
+    // Returns an array of the pk_users the user id is Following
+    var posts = {};
+    var comments = {};
+
+    var sqlStr =
+        "select * from post p, following f, comment c, likes l, photo ph, user u "
+        + "where "
+        + "u.pkuser = f.followerid "
+        + "and "
+        + "p.userid = f.followeeid "
+        + "and "
+        + "c.postid = p.pk_post "
+        + "and "
+        + "u.pk_user = ?";
+
+}
+
+exports.getEducation = getEducation;
+function getEducation(userid, cb) {
+    var sql = "select * from education where userid = " + userid;
+    getData(sql, cb);
+}
+
+exports.getJobs = getJobs;
+function getJobs(userid, cb) {
+    var sql = "select * from jobs where userid = " + userid;
+    getData(sql, cb);
+}
+
+function getData(sql, cb) {
+    // Run SQL and pass results to callback
+    var p = new Promise(function(resolve, reject) {
+        db.serialize(function() {
+            db.all(sql, function(err, rows) {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(rows)
+            })
+        });
+    });
+
+    p.then(
+        (data) => {
+            cb(data);
         },
         (err) => {
             cb(null, err);
