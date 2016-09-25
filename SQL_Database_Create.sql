@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS photo;
 DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS education;
+DROP TABLE IF EXISTS jobs;
 
 CREATE TABLE user(
     pk_user INTEGER NOT NULL PRIMARY KEY,
@@ -67,4 +69,23 @@ Create Table messages(
     message text,
     FOREIGN KEY(messengerid) REFERENCES user(pk_user),
     FOREIGN KEY(messageeid) REFERENCES user(pk_user)
+);
+
+CREATE TABLE education(
+    pk_education INTEGER NOT NULL PRIMARY KEY,
+    userid  int,
+    school TEXT,
+    datestart DATETIME TIMESTAMP,
+    datefinished DATETIME TIMESTAMP,
+    FOREIGN Key(userid) References user(pk_user)
+);
+
+CREATE TABLE jobs(
+    pk_jobs INTEGER NOT NULL PRIMARY KEY,
+    userid  int,
+    joblocation TEXT,
+    jobtitle TEXT,
+    datestart DATETIME TIMESTAMP,
+    datefinished DATETIME TIMESTAMP,
+    FOREIGN Key(userid) References user(pk_user)
 );
