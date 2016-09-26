@@ -65,7 +65,7 @@ function dbCreateUser(jsonObj, cb) {
 
 exports.dbAddComment = dbAddComment;
 function dbAddComment(jsonObj, cb) {
-    var sql = "Insert Into comment (postid, comment) values (?postid, ?comment)";
+    var sql = "Insert into post (userid, referencepost, post) values ($userid, $referencepost, $post)";
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
@@ -83,10 +83,6 @@ function asMyQuote(input) {
 function doSQL(sqlStr, bindings, cb) {
     var p = new Promise((resolve, reject) => {
         db.serialize(() => {
-            // var sqlStmt = db.prepare(sqlStr);
-
-            // console.log('Running:  ' + JSON.stringify(sqlStmt));
-
             db.run(sqlStr, bindings, (err) => {
                 if (err) {
                     console.log('SQL failed:  ' + sqlStr);
@@ -111,21 +107,25 @@ function doSQL(sqlStr, bindings, cb) {
 }
 
 exports.getUserFeed = getUserFeed;
-function getUserFeed(userid) {
+function getUserFeed(userid, cb) {
     // Returns an array of the pk_users the user id is Following
     var posts = {};
     var comments = {};
 
     var sqlStr =
-        "select * from post p, following f, comment c, likes l, photo ph, user u "
-        + "where "
-        + "u.pkuser = f.followerid "
-        + "and "
-        + "p.userid = f.followeeid "
-        + "and "
-        + "c.postid = p.pk_post "
-        + "and "
-        + "u.pk_user = ?";
+        "select * from "
+        + "post p "
+        + "LEFT OUTER JOIN "
+        + "comment c "
+        + "on p.pk_post = c.postid "
+        + "LEFT OUTER JOIN "
+        + "photo ph on p.photoid = ph.pk_photo "
+        + "INNER JOIN following f on f.followeeid = p.userid "
+        + "INNER JOIN user u on u.pk_user = p.userid "
+        + "WHERE f.followerid = "
+        + userid;
+
+
 
 }
 

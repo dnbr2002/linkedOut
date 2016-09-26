@@ -185,7 +185,7 @@ app.get('/getjobs/:id', function(req, res) {
 })
 
 app.post('/addcomment', function(req, res) {
-    dbApi.dbAddComment(jsonObj, function(data, err) {
+    dbApi.dbAddComment(req.body, function(data, err) {
         if (data) {
             res.status(200).send('success');
         } else {

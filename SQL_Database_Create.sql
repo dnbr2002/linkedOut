@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS following;
-DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS photo;
 DROP TABLE IF EXISTS messages;
@@ -23,6 +22,7 @@ CREATE TABLE post(
     posttime DATETIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     post   TEXT,
     photoid int,
+    referencepost INT,
     FOREIGN Key(photoid) References photo(pk_photo),
     FOREIGN KEY(userid) REFERENCES user(pk_user)
 );
@@ -33,16 +33,6 @@ Create Table following(
     followeeid int,
     FOREIGN KEY(followerid) REFERENCES user(pk_user),
     FOREIGN KEY(followeeid) REFERENCES user(pk_user)
-);
-
-CREATE TABLE comment(
-    pk_comment INTEGER NOT NULL PRIMARY KEY,
-    postid  int,
-    commenterid INT,
-    comment Text,
-    commenttime DATETIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN Key(postid) References post(pk_post),
-    FOREIGN Key(commenterid) References user(pk_user)
 );
 
 Create Table likes(
