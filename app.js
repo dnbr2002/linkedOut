@@ -221,6 +221,16 @@ app.get('/getjobs/:id', function(req, res) {
     })
 })
 
+app.get('/getskills/:id', function(req, res) {
+    dbApi.getSkills(req.params.id, function(data, err) {
+        if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(500).send('fail');
+        }
+    })
+})
+
 app.post('/addcomment', function(req, res) {
     dbApi.dbAddComment(req.body, function(data, err) {
         if (data) {

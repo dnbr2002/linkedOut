@@ -45,3 +45,8 @@ Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values
 Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values (2,'Walmart', 'stocker', '10/1/2004', '6/1/2006');
 Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values (3,'Best Buy','geek squad', '10/1/2004', '6/1/2006');
 Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values (4,'Target', 'cashier', '10/1/2004', '6/1/2006');
+Insert Into skills (userid, skill, skilldesc) values (1,'J2EE', 'J2EE Skills');
+Insert Into skills (userid, skill, skilldesc) values (1,'.Net','.Net Programming');
+Insert Into skills (userid, skill, skilldesc) values (1,'C++', 'MFC Programming');
+Insert Into skills (userid, skill, skilldesc) values (1,'Perl','Perl Programming');
+Insert Into skills (userid, skill, skilldesc) values (1,'HTML', 'Web Programming');
