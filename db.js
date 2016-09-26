@@ -18,7 +18,7 @@ exports.createDB = function () {
                 if (err) {
                     console.log('DB construction failed.');
                     throw err;
-                    return;
+                    // return;
                 }
             });
 

@@ -23,7 +23,8 @@ angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $locat
 					$location.path('/home');
 					// $rootScope.usertype = response.usertype;
 					currentUser.fullname = response.fullname;
-					currentUser.userLastLogin = (new Date).toISOString().replace(/z|t/gi,' ');
+					currentUser.userLastLogin = (new Date).toUTCString();
+					// currentUser.userLastLogin = (new Date).toISOString().replace(/z|t/gi,' ');
 					currentUser.photoid = response.photoid;
 					console.log("in loginCtrl fullname: " + currentUser.fullname);
 					console.log("in loginCtrl userLastLogin: " + currentUser.userLastLogin);

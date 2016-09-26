@@ -1,15 +1,75 @@
 'use strict';
-angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $rootScope, /*$modal,*/
+angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $rootScope, $http,/*$modal,*/
 		$location, DataService, currentUser) {
 			console.log("profile controller called");
 			$scope.currentUser = currentUser;
 
 	$scope.getAllData = function() {
 		console.log("getAllData Getting called");
-		getUserDetails();
+		getUserSummary();
+		// getUserDetails();
 		getEmploymentList();
 		getEducationList();
 		getSkillsList();
+
+		function getUserSummary (res){
+            console.log("am i getting here");
+            console.log($rootScope.$id);
+            $http({
+                method: 'GET',
+                url: '/home/'+$rootScope.$id
+            }).success(function(response){
+                console.log("success");
+                console.log();
+
+                $scope.UserSummary=response;
+                console.log("my rows: "+JSON.stringify(response));
+
+            }).error(function(error){
+                console.log("error");
+            });
+        };
+
+		/**
+	 * Function for getting Education data for the user
+	 */
+		function getEducationList() {
+			// console.log("in getEducationList");
+			var uriEducation = "/geteducation/" + $rootScope.$id;
+			// console.log("uriEducation: " + uriEducation);
+			DataService.getData(uriEducation, []).success(function(response) {
+				$scope.educationData = response;
+				// console.log("educationData: "+JSON.stringify(response));				
+			}).error(function(err) {
+				console.log(err);
+			});
+		}
+	
+		/**
+		 * Function for getting Employment data for the user
+		 */
+		function getEmploymentList() {
+			var uriEmployment = "/getjobs/" + $rootScope.$id;
+			console.log("uriEmployment: " + uriEmployment);
+			DataService.getData(uriEmployment, []).success(function(response) {
+				$scope.employmentData = response;
+				console.log("employmentData: "+JSON.stringify(response));	
+			}).error(function(err) {
+				console.log(err);
+			});
+		}
+
+		/**
+		 * Function for getting Skills data for the user
+		 */
+		function getSkillsList() {
+			var uriSkills = "/skills/" + $rootScope.$id;
+			DataService.getData(uriSkills, []).success(function(response) {
+				$scope.skillsData = response;
+			}).error(function(err) {
+				console.log(err);
+			});
+		}
 		
 		/**
 		 * Getting List of Companies for adding experience 
@@ -158,44 +218,6 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 		}).error(function(err){
 			console.log(err.message);
 		});
-	}
-	
-
-	/**
-	 * Function for getting Employment data for the user
-	 */
-	function getEmploymentList() {
-		var uriEmployment = "/expdtls/" + $rootScope.userid;
-
-		DataService.getData(uriEmployment, []).success(function(response) {
-			$scope.employmentData = response.data;
-		}).error(function(err) {
-			console.log(err);
-		});
-	}
-	
-	/**
-	 * Function for getting Education data for the user
-	 */
-	function getEducationList() {
-		var uriEducation = "/edudtls/" + $rootScope.userid;
-		DataService.getData(uriEducation, []).success(function(response) {
-			$scope.educationData = response.data;
-		}).error(function(err) {
-			console.log(err);
-		});
-	}
-	
-	/**
-	 * Function for getting Skills data for the user
-	 */
-	function getSkillsList() {
-		var uriSkills = "/skills/" + $rootScope.userid;
-		DataService.getData(uriSkills, []).success(function(response) {
-			$scope.skillsData = response.data;
-		}).error(function(err) {
-			console.log(err);
-		});
-	}
+	}	
 
 });
