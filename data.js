@@ -247,6 +247,12 @@ function getJobs(userid, cb) {
     getData(sql, cb);
 }
 
+exports.getSkills = getSkills;
+function getSkills(userid, cb) {
+    var sql = "select * from skills where userid = " + userid;
+    getData(sql, cb);
+}
+
 function getData(sql, cb) {
     // Run SQL and pass results to callback
     var p = new Promise(function(resolve, reject) {

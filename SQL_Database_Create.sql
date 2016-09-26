@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS photo;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS education;
 DROP TABLE IF EXISTS jobs;
+DROP TABLE IF EXISTS skills;
 
 CREATE TABLE user(
     pk_user INTEGER NOT NULL PRIMARY KEY,
@@ -78,5 +79,13 @@ CREATE TABLE jobs(
     jobtitle TEXT,
     datestart DATETIME TIMESTAMP,
     datefinished DATETIME TIMESTAMP,
+    FOREIGN Key(userid) References user(pk_user)
+);
+
+CREATE TABLE skills(
+    pk_skills INTEGER NOT NULL PRIMARY KEY,
+    userid  int,
+    skill TEXT,
+    skilldesc TEXT,    
     FOREIGN Key(userid) References user(pk_user)
 );

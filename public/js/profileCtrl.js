@@ -63,9 +63,11 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 		 * Function for getting Skills data for the user
 		 */
 		function getSkillsList() {
-			var uriSkills = "/skills/" + $rootScope.$id;
+			var uriSkills = "/getskills/" + $rootScope.$id;
+			console.log("uriSkills: " + uriSkills);
 			DataService.getData(uriSkills, []).success(function(response) {
 				$scope.skillsData = response;
+				console.log("skillsData: "+JSON.stringify(response));	
 			}).error(function(err) {
 				console.log(err);
 			});
@@ -95,12 +97,12 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 		/**
 		 * Getting List of Skills for adding skills 
 		 */
-		DataService.getData("/skills", []).success(
-				function(response) {
-					$scope.skills = response.data;
-				}).error(function(err) {
-			console.log("Error while fetching data");
-		});
+		// DataService.getData("/skills", []).success(
+		// 		function(response) {
+		// 			$scope.skills = response.data;
+		// 		}).error(function(err) {
+		// 	console.log("Error while fetching data");
+		// });
 	}
 	
 
