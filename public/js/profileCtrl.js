@@ -1,6 +1,6 @@
 'use strict';
-angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $rootScope, $modal,
-		$location/*, DataService*/) {
+angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $rootScope, /*$modal,*/
+		$location, DataService) {
 			console.log("profile controller called");
 
 	$scope.getAllData = function() {
@@ -13,7 +13,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 		/**
 		 * Getting List of Companies for adding experience 
 		 */
-		DataService.getData(urlConstants.GET_COMPANIES, []).success(
+		DataService.getData("/companies", []).success(
 				function(response) {
 					$scope.companies = response.data;
 				}).error(function(err) {
@@ -23,7 +23,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 		/**
 		 * Getting List of Institutions for adding education 
 		 */
-		DataService.getData(urlConstants.GET_INSTITUTIONS, []).success(
+		DataService.getData("/institutions", []).success(
 				function(response) {
 					$scope.institutions = response.data;
 				}).error(function(err) {
@@ -34,7 +34,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 		/**
 		 * Getting List of Skills for adding skills 
 		 */
-		DataService.getData(urlConstants.GET_SKILLS, []).success(
+		DataService.getData("/skills", []).success(
 				function(response) {
 					$scope.skills = response.data;
 				}).error(function(err) {
@@ -151,7 +151,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 	 * Function to get user profile details
 	 */
 	function getUserDetails(){
-		var uri = urlConstants.GET_USER_DETAILS+$rootScope.userid;
+		var uri = "/userdtls/"+$rootScope.userid;
 		DataService.getData(uri,[]).success(function(response){
 			$scope.myProperties = response.data;
 		}).error(function(err){
@@ -164,8 +164,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 	 * Function for getting Employment data for the user
 	 */
 	function getEmploymentList() {
-		var uriEmployment = urlConstants.GET_EMPLOYMENT_DETAILS
-				+ $rootScope.userid;
+		var uriEmployment = "/expdtls/" + $rootScope.userid;
 
 		DataService.getData(uriEmployment, []).success(function(response) {
 			$scope.employmentData = response.data;
@@ -178,8 +177,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 	 * Function for getting Education data for the user
 	 */
 	function getEducationList() {
-		var uriEducation = urlConstants.GET_EDUCATION_DETAILS
-				+ $rootScope.userid;
+		var uriEducation = "/edudtls/" + $rootScope.userid;
 		DataService.getData(uriEducation, []).success(function(response) {
 			$scope.educationData = response.data;
 		}).error(function(err) {
@@ -191,7 +189,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 	 * Function for getting Skills data for the user
 	 */
 	function getSkillsList() {
-		var uriSkills = urlConstants.GET_SKILLS_DETAILS + $rootScope.userid;
+		var uriSkills = "/skills/" + $rootScope.userid;
 		DataService.getData(uriSkills, []).success(function(response) {
 			$scope.skillsData = response.data;
 		}).error(function(err) {

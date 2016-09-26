@@ -1,46 +1,46 @@
-INSERT INTO User (UserName, FullName,Email,Password, PhotoId) values ('User1', 'GreggyP', 'User1@fakeemail.com','User1',1);
-
-INSERT INTO User (UserName, FullName,Email,Password, PhotoId) values ('User2', 'BobbyK', 'User2@fakeemail.com','User2',2);
-
-INSERT INTO User (UserName, FullName,Email,Password, PhotoId) values ('User3', 'HerbS', 'User3@fakeemail.com','User3',3);
-
-INSERT INTO User (UserName, FullName,Email,Password, PhotoId) values ('User4', 'JohnnyM', 'User4@fakeemail.com', 'User4',4);
-
-INSERT INTO User (UserName, FullName,Email,Password, PhotoId) values ('User5', 'MarcC', 'User5@fakeemail.com','User5',5);
-
-Insert into Post (UserId, Post, PhotoId) values (1,'I am the man!', 6);
-
-Insert into Post (UserId, Post, PhotoId) values (2,'Reboot it!!', 7);
-
-Insert into Following (FollowerId, FolloweeId) values (1, 1);
-
-Insert into Following (FollowerId, FolloweeId) values (1, 2);
-
-Insert into Following (FollowerId, FolloweeId) values (2, 2);
-
-Insert into Following (FollowerId, FolloweeId) values (2, 1);
-
-Insert Into Like (LikerId, LikeeId, PostId) values (2,1,1);
-
-Insert Into Like (LikerId, LikeeId, PostId) values (1,2,2);
-
-Insert Into Comment (PostId, Comment, FollowingId) values (1, 'no Im the man!!', 4);
-
-Insert Into Comment (PostId, Comment, FollowingId) values (2, 'you said it', 2);
-
-Insert Into photo (PhotoName, Mimetype) values ('User1.jpg','Image/Jpeg');
-
-Insert Into photo (PhotoName, Mimetype) values ('User2.jpg','Image/Jpeg');
-
-Insert Into photo (PhotoName, Mimetype) values ('User3.jpg','Image/Jpeg');
-
-Insert Into photo (PhotoName, Mimetype) values ('User4.jpg','Image/Jpeg');
-
-Insert Into photo (PhotoName, Mimetype) values ('User5.jpg','Image/Jpeg');
-
-Insert Into photo (PhotoName, Mimetype) values ('theman.jpg','Image/Jpeg');
-
-Insert Into photo (PhotoName, Mimetype) values ('reboot.jpg','Image/Jpeg');
-
-Insert Into messages (MessengerId, MessageeId, Subject, Message) values ('1','2','first subject', 'first message text');
-
+INSERT INTO user (username, fullname,password, photoid) values ('User1@fakeemail.com', 'GreggyP', 'User1',1);
+INSERT INTO user (username, fullname,password, photoid) values ('User2@fakeemail.com', 'BobbyK', 'User2',2);
+INSERT INTO user (username, fullname,password, photoid) values ('User3@fakeemail.com', 'HerbS', 'User3',3);
+INSERT INTO user (username, fullname,password, photoid) values ('User4@fakeemail.com', 'JohnnyM', 'User4',4);
+INSERT INTO user (username, fullname,password, photoid) values ('User5@fakeemail.com', 'MarcC', 'User5',5);
+INSERT INTO user (username, fullname,password, photoid) values ('joe@mail.com', 'Joe Sixpack', 'password',6);
+Insert into post (userid, post, photoid) values (1,'I am the man!', 6);
+Insert into post (userid, post, photoid) values (2,'Reboot it!!', 7);
+Insert into post (userid, post, photoid) values (3,'User 3 First Post', 8);
+Insert into post (userid, post, photoid) values (4,'User 4 First Post', 9);
+Insert into post (userid, post, photoid) values (1,'User 1 Second Post', 10);
+Insert into post (userid, post, photoid) values (1,'User 1 Third Post', 11);
+Insert into post (userid, post, photoid) values (5,'User 5 First Post', 12);
+Insert Into post (userid, referencepost, post) values (2, 1, 'no Im the man!!');
+Insert Into post (userid, referencepost, post) values (4, 2, 'you said it');
+Insert Into post (userid, referencepost, post) values (1, 3, 'Comment on post id 3');
+Insert Into post (userid, referencepost, post) values (1, 4, 'Comment on post id 4');
+Insert Into post (userid, referencepost, post) values (1, 1, 'Comment on post id 1 Again');
+Insert Into post (userid, referencepost, post) values (2, 1, 'Comment on post id 1 Yet Again');
+Insert into following (followerid, followeeid) values (1, 1);
+Insert into following (followerid, followeeid) values (1, 2);
+Insert into following (followerid, followeeid) values (2, 2);
+Insert into following (followerid, followeeid) values (2, 1);
+Insert into following (followerid, followeeid) values (4, 1);
+Insert into following (followerid, followeeid) values (2, 3);
+Insert into following (followerid, followeeid) values (2, 4);
+Insert into following (followerid, followeeid) values (1, 5);
+Insert Into likes (likerid, likeeid, postid) values (2,1,1);
+Insert Into likes (likerid, likeeid, postid) values (1,2,2);
+Insert Into photo (photoname, mimetype) values ('User1.jpg','Image/Jpeg');
+Insert Into photo (photoname, mimetype) values ('User2.jpg','Image/Jpeg');
+Insert Into photo (photoname, mimetype) values ('User3.jpg','Image/Jpeg');
+Insert Into photo (photoname, mimetype) values ('User4.jpg','Image/Jpeg');
+Insert Into photo (photoname, mimetype) values ('User5.jpg','Image/Jpeg');
+Insert Into photo (photoname, mimetype) values ('theman.jpg','Image/Jpeg');
+Insert Into photo (photoname, mimetype) values ('reboot.jpg','Image/Jpeg');
+Insert Into messages (messengerid, messageeid, subject, message) values ('1','2','first subject', 'first message text');
+Insert Into education (userid, school, datestart, datefinished) values (1,'University of Viriginia','10/1/2011', '6/1/2015');
+Insert Into education (userid, school, datestart, datefinished) values (2,'University of Phoenix','10/1/2011', '6/1/2015');
+Insert Into education (userid, school, datestart, datefinished) values (3,'University of California Santa Cruz','10/1/2011', '6/1/2015');
+Insert Into education (userid, school, datestart, datefinished) values (4,'University of Georgia','10/1/2011', '6/1/2015');
+Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values (1,'Little Ceasers', 'cook', '10/1/2004', '6/1/2006');
+Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values (1,'Dominos','driver', '10/1/2006', '6/1/2009');
+Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values (2,'Walmart', 'stocker', '10/1/2004', '6/1/2006');
+Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values (3,'Best Buy','geek squad', '10/1/2004', '6/1/2006');
+Insert Into jobs (userid, joblocation, jobtitle, datestart, datefinished) values (4,'Target', 'cashier', '10/1/2004', '6/1/2006');

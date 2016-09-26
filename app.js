@@ -3,7 +3,7 @@ var express = require('express');
 var	bodyParser = require('body-parser');
 var	path = require('path');
 
-var app = new express();
+var app = express();
 app.use(bodyParser.json());
 var dbManager = require("./db");
 var dbApi = require("./data");
@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', express.static('public'));
 
 dbManager.createDB();
+// dbManager.populateDB();
 
 // Import Express library
 // var express = require('express');
@@ -112,15 +113,85 @@ app.get('/', function(req, res){
   res.sendFile('index.html');
 });
 
-app.post('/login', function(request, response) {  
-    dbApi.loginUser(request.body.email).then(
-        user => {
-            response.send(user);
-        }).catch(err => {
-                console.log(err);
-                response.status(500);
-                response.send(err);                
-        });
+app.post('/login', function(request, response) {
+    // dbApi.loginUser(request.body.email).then(
+    //     user => {
+    //         response.send(user);
+    //     }).catch(err => {
+    //             console.log(err);
+    //             response.status(500);
+    //             response.send(err);
+    //     });
+
+    dbApi.loginUser(request.body.email, function(data, err) {
+        if (data) {
+            console.log("Sending login success");
+            response.status(200).send(data);
+        } else {
+            console.log("Sending login failure");
+            response.status(500).send(err);
+        }
+    });
+});
+
+app.post('/adduser', function(req, res) {
+    // jsonObj = {};
+    // jsonObj['$username'] = req.body.username;
+    // jsonObj['$password'] = req.body.password;
+    // jsonObj['$fullname'] = req.body.fullname;
+    // jsonObj['$photoid'] = req.body.photoid;
+
+    dbApi.dbCreateUser(req.body, function(data, err) {
+        if (data) {
+            console.log('Successful insert');
+            res.status(200).send(data);
+        } else {
+            console.log('Call failed');
+            res.status(500).send('failure');
+        }
+    });
+});
+
+app.post('/addeducation', function(req, res) {
+    dbApi.dbAddEducation(req.body, function(data, err) {
+        if (data) {
+            console.log('Successful insert');
+            res.status(200).send(data);
+        } else {
+            console.log('Call failed');
+            res.status(500).send(err);
+        }
+    });
+});
+
+app.get('/geteducation/:id', function(req, res) {
+    dbApi.getEducation(req.params.id, function(data, err) {
+        if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(500).send('fail');
+        }
+    })
+})
+
+app.get('/getjobs/:id', function(req, res) {
+    dbApi.getJobs(req.params.id, function(data, err) {
+        if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(500).send('fail');
+        }
+    })
+})
+
+app.post('/addcomment', function(req, res) {
+    dbApi.dbAddComment(req.body, function(data, err) {
+        if (data) {
+            res.status(200).send('success');
+        } else {
+            res.status(500).send('failure');
+        }
+    });
 });
 
 // app.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
