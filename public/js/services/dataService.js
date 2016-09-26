@@ -1,6 +1,7 @@
 angular.module('tutorialWebApp').service('DataService', function($http) {
-
+	console.log("im in dataService");
 	this.getData = function(dataURI, params) {
+		console.log("im in dataService appget");
 		return $http({
 			method : 'GET',
 			url : dataURI,

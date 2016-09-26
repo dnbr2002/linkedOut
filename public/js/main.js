@@ -11,7 +11,7 @@ var app = angular.module('tutorialWebApp', [
 app.config(['$routeProvider', function ($routeProvider) {
   $routeProvider
     // Home
-    .when("/home", {templateUrl: "partials/home.html", controller: "PageCtrl"})
+    .when("/home", {templateUrl: "partials/home.html", controller: "homeCtrl"})
     // Login
     .when("/", {templateUrl: "partials/login.html", controller: "loginCtrl"})
     // Pages

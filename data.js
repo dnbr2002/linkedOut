@@ -39,6 +39,87 @@ function dbAuthenticateUser(jsonObj, cb) {
     );
 }
 
+
+/*
+function dbUserSummary(jsonObj) {
+    return new Promise (function (resolve, reject) {
+        var sqlJson = JSON.parse(jsonObj);
+        console.log("Email: "+ sqlJson[0].userid);
+        var stmt = db.prepare("Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=? and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ");
+        stmt.all(sqlJson[0].userid, function (err, rows) {
+            if(err){
+                console.log(err);
+                reject("logon failed!");
+                return;
+            }
+            else if (rows == 0) {
+                console.log("no user exists with id " + sqlJson[0].userid)
+                reject();
+                return
+            }
+            else
+            {
+                console.log("rows returned for: " + JSON.stringify(rows[0]))
+                resolve(rows);
+            }
+        })
+    })
+}
+*/
+exports.dbUserSummary = dbUserSummary;
+function dbUserSummary(jsonObj) {
+    var sqlJson = JSON.parse(jsonObj);
+    console.log("PK_User: "+ sqlJson);
+    return new Promise(function (resolve, reject) {
+        db.serialize(function () {
+            var stmt= "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User="+sqlJson+" and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+            console.log(stmt);
+
+            db.all(stmt, function(err, rows) {
+                if (rows != undefined && rows.length === 1) {
+                    console.log('Got User Summary Info')
+                    console.log(rows[0]);
+                    resolve(rows[0]);
+                }else {
+                    console.log('No User Summary retrieved from DB');
+                    reject("User does not exist");
+                }
+            })
+
+        })
+    })
+}
+
+function loginUser(userId, cb) {
+    var p = new Promise(function (resolve, reject) {
+        db.serialize(function () {
+            var sql = "SELECT u.pk_user, u.fullname from user u where u.username = " + asMyQuote(userId);
+
+            console.log(sql);
+
+            db.all(sql, function (err, rows) {
+                if (rows !== undefined && rows.length === 1) {
+                    console.log('User exists')
+                    resolve(rows[0]);
+                } else {
+                    console.log('User does not exist')
+                    reject("User does not exist");
+                }
+            });
+        });
+    });
+
+    p.then(
+        function(data) {
+            // console.log('Sending back ' + JSON.stringify(data));
+            cb(data);
+        },
+        function(err) {
+            cb(null, err);
+        }
+    )
+}
+
 function mapDataElements(jsonObj) {
     dataObj = {};
 
