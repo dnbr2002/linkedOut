@@ -137,6 +137,7 @@ app.post('/login', function(request, response) {
     });
 });
 
+
 app.post('/adduser', function(req, res) {
     // Need to call add to photo table.
     dbApi.dbCreateUser(req.body, function(data, err) {
@@ -251,6 +252,42 @@ app.post('/addeducation', function(req, res) {
             res.status(500).send(err);
         }
     });
+});
+/*
+app.get('/home/:id', function (req, res) {
+    console.log("AppGet Reqs: " + JSON.stringify(req.body.userid));
+    var userid = {
+        userid: req.params.id
+    }
+    jsonStr = '[' + JSON.stringify(userid) + ']';
+    console.log("json for user summ: " + jsonStr);
+    var p = dbManager2.dbUserSummary(jsonStr);
+    p.then(
+        (val) => {
+        console.log("User Summary from AppGet: " + JSON.stringify(val));
+    res.send(val);
+}
+    ).
+    catch(
+        (err) => {
+        res.send(err);
+})
+    ;
+});
+*/
+app.get('/home/:id', function (req, res) {
+    console.log("req params:  " + req.params.id);
+    dbApi.dbUserSummary(req.params.id).then(
+        function (data) {
+            console.log("app.get success");
+            res.status(200).send(data);
+        }
+    ).catch(
+        function (err) {
+            res.status(500).send(err);
+            console.log("app.get error");
+        }
+    );
 });
 
 app.get('/geteducation/:id', function(req, res) {

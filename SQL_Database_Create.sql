@@ -67,6 +67,7 @@ CREATE TABLE education(
     school TEXT,
     datestart DATETIME TIMESTAMP,
     datefinished DATETIME TIMESTAMP,
+    degree TEXT,
     FOREIGN Key(userid) References user(pk_user)
 );
 
