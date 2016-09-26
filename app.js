@@ -1,16 +1,19 @@
 var express = require('express');
+var multer  = require('multer');
+var gm = require('gm');
+var upload = multer({ dest: 'uploads/' });
 
-var	bodyParser = require('body-parser');
+// var	bodyParser = require('body-parser');
 var	path = require('path');
 
 var app = express();
-app.use(bodyParser.json());
+// app.use(bodyParser({limit: '5mb'}));
 var dbManager = require("./db");
 var dbApi = require("./data");
 
-app.use(bodyParser.urlencoded({extended: true}));
+// app.use(bodyParser.urlencoded({extended: true}));
 
-app.use('/', express.static('public'));
+app.use(express.static('./public'));
 
 dbManager.createDB();
 // dbManager.populateDB();
@@ -135,12 +138,7 @@ app.post('/login', function(request, response) {
 });
 
 app.post('/adduser', function(req, res) {
-    // jsonObj = {};
-    // jsonObj['$username'] = req.body.username;
-    // jsonObj['$password'] = req.body.password;
-    // jsonObj['$fullname'] = req.body.fullname;
-    // jsonObj['$photoid'] = req.body.photoid;
-
+    // Need to call add to photo table.
     dbApi.dbCreateUser(req.body, function(data, err) {
         if (data) {
             console.log('Successful insert');
@@ -150,6 +148,97 @@ app.post('/adduser', function(req, res) {
             res.status(500).send('failure');
         }
     });
+});
+
+app.post('/addpicture', function(req, res) {
+    var upload = multer({dest: './public/uploads'}).single('avatar');
+    var userName;
+    var userId;
+
+    var p = new Promise(function(resolve, reject) {
+        upload(req, res, function (err) {
+            console.log('In multer body');
+            console.log(JSON.stringify(req.body));
+
+            if (err) {
+                // An error occurred when uploading
+                console.log(err);
+                console.log('Error in upload');
+                reject(err);
+
+                return
+            }
+            // console.log(req.file.filename);
+            console.log('Upload worked');
+            // console.log(req.file.size);
+
+            // Resize and rewrite
+            // console.log('')
+            // console.log(JSON.stringify(req.body));
+            // var upFlNm = req.file.path;
+            // var username = req.body.username;
+            resolve(req);
+        });
+    }).then(
+        function(data) {
+            return new Promise(function(resolve, reject) {
+                gm(data.file.path).thumb(100, 100, './public/uploads/littlethumbs/' + data.body.username + "_thumb.jpg", 100, function(err, stdout, stderr, command) {
+                    if (err) {
+                        // console.log('Error found');
+                        console.log(err);
+                        // console.log('Moving on');
+                        reject(err);
+                    }
+                    console.log('100 pixel thumb done.');
+                    resolve(data);
+                });
+            });
+        },
+        function(err) {
+            console.log('Upload of file itself failed.');
+        }
+    ).then(
+        function(data) {
+            return new Promise(function(resolve, reject) {
+                gm(data.file.path).thumb(200, 200, './public/uploads/bigthumbs/' + data.body.username + "_thumb.jpg", 100, function(err, stdout, stderr, command) {
+                    if (err) {
+                        // console.log('Error found');
+                        console.log(err);
+                        // console.log('Moving on');
+                        reject(err);
+                    }
+
+                    console.log('200 pixel thumb done.');
+                    resolve(data);
+                });
+            });
+        },
+        function(err) {
+            console.log('Creation of small thumb failed.');
+            console.log(err);
+        }
+    ).then(
+        function(data) {
+            userName = data.body.username;
+            userId = data.body.userid;
+
+            console.log('Calling dbAddPicture for database update');
+            dbApi.dbAddPicture(userName + "_thumb.jpg", userId, function(somedata, err) {
+                console.log('Data has:  ' + somedata);
+
+                if (somedata) {
+                    console.log('Insert of picture good');
+                    res.send('done');
+                } else {
+                    res.send('fail');
+                }
+            });
+        },
+        function(err) {
+            console.log('Creation of large thumb failed.');
+            res.send('failure');
+        }
+    );
 });
 
 app.post('/addeducation', function(req, res) {
