@@ -1,7 +1,6 @@
 angular.module('tutorialWebApp').service('DataService', function($http) {
-	console.log("im in dataService");
+
 	this.getData = function(dataURI, params) {
-		console.log("im in dataService appget");
 		return $http({
 			method : 'GET',
 			url : dataURI,
@@ -34,4 +33,11 @@ angular.module('tutorialWebApp').service('DataService', function($http) {
 		});
 	} 
 	
+});
+
+angular.module('tutorialWebApp').value('currentUser',{
+	email: "test@fakeemail.com",
+	fullname: "Sample Fullname",
+	userLastLogin:"-1",
+	photoid:-1
 });
