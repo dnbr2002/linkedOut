@@ -1,10 +1,11 @@
 'use strict';
 angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $rootScope, /*$modal,*/
-		$location, DataService) {
+		$location, DataService, currentUser) {
 			console.log("profile controller called");
+			$scope.currentUser = currentUser;
 
 	$scope.getAllData = function() {
-		console.log("Getting called");
+		console.log("getAllData Getting called");
 		getUserDetails();
 		getEmploymentList();
 		getEducationList();

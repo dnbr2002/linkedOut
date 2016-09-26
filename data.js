@@ -165,7 +165,7 @@ exports.loginUser = loginUser;
 function loginUser(userId, cb) {
     var p = new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var sql = "SELECT u.pk_user, u.fullname from user u where u.username = " + asMyQuote(userId);
+            var sql = "SELECT u.pk_user, u.fullname, u.photoid from user u where u.username = " + asMyQuote(userId);
 
             console.log(sql);
 
