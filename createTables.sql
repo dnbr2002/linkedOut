@@ -1,17 +1,81 @@
+-- -----------------------------------------------------
+-- Table `userauthenticate`
+-- -----------------------------------------------------
 DROP TABLE IF EXISTS userauthenticate;
 
 CREATE TABLE IF NOT EXISTS userauthenticate (
   userid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   username VARCHAR(25) NOT NULL,
+  email VARCHAR(25) NOT NULL,
   password VARCHAR(50) NULL DEFAULT NULL,
-  approved INTEGEREGER(1) NULL DEFAULT 0,
+  isActive INTEGER(1) NULL DEFAULT 0,
   creationdate DATE NULL DEFAULT NULL,
   modifydate DATE NULL DEFAULT NULL,
   lastlogin DATETIME NULL DEFAULT NULL,
-  salt VARCHAR(50) NULL DEFAULT NULL
+  imageid INTEGER(11) NOT NULL,
+  FOREIGN KEY (imageid)
+  REFERENCES images (imageid)
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS uc_username ON userauthenticate (username ASC);
+
+-- -----------------------------------------------------
+-- Table userdetails
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS userdetails ;
+
+CREATE TABLE IF NOT EXISTS userdetails (
+  userid INTEGER(11) NOT NULL,
+  firstname VARCHAR(25) NULL DEFAULT NULL,
+  lastname VARCHAR(25) NULL DEFAULT NULL,
+  email VARCHAR(40) NULL DEFAULT NULL,
+  photo VARCHAR(50) NULL DEFAULT NULL,
+  headline VARCHAR(100) NULL DEFAULT NULL,
+  country VARCHAR(50) NULL DEFAULT NULL,
+  state VARCHAR(50) NULL DEFAULT NULL,
+  city VARCHAR(50) NULL DEFAULT NULL,
+  industry VARCHAR(50) NULL DEFAULT NULL,
+  phone VARCHAR(50) NULL DEFAULT NULL,
+  address VARCHAR(50) NULL DEFAULT NULL,
+  twitter_handle VARCHAR(50) NULL DEFAULT NULL,
+  websites VARCHAR(50) NULL DEFAULT NULL,
+  summary INTEGER(1) NULL DEFAULT '0',
+  certifications INTEGER(1) NULL DEFAULT '0',
+  honorsandawards INTEGER(1) NULL DEFAULT '0',
+  experience INTEGER(1) NULL DEFAULT '0',
+  skillsandendorsements INTEGER(1) NULL DEFAULT '0',
+  projects INTEGER(1) NULL DEFAULT '0',
+  languages INTEGER(1) NULL DEFAULT '0',
+  education INTEGER(1) NULL DEFAULT '0',
+  additionalinfo INTEGER(1) NULL DEFAULT '0',
+  volunteer INTEGER(1) NULL DEFAULT '0',
+  courses INTEGER(1) NULL DEFAULT '0',
+  following INTEGER(1) NULL DEFAULT '0',
+  modifydate DATE NULL DEFAULT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  PRIMARY KEY (userid),
+  CONSTRAINT userdetails_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid)
+);
+
+-- -----------------------------------------------------
+-- Table `images`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS images;
+
+CREATE TABLE IF NOT EXISTS images (
+   imageid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+   image BLOB,
+   mime_type VARCHAR(20) NOT NULL,
+   encoding VARCHAR(20),
+   file_size INTEGER NOT NULL DEFAULT 0,
+   file_name VARCHAR(255) NOT NULL,   
+);
+
+-- -----------------------------------------------------
+-- Table `certifications`
+-- -----------------------------------------------------
 
 DROP TABLE IF EXISTS certifications;
 
@@ -25,6 +89,9 @@ CREATE TABLE IF NOT EXISTS certifications (
   cenddate DATE NULL DEFAULT NULL,
   creationdate DATE NULL DEFAULT NULL,
   modifydate DATE NULL DEFAULT NULL,
+  imageid INTEGER(11) NOT NULL,
+    FOREIGN KEY (imageid)
+  REFERENCES images (imageid)
   CONSTRAINT certifications_ibfk_1
     FOREIGN KEY (userid)
     REFERENCES userauthenticate (userid)
@@ -32,6 +99,10 @@ CREATE TABLE IF NOT EXISTS certifications (
 
 
 CREATE INDEX IF NOT EXISTS fk_userid ON certifications (userid ASC);
+
+-- -----------------------------------------------------
+-- Table `posts`
+-- -----------------------------------------------------
 
 DROP TABLE IF EXISTS posts ;
 
@@ -44,13 +115,19 @@ CREATE TABLE IF NOT EXISTS posts (
   comments INTEGER(11) NULL DEFAULT '0',
   creationdate DATE NULL DEFAULT NULL,
   modifydate DATE NULL DEFAULT NULL,
-  PRIMARY KEY (postid),
+  imageid INTEGER(11) NOT NULL,
+  PRIMARY KEY (postid),  
+  FOREIGN KEY (imageid)
+  REFERENCES images (imageid)
   CONSTRAINT posts_ibfk_1
     FOREIGN KEY (userid)
     REFERENCES userauthenticate (userid)
 );
-
 CREATE INDEX IF NOT EXISTS fk_userid ON posts (userid ASC);
+
+-- -----------------------------------------------------
+-- Table `comments`
+-- -----------------------------------------------------
 
 DROP TABLE IF EXISTS comments ;
 
@@ -73,6 +150,10 @@ CREATE INDEX IF NOT EXISTS fk_userid ON comments (userid ASC);
 
 CREATE INDEX IF NOT EXISTS fk_postid ON comments (postid ASC);
 
+-- -----------------------------------------------------
+-- Table `certifications`
+-- -----------------------------------------------------
+
 DROP TABLE IF EXISTS education ;
 
 CREATE TABLE IF NOT EXISTS education (
@@ -94,7 +175,9 @@ CREATE TABLE IF NOT EXISTS education (
     REFERENCES userauthenticate (userid));
 
 CREATE INDEX IF NOT EXISTS education_ibfk_1 ON education (userid ASC);
-
+-- -----------------------------------------------------
+-- Table `courses`
+-- -----------------------------------------------------
 DROP TABLE IF EXISTS courses ;
 
 CREATE TABLE IF NOT EXISTS courses (
@@ -112,6 +195,9 @@ CREATE TABLE IF NOT EXISTS courses (
 
 CREATE INDEX IF NOT EXISTS fk_educationid ON courses (userid ASC, educationid ASC);
 
+-- -----------------------------------------------------
+-- Table `educationdetails`
+-- -----------------------------------------------------
 DROP TABLE IF EXISTS educationdetails ;
 
 CREATE TABLE IF NOT EXISTS educationdetails (
@@ -128,6 +214,9 @@ CREATE TABLE IF NOT EXISTS educationdetails (
 
 CREATE INDEX IF NOT EXISTS fk_educationid ON educationdetails (userid ASC, educationid ASC);
 
+-- -----------------------------------------------------
+-- Table `skills`
+-- -----------------------------------------------------
 DROP TABLE IF EXISTS skills ;
 
 CREATE TABLE IF NOT EXISTS skills (
@@ -144,6 +233,9 @@ CREATE TABLE IF NOT EXISTS skills (
 
 CREATE INDEX IF NOT EXISTS fk_userid ON skills (userid ASC);
 
+-- -----------------------------------------------------
+-- Table `endorsements`
+-- -----------------------------------------------------
 DROP TABLE IF EXISTS endorsements ;
 
 CREATE TABLE IF NOT EXISTS endorsements (
@@ -164,6 +256,9 @@ CREATE INDEX IF NOT EXISTS fk_userid ON endorsements (euserid ASC);
 
 CREATE INDEX IF NOT EXISTS fk_skill ON endorsements (userid ASC, skillid ASC);
 
+-- -----------------------------------------------------
+-- Table `experiences`
+-- -----------------------------------------------------
 DROP TABLE IF EXISTS experience ;
 
 
@@ -186,27 +281,36 @@ CREATE TABLE IF NOT EXISTS experience (
 
 CREATE INDEX IF NOT EXISTS experience_ibfk_1 ON experience (userid ASC);
 
+-- -----------------------------------------------------
+-- Table `experiencedetails`
+-- -----------------------------------------------------
+
 DROP TABLE IF EXISTS experiencedetails ;
 
 CREATE TABLE IF NOT EXISTS experiencedetails (
   userid INT(11) NOT NULL,
   experienceid INT(11) NOT NULL,
   detailslink VARCHAR(50) NULL DEFAULT NULL,
-  fileorurl BLOB,
+  imageid INTEGER(11) NOT NULL,
   modifydate DATE NULL DEFAULT NULL,
   creationdate DATE NULL DEFAULT NULL,
   CONSTRAINT experiencedetails_ibfk_1
     FOREIGN KEY (userid , experienceid)
     REFERENCES experience (userid , experienceid)
+    FOREIGN KEY (imageid)
+    REFERENCES images (imageid)
 );
 
 CREATE INDEX IF NOT EXISTS fk_experience ON experiencedetails (userid ASC, experienceid ASC);
 
+-- -----------------------------------------------------
+-- Table `following`
+-- -----------------------------------------------------
 DROP TABLE IF EXISTS following ;
 
 CREATE TABLE IF NOT EXISTS following (
   userid INTEGER(11) NOT NULL,
-  category TEXT CHECK(category IN ('company','school') ) NULL DEFAULT NULL,
+  category TEXT CHECK(category IN ('company','school','friend') ) NULL DEFAULT 'company',
   organisationid INTEGER(11) NULL DEFAULT NULL,
   creationdate DATE NULL DEFAULT NULL,
   modifydate DATE NULL DEFAULT NULL,
@@ -218,11 +322,12 @@ CREATE TABLE IF NOT EXISTS following (
     REFERENCES userauthenticate (userid)
 );
 
-
 CREATE INDEX IF NOT EXISTS fk_userid ON following (userid ASC);
-
 CREATE INDEX IF NOT EXISTS fk_organisationid ON following (organisationid ASC);
 
+-- -----------------------------------------------------
+-- Table `honorsandawards`
+-- -----------------------------------------------------
 
 DROP TABLE IF EXISTS honorsandawards ;
 
@@ -287,12 +392,12 @@ CREATE INDEX IF NOT EXISTS fk_postid ON likes (postid ASC);
 -- -----------------------------------------------------
 -- Table organisation
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS organisation ;
+DROP TABLE IF EXISTS organization ;
 
-CREATE TABLE IF NOT EXISTS organisation (
+CREATE TABLE IF NOT EXISTS organization (
   userid INTEGER(11) NULL DEFAULT NULL,
   organisationname VARCHAR(50) NULL DEFAULT NULL,
-  organisationtype TEXT CHECK(organisationtype IN ('company','school') ) NULL DEFAULT NULL,
+  organisationtype TEXT CHECK(organisationtype IN ('company','school', 'friend') ) NULL DEFAULT 'company',
   photo VARCHAR(50) NULL DEFAULT NULL,
   following INTEGER(11) NULL DEFAULT NULL,
   creationdate DATE NULL DEFAULT NULL,
@@ -377,47 +482,9 @@ CREATE INDEX IF NOT EXISTS fk_userid ON summary (userid ASC);
 
 
 -- -----------------------------------------------------
--- Table userdetails
+-- Table `jobapplications`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS userdetails ;
-
-CREATE TABLE IF NOT EXISTS userdetails (
-  userid INTEGER(11) NOT NULL,
-  firstname VARCHAR(25) NULL DEFAULT NULL,
-  lastname VARCHAR(25) NULL DEFAULT NULL,
-  email VARCHAR(40) NULL DEFAULT NULL,
-  photo VARCHAR(50) NULL DEFAULT NULL,
-  headline VARCHAR(100) NULL DEFAULT NULL,
-  country VARCHAR(50) NULL DEFAULT NULL,
-  state VARCHAR(50) NULL DEFAULT NULL,
-  city VARCHAR(50) NULL DEFAULT NULL,
-  industry VARCHAR(50) NULL DEFAULT NULL,
-  phone VARCHAR(50) NULL DEFAULT NULL,
-  address VARCHAR(50) NULL DEFAULT NULL,
-  twitter_handle VARCHAR(50) NULL DEFAULT NULL,
-  websites VARCHAR(50) NULL DEFAULT NULL,
-  summary INTEGER(1) NULL DEFAULT '0',
-  certifications INTEGER(1) NULL DEFAULT '0',
-  honorsandawards INTEGER(1) NULL DEFAULT '0',
-  experience INTEGER(1) NULL DEFAULT '0',
-  skillsandendorsements INTEGER(1) NULL DEFAULT '0',
-  projects INTEGER(1) NULL DEFAULT '0',
-  languages INTEGER(1) NULL DEFAULT '0',
-  education INTEGER(1) NULL DEFAULT '0',
-  additionalinfo INTEGER(1) NULL DEFAULT '0',
-  volunteer INTEGER(1) NULL DEFAULT '0',
-  courses INTEGER(1) NULL DEFAULT '0',
-  following INTEGER(1) NULL DEFAULT '0',
-  modifydate DATE NULL DEFAULT NULL,
-  creationdate DATE NULL DEFAULT NULL,
-  PRIMARY KEY (userid),
-  CONSTRAINT userdetails_ibfk_1
-    FOREIGN KEY (userid)
-    REFERENCES userauthenticate (userid)
-);
-
-
-DROP TABLE IF EXISTS userdetails ;
+DROP TABLE IF EXISTS summaryjobapplications ;
 
 CREATE TABLE IF NOT EXISTS jobapplications (
   applicationid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
