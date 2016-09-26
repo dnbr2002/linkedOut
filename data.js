@@ -116,16 +116,11 @@ function getUserFeed(userid, cb) {
         "select * from "
         + "post p "
         + "LEFT OUTER JOIN "
-        + "comment c "
-        + "on p.pk_post = c.postid "
-        + "LEFT OUTER JOIN "
         + "photo ph on p.photoid = ph.pk_photo "
         + "INNER JOIN following f on f.followeeid = p.userid "
         + "INNER JOIN user u on u.pk_user = p.userid "
         + "WHERE f.followerid = "
         + userid;
-
-
 
 }
 
