@@ -1,6 +1,6 @@
-const dbFileName = "linkedOutSimple.sqlite";
+//const dbFileName = "linkedOutSimple.sqlite";
 var sqlite3 = require("sqlite3").verbose();
-var db = new sqlite3.Database(dbFileName);
+var db = new sqlite3.Database('linkedOutSimple.sqlite');
 
 
 exports.dbAuthenticateUser = dbAuthenticateUser;
