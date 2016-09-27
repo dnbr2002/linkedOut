@@ -198,8 +198,23 @@ app.get('/home/:id', function (req, res) {
         );
 });
 
-app.get('/geteducation/:id', function (req, res) {
-    dbApi.getEducation(req.params.id, function (data, err) {
+app.get('/posts/:id', function (req, res) {
+    console.log("req params:  " + req.params.id);
+    dbApi.getUserFeed(req.params.id).then(
+        function (data) {
+            console.log("app.get success");
+            res.status(200).send(data);
+        }
+    ).catch(
+        function (err) {
+            res.status(500).send(err);
+            console.log("app.get error");
+        }
+    );
+});
+
+app.get('/geteducation/:id', function(req, res) {
+    dbApi.getEducation(req.params.id, function(data, err) {
         if (data) {
             res.status(200).send(data);
         } else {
@@ -238,6 +253,7 @@ app.post('/addcomment', function (req, res) {
     });
 });
 
+
 // getMessages - rita
 app.get('/getmessages/:id', function (req, res) {
     console.log("In app.js req params:  " + req.params.id);
@@ -255,15 +271,18 @@ app.get('/getmessages/:id', function (req, res) {
 
 
 
-// app.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
-// 	console.log(req.body); //form fields
-// 	/* example output:
-// 	{ title: 'abc' }
-// 	 */
-// 	console.log(req.file); //form files
 
-// 	res.status(204).end();
-// });
+app.post('/addpost', function(req, res) {
+    dbApi.dbAddPost(req.body, function(data, err) {
+        if (data) {
+            res.status(200).send('success');
+        } else {
+            res.status(500).send('failure');
+        }
+    });
+});
+
+
 
 var port = 8080;
 app.listen(port, function () { console.log('listening on port ' + port); });

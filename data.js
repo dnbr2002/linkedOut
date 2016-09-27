@@ -127,7 +127,7 @@ function mapDataElements(jsonObj) {
         dataObj['$' + key] = jsonObj[key];
     }
 
-    console.log('Mapped as:  ' + JSON.stringify(dataObj));
+    console.log('mapDataElements: Mapped as:  ' + JSON.stringify(dataObj));
     return dataObj;
 }
 
@@ -150,6 +150,12 @@ function dbAddComment(jsonObj, cb) {
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
+exports.dbAddPost = dbAddPost;
+function dbAddPost(jsonObj, cb) {
+    var sql = "Insert into post (userid, posttime, post) values ($userid, $posttime, $postbody)";
+    doSQL(sql, mapDataElements(jsonObj), cb);
+}
+
 exports.dbAddEducation = dbAddEducation;
 function dbAddEducation(jsonObj, cb) {
     var sql = "Insert into education (userid, school, datestart, datefinished) values ($userid, $school, $datestart, $datefinished)";
@@ -166,12 +172,13 @@ function doSQL(sqlStr, bindings, cb) {
         db.serialize(() => {
             db.run(sqlStr, bindings, (err) => {
                 if (err) {
-                    console.log('SQL failed:  ' + sqlStr);
+                    console.log('SQL failed:  ' + JSON.stringify(bindings));
                     reject(err);
                 }
-
-                console.log('SQL succeeded:  ' + sqlStr);
-                resolve();
+                else {
+                    console.log('SQL succeeded:  ' + sqlStr);
+                    resolve();
+                }
             });
         });
     });
@@ -188,51 +195,36 @@ function doSQL(sqlStr, bindings, cb) {
 }
 
 exports.getUserFeed = getUserFeed;
-function getUserFeed(userid, cb) {
+function getUserFeed(userid) {
     // Returns an array of the pk_users the user id is Following
     var posts = {};
     var comments = {};
 
-    var sqlStr =
-        "select * from "
-        + "post p "
-        + "LEFT OUTER JOIN "
-        + "photo ph on p.photoid = ph.pk_photo "
-        + "INNER JOIN following f on f.followeeid = p.userid "
-        + "INNER JOIN user u on u.pk_user = p.userid "
-        + "WHERE f.followerid = "
-        + userid;
+    var sqlStr = "select * from post p LEFT OUTER JOIN following f on p.userid = f.followeeid and followerid = " + userid;
+    //     "select * from "
+    //     + "post p "
+    //     + "LEFT OUTER JOIN "
+    //     + "photo ph on p.photoid = ph.pk_photo "
+    //     + "INNER JOIN following f on f.followeeid = p.userid "
+    //     + "INNER JOIN user u on u.pk_user = p.userid "
+    //     + "WHERE f.followerid = "
+    //     + userid;
 
 
     var p = new Promise(function (resolve, reject) {
         db.serialize(function () {
             var sql = "SELECT * FROM POST WHERE USERID = " + userid;
 
-            db.all(sqlStr, function (err, rows) {
-                var posts = [];
-                var comments = [];
-
-                for (row in rows) {
-                    if (row.referencepost == null) {
-                        posts.push(row);
-                    } else {
-                        comments.push(row);
-                    }
+            db.all(sqlStr, function(err, rows) {
+                if (err) {
+                    reject(err);
                 }
-
-                for (comment of comments) {
-                    var refPost = comment.referencepost;
-
-                    // If the posts object doesn't already exist, add it
-                    if (posts[refPost] == undefined) {
-
-                        var postComments = posts[comment.referencepost]['comments'];
-
-                    }
-                }
+                resolve(rows);
             });
         });
     });
+
+    return p;
 }
 
 exports.getEducation = getEducation;
