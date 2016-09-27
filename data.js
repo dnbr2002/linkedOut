@@ -382,14 +382,20 @@ exports.dbAddPicture = dbAddPicture;
 function dbAddPicture(filename, userid, cb) {
     var sqlStr = "INSERT INTO PHOTO (photoname, mimetype) values (" + asMyQuote(filename) + ", 'image/jpeg')";
 
-    var p = new Promise((resolve, reject) => {
-        db.serialize(function () {
-            db.exec(sqlStr, function (err) {
-                if (err) {
+    var p = new Promise((resolve, reject) =>
+    {
+        db.serialize(function ()
+        {
+            db.exec(sqlStr, function (err)
+            {
+                if (err)
+                {
                     console.log('SQL failed:  ' + sqlStr);
                     reject(err);
                     return;
-                } else {
+                }
+                else
+                {
                     console.log('SQL succeeded:  ' + sqlStr);
                     resolve(filename);
                     return;
@@ -397,12 +403,17 @@ function dbAddPicture(filename, userid, cb) {
             });
         });
     }).then(
-        function (data) {
-            return new Promise(function (resolve, reject) {
-                db.serialize(function () {
-                    db.all("SELECT pk_photo FROM photo WHERE photoname = '" + filename + "'", function (err, rows) {
+        function (data)
+        {
+            return new Promise(function (resolve, reject)
+            {
+                db.serialize(function ()
+                {
+                    db.all("SELECT pk_photo FROM photo WHERE photoname = '" + filename + "'", function (err, rows)
+                    {
                         console.log("Making Pass");
-                        if (err) {
+                        if (err)
+                        {
                             console.log(err);
                             reject(err);
                             return;
@@ -416,15 +427,20 @@ function dbAddPicture(filename, userid, cb) {
         function (err) {
             console.log(err);
         }
-        ).then(
-        function (data) {
-            var updSql = "UPDATE USER SET photoid = " + data + " WHERE pk_user = " + 6;
+    ).then(
+        function (data)
+        {
+            var updSql = "UPDATE USER SET photoid = " + data + " WHERE pk_user = " + userid;
             console.log('Executing ' + updSql);
 
-            return new Promise(function (resolve, reject) {
-                db.serialize(function () {
-                    db.exec(updSql, function (err) {
-                        if (err) {
+            return new Promise(function (resolve, reject)
+            {
+                db.serialize(function ()
+                {
+                    db.exec(updSql, function (err)
+                    {
+                        if (err)
+                        {
                             console.log('SQL failed:  ' + updSql);
                             reject(err);
                             return;
@@ -449,7 +465,7 @@ function dbAddPicture(filename, userid, cb) {
             console.log('Error updating user table');
             cb(null, err);
         }
-        );
+    );
 }
 
 exports.dbAddPictureToPost = dbAddPictureToPost;
