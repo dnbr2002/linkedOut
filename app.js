@@ -238,6 +238,16 @@ app.post('/addcomment', function(req, res) {
     });
 });
 
+app.post('/addpost', function(req, res) {
+    dbApi.dbAddPost(req.body, function(data, err) {
+        if (data) {
+            res.status(200).send('success');
+        } else {
+            res.status(500).send('failure');
+        }
+    });
+});
+
 // app.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
 // 	console.log(req.body); //form fields
 // 	/* example output:

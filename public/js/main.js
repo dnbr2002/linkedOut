@@ -17,7 +17,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     // Pages
     .when("/network", {templateUrl: "partials/network.html", controller: "PageCtrl"})
     .when("/profile", {templateUrl: "partials/profile.html", controller: "profileCtrl"})
-    .when("/jobs", {templateUrl: "partials/jobs.html", controller: "PageCtrl"})
+    .when("/jobs", {templateUrl: "partials/jobs.html", controller: "addPostCtrl"})
     .when("/learning", {templateUrl: "partials/learning.html", controller: "PageCtrl"})
     .when("/contact", {templateUrl: "partials/contact.html", controller: "PageCtrl"})
     // Blog

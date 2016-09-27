@@ -127,7 +127,7 @@ function mapDataElements(jsonObj) {
         dataObj['$' + key] = jsonObj[key];
     }
 
-    console.log('Mapped as:  ' + JSON.stringify(dataObj));
+    console.log('mapDataElements: Mapped as:  ' + JSON.stringify(dataObj));
     return dataObj;
 }
 
@@ -150,6 +150,12 @@ function dbAddComment(jsonObj, cb) {
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
+exports.dbAddPost = dbAddPost;
+function dbAddPost(jsonObj, cb) {
+    var sql = "Insert into post (userid, posttime, post) values ($userid, $posttime, $postbody)";
+    doSQL(sql, mapDataElements(jsonObj), cb);
+}
+
 exports.dbAddEducation = dbAddEducation;
 function dbAddEducation(jsonObj, cb) {
     var sql = "Insert into education (userid, school, datestart, datefinished) values ($userid, $school, $datestart, $datefinished)";
@@ -166,12 +172,13 @@ function doSQL(sqlStr, bindings, cb) {
         db.serialize(() => {
             db.run(sqlStr, bindings, (err) => {
                 if (err) {
-                    console.log('SQL failed:  ' + sqlStr);
+                    console.log('SQL failed:  ' + JSON.stringify(bindings));
                     reject(err);
                 }
-
-                console.log('SQL succeeded:  ' + sqlStr);
-                resolve();
+                else {
+                    console.log('SQL succeeded:  ' + sqlStr);
+                    resolve();
+                }
             });
         });
     });
