@@ -50,3 +50,13 @@ Insert Into skills (userid, skill, skilldesc) values (1,'.Net','.Net Programming
 Insert Into skills (userid, skill, skilldesc) values (1,'C++', 'MFC Programming');
 Insert Into skills (userid, skill, skilldesc) values (1,'Perl','Perl Programming');
 Insert Into skills (userid, skill, skilldesc) values (1,'HTML', 'Web Programming');
+insert into user (username, fullname, password, photoid) values ('corporate@hooli.com', "Hooli Inc.", "password", null);
+insert into user (username, fullname, password, photoid) values ('corporate@google.com', "Google Inc.", "password", null);
+insert into user (username, fullname, password, photoid) values ('corporate@apple.com', "Apple Computer", "password", null);
+insert into user (username, fullname, password, photoid) values ('corporate@piedpiper.com', "Pied Piper, a Compression Company", "password", null);
+insert into user (username, fullname, password, photoid) values ('billg@microsoft.com', "Microsoft", "password", null);
+insert into user (username, fullname, password, photoid) values ('larry@oracle.com', "Oracle", "password", null);
+insert into user (username, fullname, password, photoid) values ('corporate@mutiny.com', "Mutiny", "password", null);
+insert into user (username, fullname, password, photoid) values ('corporate@hp.com', "Hewlett Packard Inc.", "password", null);
+insert into user (username, fullname, password, photoid) values ('corporate@ibm.com', "Hooli", "password", null);
+insert into user (username, fullname, password, photoid) values ('mikee@dell.com', "Hooli", "password", null);
