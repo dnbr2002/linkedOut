@@ -82,7 +82,21 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
 	    };
 
         $scope.addPost=function(){
-            console.log("addPost called");
+            $scope.showAddPost = false;
+            $http({
+			method: 'POST',
+			url: '/addpost',
+			data: {
+				userid:$rootScope.$id,
+				posttime:(new Date).toUTCString(),
+				postbody: $scope.postbody				
+			}
+            }).success(function(response){
+                console.log("success");
+                $scope.postbody = "";
+            }).error(function(error){
+                console.log("error");
+            });
 			
 	    };
 });

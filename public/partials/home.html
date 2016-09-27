@@ -127,10 +127,27 @@
                 <button type="button" class="btn btn-primary" ng-click="uploadPhoto()">Upload a photo</button>
             </div>
             <div class="btn-group">
-                <button type="button" class="btn btn-primary" ng-click="addPost()">Add a post</button>
+                <button type="button" class="btn btn-primary" ng-click="showAddPost = true">Add a post</button>
             </div>
         </div>
 
+        <div ng-show="showAddPost">
+            <div class="row" style="padding-top: 2%;">
+                <div class="col-xs-3" style="margin-left: 10%;">
+                    <h5>
+                        <strong>Enter your post </strong>
+                    </h5>
+                </div>
+                <div class="col-xs-7">
+                    <textarea class="form-control" rows="5" ng-model="postbody"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-11">
+                    <button class="btn btn-primary pull-right" ng-click="addPost()">Post</button>
+                </div>
+            </div>
+        </div>
 
         <div ng-repeat="data in postData">
             <br />
@@ -186,7 +203,7 @@
 
         </div>
        
-    <div class="row">
+    <!--<div class="row">
 
         <ul class="pager">
             <li class="previous"><a href="#">&larr; Older</a>
@@ -195,7 +212,7 @@
             </li>
         </ul>
 
-    </div>
+    </div>-->
 </div>
 
 <script type="text/javascript">
