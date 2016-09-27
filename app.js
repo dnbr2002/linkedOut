@@ -1,10 +1,10 @@
 var express = require('express');
-var multer  = require('multer');
+var multer = require('multer');
 var gm = require('gm');
 var upload = multer({ dest: 'uploads/' });
 
-var	bodyParser = require('body-parser');
-var	path = require('path');
+var bodyParser = require('body-parser');
+var path = require('path');
 
 var app = express();
 // app.use(bodyParser({limit: '5mb'}));
@@ -18,11 +18,11 @@ app.use(express.static('./public'));
 
 dbManager.createDB();
 
-app.get('/', function(req, res){
-  res.sendFile('index.html');
+app.get('/', function (req, res) {
+    res.sendFile('index.html');
 });
 
-app.post('/login', function(request, response) {
+app.post('/login', function (request, response) {
     // dbApi.loginUser(request.body.email).then(
     //     user => {
     //         response.send(user);
@@ -34,7 +34,7 @@ app.post('/login', function(request, response) {
 
     console.log('Body content is:  ' + JSON.stringify(request.body));
 
-    dbApi.loginUser(request.body.email, function(data, err) {
+    dbApi.loginUser(request.body.email, function (data, err) {
         if (data) {
             console.log("Sending login success");
             response.status(200).send(data);
@@ -46,9 +46,9 @@ app.post('/login', function(request, response) {
 });
 
 
-app.post('/adduser', function(req, res) {
+app.post('/adduser', function (req, res) {
     // Need to call add to photo table.
-    dbApi.dbCreateUser(req.body, function(data, err) {
+    dbApi.dbCreateUser(req.body, function (data, err) {
         if (data) {
             console.log('Successful insert');
             res.status(200).send(data);
@@ -101,11 +101,52 @@ app.post('/addpicture', function(req, res)
             resolve(req);
         });
     }).then(
-        function(data) {
+        function (data) {
+            return new Promise(function (resolve, reject) {
+                gm(data.file.path).thumb(100, 100, './public/uploads/littlethumbs/' + data.body.username + "_thumb.jpg", 100, function (err, stdout, stderr, command) {
+                    if (err) {
+                        // console.log('Error found');
+                        console.log(err);
+                        // console.log('Moving on');
+                        reject(err);
+                    }
+                    console.log('100 pixel thumb done.');
+                    resolve(data);
+                });
+            });
+        },
+        function (err) {
+            console.log('Upload of file itself failed.');
+        }
+    ).then(
+        function (data)
+        {
+            return new Promise(function (resolve, reject) {
+                gm(data.file.path).thumb(200, 200, './public/uploads/bigthumbs/' + data.body.username + "_thumb.jpg", 100, function (err, stdout, stderr, command) {
+                    if (err) {
+                        // console.log('Error found');
+                        console.log(err);
+                        // console.log('Moving on');
+                        reject(err);
+                    }
+
+                    console.log('200 pixel thumb done.');
+                    resolve(data);
+                });
+            });
+        },
+        function (err) {
+            console.log('Creation of small thumb failed.');
+            console.log(err);
+        }
+    ).then(
+        function (data)
+        {
             userName = data.body.username;
             userId = data.body.userid;
 
             console.log('Calling dbAddPicture for database update');
+
             dbApi.dbAddPicture(req.body.generatedname, userId, function(somedata, err) {
                 console.log('Data has:  ' + somedata);
 
@@ -117,6 +158,7 @@ app.post('/addpicture', function(req, res)
                 }
             });
         },
+
         function(err) {
             console.log('Upload failed');
             res.send('failure');
@@ -275,6 +317,21 @@ app.get('/home/:id', function (req, res) {
             res.status(500).send(err);
             console.log("app.get error");
         }
+        );
+});
+
+app.get('/posts/:id', function (req, res) {
+    console.log("req params:  " + req.params.id);
+    dbApi.getUserFeed(req.params.id).then(
+        function (data) {
+            console.log("app.get success");
+            res.status(200).send(data);
+        }
+    ).catch(
+        function (err) {
+            res.status(500).send(err);
+            console.log("app.get error");
+        }
     );
 });
 
@@ -288,8 +345,8 @@ app.get('/geteducation/:id', function(req, res) {
     })
 })
 
-app.get('/getjobs/:id', function(req, res) {
-    dbApi.getJobs(req.params.id, function(data, err) {
+app.get('/getjobs/:id', function (req, res) {
+    dbApi.getJobs(req.params.id, function (data, err) {
         if (data) {
             res.status(200).send(data);
         } else {
@@ -298,8 +355,8 @@ app.get('/getjobs/:id', function(req, res) {
     })
 })
 
-app.get('/getskills/:id', function(req, res) {
-    dbApi.getSkills(req.params.id, function(data, err) {
+app.get('/getskills/:id', function (req, res) {
+    dbApi.getSkills(req.params.id, function (data, err) {
         if (data) {
             res.status(200).send(data);
         } else {
@@ -308,8 +365,8 @@ app.get('/getskills/:id', function(req, res) {
     })
 })
 
-app.post('/addcomment', function(req, res) {
-    dbApi.dbAddComment(req.body, function(data, err) {
+app.post('/addcomment', function (req, res) {
+    dbApi.dbAddComment(req.body, function (data, err) {
         if (data) {
             res.status(200).send('success');
         } else {
@@ -318,15 +375,36 @@ app.post('/addcomment', function(req, res) {
     });
 });
 
-// app.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
-// 	console.log(req.body); //form fields
-// 	/* example output:
-// 	{ title: 'abc' }
-// 	 */
-// 	console.log(req.file); //form files
 
-// 	res.status(204).end();
-// });
+// getMessages - rita
+app.get('/getmessages/:id', function (req, res) {
+    console.log("In app.js req params:  " + req.params.id);
+    dbApi.dbgetMessages(req.params.id).then(
+        (rows) => {
+            console.log("in app.js sending message data:", rows);
+            res.status(200).send(rows);
+        }
+    ).catch(
+        (err) => {
+            res.status(500).send('fail');
+        }
+        );
+});
+
+
+
+
+app.post('/addpost', function(req, res) {
+    dbApi.dbAddPost(req.body, function(data, err) {
+        if (data) {
+            res.status(200).send('success');
+        } else {
+            res.status(500).send('failure');
+        }
+    });
+});
+
+
 
 var port = 8080;
-app.listen( port, function(){ console.log('listening on port '+port); } );
+app.listen(port, function () { console.log('listening on port ' + port); });
