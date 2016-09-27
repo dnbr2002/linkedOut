@@ -1,17 +1,29 @@
-
 <div ng-include='"templates/header.html"'></div>
 
-<div ng-controller="homeCtrl" ng-init="getAllData()">
+<div class="container" ng-controller="homeCtrl" ng-init="getAllData()">
 
-    <img src='../images/streetPeople.jpeg' style='position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-1;'>
+    <!-- <img src='../images/streetPeople.jpeg' style='position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-1;'> -->
     <br />
-    <br />
-    <br />
-    <div style="width: 80%; padding-top: 60px;">
+    <!--<div style="width: 80%; padding-top: 60px;">
+
+    </div>-->
+
+    <div class="row">
+
+        <div class="col-lg-12">
+            <h1 class="page-header">Blog Home 2
+                <small>Blog Homepage</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="../index.html">Home</a>
+                </li>
+                <li class="active">Blog Home 2</li>
+            </ol>
+        </div>
 
     </div>
 
-    <div class="panel panel-default container col-md-4 col-md-offset-2">
+    <div class="panel panel-default container col-md-4 col-md-offset-1">
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-4">
@@ -58,78 +70,131 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
 
-        <div class="panel panel-default container col-md-6 col-md-offset-2">
-            <div class="panel-body">
+        </div>
+    <!--<div class="panel panel-default container col-md-8 col-md-offset-2">
+        </div>-->
+        <div class="btn-group btn-group-justified">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" ng-click="shareUpdate()">Share an update</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" ng-click="uploadPhoto()">Upload a photo</button>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" ng-click="addPost()">Add a post</button>
+            </div>
+        </div>
+
+
+        <div ng-repeat="data in postData">
+            <br />
+            <br />
+            <!--<div class="row">
+
+            <div class="col-md-1">
+                <p><i class="fa fa-film fa-4x"></i>
+                </p>
+
+                <p>{{data.posttime}}</p>
+            </div>
+            <div class="col-md-5">
+                <a href="blog-post.html">
+                    <img src="http://placehold.it/400x200" class="img-responsive">
+                </a>
+            </div>
+            <div class="col-md-6">
+                <h3><a href="blog-post.html">Post</a>
+                </h3>
+
+                <p>by <a href="#">{{data.userid}}</a>
+                </p>
+
+                <p>{{data.post}}</p>
+                <a class="btn btn-primary" href="blog-post.html">Read More <i class="fa fa-angle-right"></i></a>
+            </div>
+            </div>-->
+
+            <div class="panel panel-default container col-md-8 col-md-offset-1">
                 <div class="row">
-                    <div class="col-xs-4">
+
+                    <div class="col-lg-8">
                         <img alt="Profile Picture" src="photos/profile/{{UserSummary.photoname}}"
-                             height="50" width="50">
-                        <h5>{{UserSummary.fullname}}</h5>
+                            height="75" width="75">
+                        <h3>Post
+                            <small>{{data.posttime}}</small>
+                        </h3>
+                        <p>{{data.post}}</p>
+                        <h4>Leave a Comment:</h4>
+
+                        <form role="form">
+                            <div class="form-group">
+                                <textarea class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                        <hr>
                     </div>
-                    <div class="col-xs-6">
-                        <div class="row">
-                            <div class="col-xs-6 col-xs-push-5">
-                                <h4>{{postData.post}}</h4>
-                                <img alt="PostPic" src="photos/posts/{{postData[0].photoname}}"
-                                     height="200" width="200">
-                            </div>
-                        </div>
-                        <div class="row" style="padding-top: 15%;">
-                            <div class="col-xs-12">
-                                <div class="col-xs-4">
 
-                                </div>
-                                <div class="col-xs-6 col-xs-push-4">
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="col-xs-4">
-                                    <h4></h4>
-                                </div>
-                                <div class="col-xs-6 col-xs-pull-2">
-                                    <h4></h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12 col-xs-pull-6">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <h4></h4>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!--    <div class="panel-footer text-center">
-                    <div>
-                        <button class="btn btn-primary" ng-click="modifyProfile()">
-                            Edit Profile</button>
+        </div>
+       
+    <div class="row">
+
+        <div class="col-lg-8">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br /><br />
+            <br />
+            <br />
+
+            <!-- the actual blog post: title/author/date/content -->
+            </p>
+
+            <hr>
+            <!-- the comment box -->
+            <div class="well">
+                <h3>Start Bootstrap
+                    <small>9:41 PM on August 24, 2013</small>
+                </h3>
+                <p class="lead">This has to be the worst blog post I have ever read. It simply makes no sense. You start off by talking
+                    about space or something, then you randomly start babbling about cupcakes, and you end off with random
+                    fish names.</p>
+                <h4>Leave a Comment:</h4>
+
+                <form role="form">
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3"></textarea>
                     </div>
-                </div>-->
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+            <hr>
+
+
         </div>
 
-        
-</div>
+    </div>
 
-<div class="btn-group btn-group-justified">
-  <div class="btn-group">
-    <button type="button" class="btn btn-primary" ng-click="shareUpdate()">Share an update</button>
-  </div>
-  <div class="btn-group">
-    <button type="button" class="btn btn-primary" ng-click="uploadPhoto()">Upload a photo</button>
-  </div>
-  <div class="btn-group">
-    <button type="button" class="btn btn-primary" ng-click="addPost()">Add a post</button>
-  </div>
-</div>
+    <div class="row">
 
+        <ul class="pager">
+            <li class="previous"><a href="#">&larr; Older</a>
+            </li>
+            <li class="next"><a href="#">Newer &rarr;</a>
+            </li>
+        </ul>
+
+    </div>
+</div>

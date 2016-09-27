@@ -55,25 +55,34 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
             });
         }
 
-        function shareUpdate() {
-            console.log("shareUpdate called");
-            // var uriPosts = "/posts/" + $rootScope.$id;
-            // console.log(uriPosts);
-
-            // DataService.getData(uriPosts, []).success(function(response) {
-            //     $scope.postData = response;
-            //     console.log("getPosts: "+ JSON.stringify(response));
-            // }).error(function(err) {
-            //     console.log(err);
-            // });
-        }
-
-        function uploadPhoto() {
-            console.log("uploadPhoto called");
-        }
-
-        function addPost() {
-            console.log("addPost called");
-        }
+        
     }
+
+    $scope.shareUpdate=function(){
+        console.log("shareUpdate called");
+			
+	};
+
+    // function shareUpdate() {
+    //         console.log("shareUpdate called");
+    //         // var uriPosts = "/posts/" + $rootScope.$id;
+    //         // console.log(uriPosts);
+
+    //         // DataService.getData(uriPosts, []).success(function(response) {
+    //         //     $scope.postData = response;
+    //         //     console.log("getPosts: "+ JSON.stringify(response));
+    //         // }).error(function(err) {
+    //         //     console.log(err);
+    //         // });
+    //     }
+
+        $scope.uploadPhoto=function(){
+            console.log("uploadPhoto called");
+			
+	    };
+
+        $scope.addPost=function(){
+            console.log("addPost called");
+			
+	    };
 });
