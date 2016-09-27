@@ -188,20 +188,20 @@ function doSQL(sqlStr, bindings, cb) {
 }
 
 exports.getUserFeed = getUserFeed;
-function getUserFeed(userid, cb) {
+function getUserFeed(userid) {
     // Returns an array of the pk_users the user id is Following
     var posts = {};
     var comments = {};
 
-    var sqlStr =
-        "select * from "
-        + "post p "
-        + "LEFT OUTER JOIN "
-        + "photo ph on p.photoid = ph.pk_photo "
-        + "INNER JOIN following f on f.followeeid = p.userid "
-        + "INNER JOIN user u on u.pk_user = p.userid "
-        + "WHERE f.followerid = "
-        + userid;
+    var sqlStr = "select * from post p LEFT OUTER JOIN following f on p.userid = f.followeeid and followerid = " + userid;
+    //     "select * from "
+    //     + "post p "
+    //     + "LEFT OUTER JOIN "
+    //     + "photo ph on p.photoid = ph.pk_photo "
+    //     + "INNER JOIN following f on f.followeeid = p.userid "
+    //     + "INNER JOIN user u on u.pk_user = p.userid "
+    //     + "WHERE f.followerid = "
+    //     + userid;
 
 
     var p = new Promise(function(resolve, reject) {
@@ -209,30 +209,15 @@ function getUserFeed(userid, cb) {
             var sql = "SELECT * FROM POST WHERE USERID = " + userid;
 
             db.all(sqlStr, function(err, rows) {
-                var posts = [];
-                var comments = [];
-
-                for (row in rows) {
-                    if (row.referencepost == null) {
-                        posts.push(row);
-                    } else {
-                        comments.push(row);
-                    }
+                if (err) {
+                    reject(err);
                 }
-
-                for (comment of comments) {
-                    var refPost = comment.referencepost;
-
-                    // If the posts object doesn't already exist, add it
-                    if (posts[refPost] == undefined) {
-
-                        var postComments = posts[comment.referencepost]['comments'];
-
-                    }
-                }
+                resolve(rows);
             });
         });
     });
+
+    return p;
 }
 
 exports.getEducation = getEducation;

@@ -198,6 +198,21 @@ app.get('/home/:id', function (req, res) {
     );
 });
 
+app.get('/posts/:id', function (req, res) {
+    console.log("req params:  " + req.params.id);
+    dbApi.getUserFeed(req.params.id).then(
+        function (data) {
+            console.log("app.get success");
+            res.status(200).send(data);
+        }
+    ).catch(
+        function (err) {
+            res.status(500).send(err);
+            console.log("app.get error");
+        }
+    );
+});
+
 app.get('/geteducation/:id', function(req, res) {
     dbApi.getEducation(req.params.id, function(data, err) {
         if (data) {
