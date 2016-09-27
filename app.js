@@ -59,17 +59,37 @@ app.post('/adduser', function(req, res) {
     });
 });
 
-app.post('/addpicture', function(req, res) {
-    var upload = multer({dest: './public/uploads'}).single('avatar');
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/uploads/')
+    },
+    filename: function (req, file, cb) {
+        req.body.generatedname = new Date().getTime() + file.originalname;
+        cb(null, req.body.generatedname);
+    }
+});
+
+app.post('/addpicture', function(req, res)
+{
+    if (req.body.avatar == undefined)
+    {
+        console.log('No picture will be added');
+    }
+    else
+    {
+        console.log('Picture will be added');
+    }
+    var upload = multer({storage: storage}).single('avatar');
     var userName;
     var userId;
 
-    var p = new Promise(function(resolve, reject) {
+    var p = new Promise(function(resolve, reject)
+    {
         upload(req, res, function (err) {
             console.log('In multer body');
             console.log(JSON.stringify(req.body));
-
-            if (err) {
+            if (err)
+            {
                 // An error occurred when uploading
                 console.log(err);
                 console.log('Error in upload');
@@ -77,15 +97,7 @@ app.post('/addpicture', function(req, res) {
 
                 return
             }
-            // console.log(req.file.filename);
             console.log('Upload worked');
-            // console.log(req.file.size);
-
-            // Resize and rewrite
-            // console.log('')
-            // console.log(JSON.stringify(req.body));
-            // var upFlNm = req.file.path;
-            // var username = req.body.username;
             resolve(req);
         });
     }).then(
@@ -94,7 +106,7 @@ app.post('/addpicture', function(req, res) {
             userId = data.body.userid;
 
             console.log('Calling dbAddPicture for database update');
-            dbApi.dbAddPicture(userName + "_thumb.jpg", userId, function(somedata, err) {
+            dbApi.dbAddPicture(req.body.generatedname, userId, function(somedata, err) {
                 console.log('Data has:  ' + somedata);
 
                 if (somedata) {
@@ -106,11 +118,117 @@ app.post('/addpicture', function(req, res) {
             });
         },
         function(err) {
-            console.log('Creation of large thumb failed.');
+            console.log('Upload failed');
             res.send('failure');
         }
     );
 });
+
+// Adds a post, with, or without, a picture
+app.post('/addpost', function(req, res)
+{
+    var p = addPicture(req, res);
+
+    // Handle the rest for a post.
+    p.then(
+        function(data)
+        {
+
+            // Always do post Creation
+            return dbApi.dbAddPost(
+                data.body.userid,
+                data.body.post,
+                data.body.referencepost,
+                data.body.generatedname);
+        }
+    ).then(
+        (data) =>
+        {
+            // This data is the key to the post
+            console.log('The key is:  ' + data);
+            console.log('The generated file name is:  ' + req.body.generatedname);
+
+            res.status(200).send('success');
+        },
+        (err) =>
+        {
+            res.status(500).send('failure');
+        }
+    );
+
+});
+
+app.post('/attachpicture', function(req, res)
+{
+    p = addPicture(req, res);
+
+    p.then(
+        function(data)
+        {
+            userId = data.body.userid;
+
+            // If the generatedname is undefined it means
+            // that multer did not find a file to upload
+            if (req.body.generatedname == undefined)
+            {
+                console.log("The generated name was null so it won't add to DB.");
+                res.status(404).send('No picture in POST');
+            }
+            else
+            {
+                console.log('Calling dbAddPicture for database update');
+
+                dbApi.dbAddPicture(req.body.generatedname, userId, function(somedata, err)
+                {
+                    if (somedata)
+                    {
+                        console.log('Insert of picture good');
+                        res.send('done');
+                    }
+                    else
+                    {
+                        res.send('fail');
+                    }
+                });
+
+            }
+
+        },
+        function(err) {
+            console.log('Upload failed');
+            res.send('failure');
+        }
+    );
+});
+
+function addPicture(req, res)
+{
+    var upload = multer({storage: storage}).single('avatar');
+    var userName;
+    var userId;
+
+    var p = new Promise(function(resolve, reject)
+    {
+        upload(req, res, function (err) {
+            console.log('In multer body');
+            console.log(JSON.stringify(req.body));
+            if (err)
+            {
+                // An error occurred when uploading
+                console.log(err);
+                console.log('Error in upload');
+                reject(err);
+
+                return
+            }
+            console.log('Upload worked');
+            resolve(req);
+        });
+    });
+
+    return p;
+}
+
 
 app.post('/addeducation', function(req, res) {
     dbApi.dbAddEducation(req.body, function(data, err) {
