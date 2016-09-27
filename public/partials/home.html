@@ -149,34 +149,10 @@
             </div>
         </div>
 
-        <div ng-repeat="data in postData">
+        <div ng-repeat="data in postData | orderBy : 'posttime' : true">
             <br />
             <br />
-            <!--<div class="row">
-
-            <div class="col-md-1">
-                <p><i class="fa fa-film fa-4x"></i>
-                </p>
-
-                <p>{{data.posttime}}</p>
-            </div>
-            <div class="col-md-5">
-                <a href="blog-post.html">
-                    <img src="http://placehold.it/400x200" class="img-responsive">
-                </a>
-            </div>
-            <div class="col-md-6">
-                <h3><a href="blog-post.html">Post</a>
-                </h3>
-
-                <p>by <a href="#">{{data.userid}}</a>
-                </p>
-
-                <p>{{data.post}}</p>
-                <a class="btn btn-primary" href="blog-post.html">Read More <i class="fa fa-angle-right"></i></a>
-            </div>
-            </div>-->
-
+            
             <div class="panel panel-default container col-md-8 col-md-offset-1">
                 <div class="row">
 
