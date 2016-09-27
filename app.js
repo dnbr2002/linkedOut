@@ -90,44 +90,6 @@ app.post('/addpicture', function(req, res) {
         });
     }).then(
         function(data) {
-            return new Promise(function(resolve, reject) {
-                gm(data.file.path).thumb(100, 100, './public/uploads/littlethumbs/' + data.body.username + "_thumb.jpg", 100, function(err, stdout, stderr, command) {
-                    if (err) {
-                        // console.log('Error found');
-                        console.log(err);
-                        // console.log('Moving on');
-                        reject(err);
-                    }
-                    console.log('100 pixel thumb done.');
-                    resolve(data);
-                });
-            });
-        },
-        function(err) {
-            console.log('Upload of file itself failed.');
-        }
-    ).then(
-        function(data) {
-            return new Promise(function(resolve, reject) {
-                gm(data.file.path).thumb(200, 200, './public/uploads/bigthumbs/' + data.body.username + "_thumb.jpg", 100, function(err, stdout, stderr, command) {
-                    if (err) {
-                        // console.log('Error found');
-                        console.log(err);
-                        // console.log('Moving on');
-                        reject(err);
-                    }
-
-                    console.log('200 pixel thumb done.');
-                    resolve(data);
-                });
-            });
-        },
-        function(err) {
-            console.log('Creation of small thumb failed.');
-            console.log(err);
-        }
-    ).then(
-        function(data) {
             userName = data.body.username;
             userId = data.body.userid;
 
@@ -186,6 +148,21 @@ app.get('/home/:id', function (req, res) {
 app.get('/home/:id', function (req, res) {
     console.log("req params:  " + req.params.id);
     dbApi.dbUserSummary(req.params.id).then(
+        function (data) {
+            console.log("app.get success");
+            res.status(200).send(data);
+        }
+    ).catch(
+        function (err) {
+            res.status(500).send(err);
+            console.log("app.get error");
+        }
+    );
+});
+
+app.get('/posts/:id', function (req, res) {
+    console.log("req params:  " + req.params.id);
+    dbApi.getUserFeed(req.params.id).then(
         function (data) {
             console.log("app.get success");
             res.status(200).send(data);
