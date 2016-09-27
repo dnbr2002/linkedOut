@@ -208,9 +208,9 @@ function getUserFeed(userid, cb) {
         db.serialize(function() {
             var sql = "SELECT * FROM POST WHERE USERID = " + userid;
 
-            db.all(sqlStr, function(err, rows)) {
-                var posts[];
-                var comments[];
+            db.all(sqlStr, function(err, rows) {
+                var posts = [];
+                var comments = [];
 
                 for (row in rows) {
                     if (row.referencepost == null) {
@@ -230,7 +230,7 @@ function getUserFeed(userid, cb) {
 
                     }
                 }
-            }
+            });
         });
     });
 }
