@@ -1,10 +1,10 @@
 var express = require('express');
-var multer  = require('multer');
+var multer = require('multer');
 var gm = require('gm');
 var upload = multer({ dest: 'uploads/' });
 
-var	bodyParser = require('body-parser');
-var	path = require('path');
+var bodyParser = require('body-parser');
+var path = require('path');
 
 var app = express();
 // app.use(bodyParser({limit: '5mb'}));
@@ -18,11 +18,11 @@ app.use(express.static('./public'));
 
 dbManager.createDB();
 
-app.get('/', function(req, res){
-  res.sendFile('index.html');
+app.get('/', function (req, res) {
+    res.sendFile('index.html');
 });
 
-app.post('/login', function(request, response) {
+app.post('/login', function (request, response) {
     // dbApi.loginUser(request.body.email).then(
     //     user => {
     //         response.send(user);
@@ -34,7 +34,7 @@ app.post('/login', function(request, response) {
 
     console.log('Body content is:  ' + JSON.stringify(request.body));
 
-    dbApi.loginUser(request.body.email, function(data, err) {
+    dbApi.loginUser(request.body.email, function (data, err) {
         if (data) {
             console.log("Sending login success");
             response.status(200).send(data);
@@ -46,9 +46,9 @@ app.post('/login', function(request, response) {
 });
 
 
-app.post('/adduser', function(req, res) {
+app.post('/adduser', function (req, res) {
     // Need to call add to photo table.
-    dbApi.dbCreateUser(req.body, function(data, err) {
+    dbApi.dbCreateUser(req.body, function (data, err) {
         if (data) {
             console.log('Successful insert');
             res.status(200).send(data);
@@ -59,12 +59,12 @@ app.post('/adduser', function(req, res) {
     });
 });
 
-app.post('/addpicture', function(req, res) {
-    var upload = multer({dest: './public/uploads'}).single('avatar');
+app.post('/addpicture', function (req, res) {
+    var upload = multer({ dest: './public/uploads' }).single('avatar');
     var userName;
     var userId;
 
-    var p = new Promise(function(resolve, reject) {
+    var p = new Promise(function (resolve, reject) {
         upload(req, res, function (err) {
             console.log('In multer body');
             console.log(JSON.stringify(req.body));
@@ -89,9 +89,9 @@ app.post('/addpicture', function(req, res) {
             resolve(req);
         });
     }).then(
-        function(data) {
-            return new Promise(function(resolve, reject) {
-                gm(data.file.path).thumb(100, 100, './public/uploads/littlethumbs/' + data.body.username + "_thumb.jpg", 100, function(err, stdout, stderr, command) {
+        function (data) {
+            return new Promise(function (resolve, reject) {
+                gm(data.file.path).thumb(100, 100, './public/uploads/littlethumbs/' + data.body.username + "_thumb.jpg", 100, function (err, stdout, stderr, command) {
                     if (err) {
                         // console.log('Error found');
                         console.log(err);
@@ -103,13 +103,13 @@ app.post('/addpicture', function(req, res) {
                 });
             });
         },
-        function(err) {
+        function (err) {
             console.log('Upload of file itself failed.');
         }
-    ).then(
-        function(data) {
-            return new Promise(function(resolve, reject) {
-                gm(data.file.path).thumb(200, 200, './public/uploads/bigthumbs/' + data.body.username + "_thumb.jpg", 100, function(err, stdout, stderr, command) {
+        ).then(
+        function (data) {
+            return new Promise(function (resolve, reject) {
+                gm(data.file.path).thumb(200, 200, './public/uploads/bigthumbs/' + data.body.username + "_thumb.jpg", 100, function (err, stdout, stderr, command) {
                     if (err) {
                         // console.log('Error found');
                         console.log(err);
@@ -122,17 +122,17 @@ app.post('/addpicture', function(req, res) {
                 });
             });
         },
-        function(err) {
+        function (err) {
             console.log('Creation of small thumb failed.');
             console.log(err);
         }
-    ).then(
-        function(data) {
+        ).then(
+        function (data) {
             userName = data.body.username;
             userId = data.body.userid;
 
             console.log('Calling dbAddPicture for database update');
-            dbApi.dbAddPicture(userName + "_thumb.jpg", userId, function(somedata, err) {
+            dbApi.dbAddPicture(userName + "_thumb.jpg", userId, function (somedata, err) {
                 console.log('Data has:  ' + somedata);
 
                 if (somedata) {
@@ -143,15 +143,15 @@ app.post('/addpicture', function(req, res) {
                 }
             });
         },
-        function(err) {
+        function (err) {
             console.log('Creation of large thumb failed.');
             res.send('failure');
         }
-    );
+        );
 });
 
-app.post('/addeducation', function(req, res) {
-    dbApi.dbAddEducation(req.body, function(data, err) {
+app.post('/addeducation', function (req, res) {
+    dbApi.dbAddEducation(req.body, function (data, err) {
         if (data) {
             console.log('Successful insert');
             res.status(200).send(data);
@@ -195,11 +195,11 @@ app.get('/home/:id', function (req, res) {
             res.status(500).send(err);
             console.log("app.get error");
         }
-    );
+        );
 });
 
-app.get('/geteducation/:id', function(req, res) {
-    dbApi.getEducation(req.params.id, function(data, err) {
+app.get('/geteducation/:id', function (req, res) {
+    dbApi.getEducation(req.params.id, function (data, err) {
         if (data) {
             res.status(200).send(data);
         } else {
@@ -208,8 +208,8 @@ app.get('/geteducation/:id', function(req, res) {
     })
 })
 
-app.get('/getjobs/:id', function(req, res) {
-    dbApi.getJobs(req.params.id, function(data, err) {
+app.get('/getjobs/:id', function (req, res) {
+    dbApi.getJobs(req.params.id, function (data, err) {
         if (data) {
             res.status(200).send(data);
         } else {
@@ -218,8 +218,8 @@ app.get('/getjobs/:id', function(req, res) {
     })
 })
 
-app.get('/getskills/:id', function(req, res) {
-    dbApi.getSkills(req.params.id, function(data, err) {
+app.get('/getskills/:id', function (req, res) {
+    dbApi.getSkills(req.params.id, function (data, err) {
         if (data) {
             res.status(200).send(data);
         } else {
@@ -228,8 +228,8 @@ app.get('/getskills/:id', function(req, res) {
     })
 })
 
-app.post('/addcomment', function(req, res) {
-    dbApi.dbAddComment(req.body, function(data, err) {
+app.post('/addcomment', function (req, res) {
+    dbApi.dbAddComment(req.body, function (data, err) {
         if (data) {
             res.status(200).send('success');
         } else {
@@ -237,6 +237,23 @@ app.post('/addcomment', function(req, res) {
         }
     });
 });
+
+// getMessages - rita
+app.get('/getmessages/:id', function (req, res) {
+    console.log("In app.js req params:  " + req.params.id);
+    dbApi.dbgetMessages(req.params.id).then(
+        (rows) => {
+            console.log("in app.js sending message data:", rows);
+            res.status(200).send(rows);
+        }
+    ).catch(
+        (err) => {
+            res.status(500).send('fail');
+        }
+        );
+});
+
+
 
 // app.post('/', multer({ dest: './uploads/'}).single('upl'), function(req,res){
 // 	console.log(req.body); //form fields
@@ -249,4 +266,4 @@ app.post('/addcomment', function(req, res) {
 // });
 
 var port = 8080;
-app.listen( port, function(){ console.log('listening on port '+port); } );
+app.listen(port, function () { console.log('listening on port ' + port); });

@@ -12,7 +12,7 @@ function dbAuthenticateUser(jsonObj, cb) {
         console.log("Email: " + sqlJson[0].email + " Password: " + sqlJson[0].password);
 
         var stmt = db.prepare("SELECT pk_user, username, email FROM user where email='?' and password='?';");
-        stmt.all([sqlJson[0].email,sqlJson[0].password], function (err, rows) {
+        stmt.all([sqlJson[0].email, sqlJson[0].password], function (err, rows) {
             // console.log("SQL Row: "+rows[0].email);
             if (err) {
                 console.log(err);
@@ -23,17 +23,17 @@ function dbAuthenticateUser(jsonObj, cb) {
                 reject("failed!");
                 return;
             } else {
-                console.log("PK: "+ rows[0].PK_User+"  UserName: "+rows[0].UserName);
+                console.log("PK: " + rows[0].PK_User + "  UserName: " + rows[0].UserName);
                 resolve(rows);
             }
         });
     });
 
     p.then(
-        function(data) {
+        function (data) {
             cb(data);
         },
-        function(err) {
+        function (err) {
             cd(null, err);
         }
     );
@@ -69,18 +69,18 @@ function dbUserSummary(jsonObj) {
 exports.dbUserSummary = dbUserSummary;
 function dbUserSummary(jsonObj) {
     var sqlJson = JSON.parse(jsonObj);
-    console.log("PK_User: "+ sqlJson);
+    console.log("PK_User: " + sqlJson);
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var stmt= "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User="+sqlJson+" and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+            var stmt = "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=" + sqlJson + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
             console.log(stmt);
 
-            db.all(stmt, function(err, rows) {
+            db.all(stmt, function (err, rows) {
                 if (rows != undefined && rows.length === 1) {
                     console.log('Got User Summary Info')
                     console.log(rows[0]);
                     resolve(rows[0]);
-                }else {
+                } else {
                     console.log('No User Summary retrieved from DB');
                     reject("User does not exist");
                 }
@@ -110,11 +110,11 @@ function loginUser(userId, cb) {
     });
 
     p.then(
-        function(data) {
+        function (data) {
             // console.log('Sending back ' + JSON.stringify(data));
             cb(data);
         },
-        function(err) {
+        function (err) {
             cb(null, err);
         }
     )
@@ -204,11 +204,11 @@ function getUserFeed(userid, cb) {
         + userid;
 
 
-    var p = new Promise(function(resolve, reject) {
-        db.serialize(function() {
+    var p = new Promise(function (resolve, reject) {
+        db.serialize(function () {
             var sql = "SELECT * FROM POST WHERE USERID = " + userid;
 
-            db.all(sqlStr, function(err, rows) {
+            db.all(sqlStr, function (err, rows) {
                 var posts = [];
                 var comments = [];
 
@@ -255,9 +255,9 @@ function getSkills(userid, cb) {
 
 function getData(sql, cb) {
     // Run SQL and pass results to callback
-    var p = new Promise(function(resolve, reject) {
-        db.serialize(function() {
-            db.all(sql, function(err, rows) {
+    var p = new Promise(function (resolve, reject) {
+        db.serialize(function () {
+            db.all(sql, function (err, rows) {
                 if (err) {
                     reject(err);
                     return;
@@ -299,11 +299,11 @@ function loginUser(userId, cb) {
     });
 
     p.then(
-        function(data) {
+        function (data) {
             // console.log('Sending back ' + JSON.stringify(data));
             cb(data);
         },
-        function(err) {
+        function (err) {
             cb(null, err);
         }
     )
@@ -314,8 +314,8 @@ function dbAddPicture(filename, userid, cb) {
     var sqlStr = "INSERT INTO PHOTO (photoname, mimetype) values (" + asMyQuote(filename) + ", 'image/jpeg')";
 
     var p = new Promise((resolve, reject) => {
-        db.serialize(function() {
-            db.exec(sqlStr, function(err) {
+        db.serialize(function () {
+            db.exec(sqlStr, function (err) {
                 if (err) {
                     console.log('SQL failed:  ' + sqlStr);
                     reject(err);
@@ -328,10 +328,10 @@ function dbAddPicture(filename, userid, cb) {
             });
         });
     }).then(
-        function(data) {
-            return new Promise(function(resolve, reject) {
-                db.serialize(function() {
-                    db.all("SELECT pk_photo FROM photo WHERE photoname = '" + filename + "'", function(err, rows) {
+        function (data) {
+            return new Promise(function (resolve, reject) {
+                db.serialize(function () {
+                    db.all("SELECT pk_photo FROM photo WHERE photoname = '" + filename + "'", function (err, rows) {
                         console.log("Making Pass");
                         if (err) {
                             console.log(err);
@@ -344,41 +344,68 @@ function dbAddPicture(filename, userid, cb) {
                 });
             });
         },
-        function(err) {
+        function (err) {
             console.log(err);
         }
-    ).then(
-        function(data) {
+        ).then(
+        function (data) {
             var updSql = "UPDATE USER SET photoid = " + data + " WHERE pk_user = " + 6;
             console.log('Executing ' + updSql);
 
-            return new Promise(function(resolve, reject) {
-                    db.serialize(function() {
-                        db.exec(updSql, function(err) {
-                            if (err) {
-                                console.log('SQL failed:  ' + updSql);
-                                reject(err);
-                                return;
-                            }
+            return new Promise(function (resolve, reject) {
+                db.serialize(function () {
+                    db.exec(updSql, function (err) {
+                        if (err) {
+                            console.log('SQL failed:  ' + updSql);
+                            reject(err);
+                            return;
+                        }
 
-                            console.log('SQL succeeded:  ' + updSql);
-                            resolve('success');
-                        });
+                        console.log('SQL succeeded:  ' + updSql);
+                        resolve('success');
                     });
-                }
+                });
+            }
             );
         },
-        function(err) {
+        function (err) {
             console.log('Error inserting into photo table ' + err);
         }
-    ).then(
-        function(data) {
+        ).then(
+        function (data) {
             console.log('Update of user table succeeded');
             cb(data);
         },
-        function(err) {
+        function (err) {
             console.log('Error updating user table');
             cb(null, err);
         }
-    );
+        );
 }
+
+//getMessages - Rita
+
+exports.dbgetMessages = dbgetMessages;
+function dbgetMessages(userid) {
+
+    return new Promise(function (resolve, reject) {
+        db.serialize(function () {
+            var sql = "SELECT u1.username AS loggedUser, u2.username AS senderName, subject, message from messages msg " +
+                " INNER JOIN user AS u1 ON msg.messengerid = u1.pk_user " +
+                " INNER JOIN user AS u2  ON msg.messageeid = u2.pk_user " +
+                " where msg.messengerid = " + userid;
+
+            db.all(sql, function (err, rows) {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(rows);
+            });
+        });
+    });
+}
+
+
+
+//End getMessages - Rita

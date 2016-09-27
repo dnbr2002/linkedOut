@@ -1,0 +1,90 @@
+<style>
+    .imgbk{height:100%;
+        width:100%;
+        background-image:url(images/nyc_night.jpg);/*your background image*/
+        background-repeat:no-repeat;/*we want to have one single image not a repeated one*/
+        background-size:cover;/*this sets the image to fullscreen covering the whole screen*/
+        /*css hack for ie*/
+        filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.image.jpg',sizingMethod='scale');
+        -ms-filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(src='image.jpg',sizingMethod='scale')";
+    }
+</style>
+
+
+<div ng-controller="loginCtrl" class="container">
+    <img src='../images/nyc_night.jpg' style='position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-1;'>
+    <br />
+    <br />
+    <br />
+    <div class="row">
+        <div class="container col-md-5 col-md-offset-3" style="margin-inside: 10px">
+            <div class="panel panel-default " style="margin-inside: 10px">
+
+                <div class="panel-heading"><img src="./images/logo_132x32_2.png"><br />
+
+        </div>
+        <br />
+        <div col-md-4 col-md-offset-6>
+            <form class="form-horizontal center_div" role="form" name="loginForm" ng-submit="loginIn()" method="POST">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-9">
+                        <input type="email" ng-model="email" name="email" class="form-control" id="inputEmail3" placeholder="Email" required="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-3 control-label">Password</label>
+                    <div class="col-sm-9">
+                        <input type="password" ng-model="pwd" name="pwd" class="form-control" id="inputPassword3" placeholder="Password" required="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <div class="checkbox">
+                            <label class="">
+                                <input type="checkbox" class="">Remember me</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group last">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-primary btn-sm">Sign in</button>
+                        <button type="reset" class="btn btn-default btn-sm">Reset</button>
+                    </div>
+                </div>
+                <!--<div class="row">
+                    <div class="col-xs-4 col-xs-push-2" style="text-align: center;">
+                        <p class="help-block alert-danger">{{signInFormError}}</p>
+                    </div>
+                </div>-->
+            </form>
+        </div>
+        <div class="panel-footer">Not Registered? <a href="#" class="">Register here</a>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<div ng-include='"templates/footer.html"'></div>
+<!--<script>
+    $(document).ready(function() {
+    $("#loginForm").submit(function(e) {
+    // Use AJAX to post the object to our adduser service
+            $.ajax({
+                async: true,
+                cache: false,
+                type: 'POST',
+                data: $(this).serialize(),
+                url: $(this).attr("action"),
+                dataType: 'JSON',
+                success: function() {
+                    window.location.replace("/");
+                },
+                error: function(jqXhr, status, err) {
+                    alert("Error: " + err);
+                }
+            });
+            e.preventDefault();
+    });
+});
+</script>-->
