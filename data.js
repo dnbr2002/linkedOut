@@ -301,6 +301,83 @@ function loginUser(userId, cb) {
     )
 }
 
+exports.dbAddPost = dbAddPost;
+function dbAddPost(userid, post, referencepost = null, generatedName = null)
+{
+    if (referencepost == undefined)
+    {
+        referencepost = null;
+    }
+
+    var sqlStr1 = "INSERT INTO POST (userid, post, referencepost) VALUES (" + userid + ", " + asMyQuote(post) + ", " + referencepost + ");";
+    var sqlStr2 = "SELECT LAST_INSERT_ROWID() AS dakey";
+
+    var p = new Promise(function(resolve, reject)
+    {
+        db.serialize(function()
+        {
+            console.log('dbAddPost running SQL:  ' + sqlStr1);
+            db.run(sqlStr1, function(err)
+            {
+                if (err)
+                {
+                    reject(err);
+                }
+                resolve();
+            });
+        });
+    }).then(
+        function(data)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                db.serialize(function()
+                {
+                    console.log("dbAddPost running SQL:  " + sqlStr2);
+
+                    db.each(sqlStr2, function(err, row)
+                    {
+                        console.log(JSON.stringify(row));
+                        if (err)
+                        {
+                            reject(err);
+                        }
+                        else
+                        {
+                            resolve(row.dakey);
+                        }
+                    });
+                });
+            });
+        },
+        function(err)
+        {
+            console.log(err);
+        }
+    ).then(
+        function(data)
+        {
+            // Data is the key.
+            if (generatedName == undefined || generatedName == null)
+            {
+                // If there is no picture to process just return key.
+                return(data);
+            }
+            else
+            {
+                return dbAddPictureToPost(generatedName, data);
+            }
+        },
+        function(err)
+        {
+            console.log('Failed on post insert and key retrieval');
+        }
+    );
+
+    return p;
+
+}
+
 exports.dbAddPicture = dbAddPicture;
 function dbAddPicture(filename, userid, cb) {
     var sqlStr = "INSERT INTO PHOTO (photoname, mimetype) values (" + asMyQuote(filename) + ", 'image/jpeg')";
@@ -375,6 +452,72 @@ function dbAddPicture(filename, userid, cb) {
         );
 }
 
+exports.dbAddPictureToPost = dbAddPictureToPost;
+function dbAddPictureToPost(filename, postid) {
+    var sqlStr = "INSERT INTO PHOTO (photoname, mimetype) values (" + asMyQuote(filename) + ", 'image/jpeg')";
+
+    var p = new Promise((resolve, reject) => {
+        db.serialize(function() {
+            db.exec(sqlStr, function(err) {
+                if (err) {
+                    console.log('SQL failed:  ' + sqlStr);
+                    reject(err);
+                    return;
+                } else {
+                    console.log('SQL succeeded:  ' + sqlStr);
+                    resolve(filename);
+                    return;
+                }
+            });
+        });
+    }).then(
+        function(data) {
+            return new Promise(function(resolve, reject) {
+                db.serialize(function() {
+                    db.all("SELECT pk_photo FROM photo WHERE photoname = '" + filename + "'", function(err, rows) {
+                        console.log("Making Pass");
+                        if (err) {
+                            console.log(err);
+                            reject(err);
+                            return;
+                        }
+
+                        resolve(rows[0].pk_photo);
+                    });
+                });
+            });
+        },
+        function(err) {
+            console.log(err);
+        }
+    ).then(
+        function(data) {
+            var updSql = "UPDATE POST SET photoid = " + data + " WHERE pk_post = " + postid;
+            console.log('Executing ' + updSql);
+
+            return new Promise(function(resolve, reject) {
+                    db.serialize(function() {
+                        db.exec(updSql, function(err) {
+                            if (err) {
+                                console.log('SQL failed:  ' + updSql);
+                                reject(err);
+                                return;
+                            }
+
+                            console.log('SQL succeeded:  ' + updSql);
+                            resolve('success');
+                        });
+                    });
+                }
+            );
+        },
+        function(err) {
+            console.log('Error inserting into photo table ' + err);
+        }
+    );
+
+    return p;
+}
 //getMessages - Rita
 
 exports.dbgetMessages = dbgetMessages;
