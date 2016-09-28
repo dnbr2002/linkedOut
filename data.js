@@ -546,21 +546,7 @@ function dbGetUserFeed(userid) {
                 }
             }
 
-            if (postsToAddOn.length > 0) {
-                // Add these to included posts.
-                allposts = includedposts.concat(postsToAddOn);
-            }
-
-            // Run sort routine.
-            // allposts.sort(function(a, b) {
-            //     if (a < b) {
-            //         return 1;
-            //     } else if (a > b) {
-            //         return -1;
-            //     } else {
-            //         return 0;
-            //     }
-            // });
+            allposts = includedposts.concat(postsToAddOn);
 
             console.log('Posts to addon is:  ' + JSON.stringify(postsToAddOn));
             console.log('All Posts is:  ' + JSON.stringify(allposts));
