@@ -580,6 +580,15 @@ function dbGetUserFeed(userid) {
             // console.log('Includes are:  ' + JSON.stringify(includedposts));
             // console.log('Excludes are:  ' + JSON.stringify(excludedposts));
 
+            var sortFxn = function(a, b) {
+                if (a.posttime < b.posttime) return 1
+                else if (a.posttime > b.posttime) return -1
+                else return 0
+            }
+
+            includedposts.sort(sortFxn);
+            excludedposts.sort(sortFxn);
+
             // Check this list of both arrays
             for (excludedpost of excludedposts) {
                 for (includedpost of includedposts) {
