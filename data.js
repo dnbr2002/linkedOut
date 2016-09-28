@@ -187,7 +187,13 @@ function getSkills(userid, cb) {
 
 exports.getConnection = getConnection;
 function getConnection(userid, cb) {
-    var sql = "Select u.FullName, u.username, p.Photoname from User u, Photo P, following f where f.followeeid=" + userid + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+    var sql = "SELECT  u1.username, u1.fullname, p1.photoname FROM user u1 INNER JOIN photo AS p1 ON u1.photoid  = p1.pk_photo WHERE u1.pk_user  in   (SELECT followerid from following msg where msg.followeeid=" + userid+") and u1.pk_user NOT IN (" +userid+")";
+    getData(sql, cb);
+}
+
+exports.getUnconnectted = getUnconnectted;
+function getUnconnectted(userid, cb) {
+    var sql = "SELECT  u1.username, u1.fullname, p1.photoname FROM user u1 INNER JOIN photo AS p1 ON u1.photoid  = p1.pk_photo WHERE u1.pk_user  in   (SELECT followerid from following msg where msg.followeeid NOT IN (" +userid+"))";
     getData(sql, cb);
 }
 
