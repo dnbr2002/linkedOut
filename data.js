@@ -546,6 +546,16 @@ function dbGetUserFeed(userid) {
                 }
                 resolve(rows);
             });
+
+            // This is how you do it with each, callback, complete fxn
+            //
+            // db.each(userSql, function(err, rows) {
+            //     // Do some stuff
+            // },
+            // function(err, numrows) {
+            //     // In here put resolve
+            //     resolve(accumulator);
+            // });
         });
     }).then(
         (rows) => {
@@ -610,7 +620,13 @@ function dbGetUserFeed(userid) {
 
             // Do the sort on user feed once you have it collected.
 
-            return(userFeed);
+            var userFeedArr = [];
+
+            for (key in userFeed) {
+                userFeedArr.push(userFeed[key]);
+            }
+
+            return(userFeedArr);
         },
         (err) => {
             console.log('Error getting posts');
