@@ -42,10 +42,14 @@ function dbAuthenticateUser(jsonObj, cb) {
 exports.dbUserSummary = dbUserSummary;
 function dbUserSummary(jsonObj) {
     var sqlJson = JSON.parse(jsonObj);
-    console.log("PK_User: " + sqlJson);
+    console.log("PK_User dbUserSummary: " + sqlJson);
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var stmt = "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=" + sqlJson + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+//            var stmt = "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=" + sqlJson + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+            var stmt= "Select u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished from User u, Photo P, Jobs j "+
+                "where u.PK_User="+sqlJson+" and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) and j.userid="+sqlJson+" "+
+                "order by j.datefinished desc "+
+                "Limit 1";
             console.log(stmt);
 
             db.all(stmt, function (err, rows) {
