@@ -69,6 +69,21 @@ var storage = multer.diskStorage({
     }
 });
 
+app.get('/getuserfeed/:id', function(req, res) {
+    var p = dbApi.dbGetUserFeed(req.params.id);
+
+    p.then(
+        (data) => {
+            console.log('feed:  ' + JSON.stringify(data));
+            res.status(200).send(data);
+        },
+        (err) => {
+            console.log(err);
+            res.status(404).send('failed');
+        }
+    )
+});
+
 app.post('/addpicture', function(req, res)
 {
     if (req.body.avatar == undefined)
