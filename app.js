@@ -390,6 +390,26 @@ app.get('/connect/:id', function(req, res) {
     })
 })
 
+app.get('/unconnectted/:id', function(req, res) {
+    dbApi.getUnconnectted(req.params.id, function(data, err) {
+        if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(500).send('fail');
+        }
+    })
+})
+
+app.post('/disconnect', function (req, res) {
+    dbApi.dbDisconnect(req.body, function (data, err) {
+        if (data) {
+            res.status(200).send('success');
+        } else {
+            res.status(500).send('failure');
+        }
+    });
+});
+
 app.post('/addcomment', function (req, res) {
     dbApi.dbAddComment(req.body, function (data, err) {
         if (data) {
@@ -416,9 +436,6 @@ app.get('/getmessages/:id', function (req, res) {
         );
 });
 
-
-
-
 app.post('/addpost', function(req, res) {
     dbApi.dbAddPost(req.body, function(data, err) {
         if (data) {
@@ -429,6 +446,18 @@ app.post('/addpost', function(req, res) {
     });
 });
 
+app.get('/getnonfollowers/:id', function(req, res) {
+    var p = dbApi.dbGetNotFollowing(req.params.id);
+
+    p.then(
+        (data) => {
+            res.status(200).send(data);
+        },
+        (err) => {
+            res.status(500).send(err);
+        }
+    )
+})
 
 
 var port = 8080;

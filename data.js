@@ -191,8 +191,20 @@ function getSkills(userid, cb) {
 
 exports.getConnection = getConnection;
 function getConnection(userid, cb) {
-    var sql = "Select u.FullName, u.username, p.Photoname from User u, Photo P, following f where f.followeeid=" + userid + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+    var sql = "SELECT  u1.username, u1.fullname, u1.pk_user, p1.photoname FROM user u1 INNER JOIN photo AS p1 ON u1.photoid  = p1.pk_photo WHERE u1.pk_user  in   (SELECT followerid from following msg where msg.followeeid=" + userid+") and u1.pk_user NOT IN (" +userid+")";
     getData(sql, cb);
+}
+
+exports.getUnconnectted = getUnconnectted;
+function getUnconnectted(userid, cb) {
+    var sql = "SELECT  u1.username, u1.fullname, p1.photoname FROM user u1 INNER JOIN photo AS p1 ON u1.photoid  = p1.pk_photo WHERE u1.pk_user  in   (SELECT followerid from following msg where msg.followeeid NOT IN (" +userid+"))";
+    getData(sql, cb);
+}
+
+exports.dbDisconnect = dbDisconnect;
+function dbDisconnect(jsonObj, cb) {    
+    var sql = "DELETE FROM following where followerid=" + $followerid + " and followeeid=" + $userid;
+    doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
 function getData(sql, cb) {
@@ -641,6 +653,63 @@ function dbGetUserFeed(userid) {
             console.log('Error getting posts');
         }
     );
+
+    return p;
+}
+
+exports.dbGetNotFollowing = dbGetNotFollowing;
+function dbGetNotFollowing(userid) {
+    var ffSql = "select followeeid from following where followerid = " + userid;
+    var userSql = "select * from user u left outer join photo ph on u.photoid = ph.pk_photo";
+
+    var p = new Promise(function(resolve, reject) {
+        db.serialize(function() {
+            db.all(ffSql, function(err, rows) {
+                if (err) reject(err);
+
+                var leaders = [];
+
+                for (key in rows) {
+                    leaders.push(rows[key].followeeid);
+                }
+
+                resolve(leaders);
+            })
+        });
+    }).then(
+        (leaders) => {
+            // console.log('Leaders are:  ' + JSON.stringify(leaders));
+
+            return new Promise(function(resolve, reject) {
+                db.serialize(function() {
+                    db.all(userSql, function(err, users) {
+                        if (err) {
+                            reject(err);
+                        }
+
+
+                        var nonUsers = users.filter(function(nonUserEle, index, array) {
+                            if (leaders.find(function(userEle, index, array) {
+                                    return userEle === nonUserEle.pk_user;
+                                }) !== undefined) {
+
+                                // In this case the find call on leaders found a match
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        });
+
+                        // console.log('Non Users are:  ' + JSON.stringify(nonUsers));
+
+                        resolve(nonUsers);
+                    })
+                });
+            });
+        }
+    ).catch(function(reason) {
+        console.log('getting not following failed:  ' + reason);
+    });
 
     return p;
 }

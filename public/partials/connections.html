@@ -1,6 +1,6 @@
 <div ng-include='"templates/header.html"'></div>
 
-<div ng-controller="connectionCtrl" ng-init="getAllConnections()">
+<div ng-controller="connectionCtrl" ng-init="getAllData()">
 	<div style="width: 80%; padding-top: 25px;">
 		<div class="row" style="padding-top: 10px;">
 			<div class="col-xs-9">
@@ -17,9 +17,9 @@
 					<div class="col-xs-12">
 						<div class="panel panel-default" style="padding: 0;">
 							<div class="panel-body">
-								<div ng-repeat="data in connectionList">
+								<div ng-repeat="data in connecttedList">
 									<div class="col-xs-2">
-									<img alt="Profile Picture" src="images/{{data.photoname}}" height="50" width="50">
+									<img alt="Profile Picture" src="photos/profile/{{data.photoname}}" height="50" width="50">
 									</div>
 									<div class="col-xs-10"><!-- col-xs-pull-3 -->
 										<h4 class="text-primary">{{data.fullname}}</h4>
@@ -27,14 +27,59 @@
 											<div class="col-xs-6" style="margin-top: -15px;">
 												<h5>&nbsp;&nbsp;&nbsp;&nbsp;{{data.username}}</h5>
 											</div>
+											<button type="button" class="btn btn-success" ng-click="disconnect(data.pk_user)" data-toggle="tooltip" title="To disconnect">Connected</button>
 										</div>	
 									</div>
+									</br>
+									</br>
+									</br>
+									</br>
 								</div>
 							</div>
 							<div class="panel-footer text-center"></div>
 						</div>
 					</div>
 				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="panel panel-default" style="padding: 0;">
+							<div class="panel-body">
+								<h4>Potentially interested in:</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="panel panel-default" style="padding: 0;">
+							<div class="panel-body">
+								<div ng-repeat="data in unconnecttedList">
+									<div class="col-xs-2">
+									<img alt="Profile Picture" src="photos/profile/{{data.photoname}}" height="50" width="50">
+									</div>
+									<div class="col-xs-10"><!-- col-xs-pull-3 -->
+										<h4 class="text-primary">{{data.fullname}}</h4>
+										<div class="row">
+											<div class="col-xs-6" style="margin-top: -15px;">
+												<h5>&nbsp;&nbsp;&nbsp;&nbsp;{{data.username}}</h5>
+											</div>
+											<button type="button" class="btn btn-primary" ng-click="connect() data-toggle="tooltip" title="To connect"">Connect</button>
+										</div>	
+									</div>
+									</br>
+									</br>
+									</br>
+									</br>
+								</div>
+							</div>
+							<div class="panel-footer text-center"></div>
+						</div>
+					</div>
+				</div>
+
+
 			</div>
 		</div>
 	</div>
