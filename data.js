@@ -39,33 +39,6 @@ function dbAuthenticateUser(jsonObj, cb) {
     );
 }
 
-
-/*
-function dbUserSummary(jsonObj) {
-    return new Promise (function (resolve, reject) {
-        var sqlJson = JSON.parse(jsonObj);
-        console.log("Email: "+ sqlJson[0].userid);
-        var stmt = db.prepare("Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=? and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ");
-        stmt.all(sqlJson[0].userid, function (err, rows) {
-            if(err){
-                console.log(err);
-                reject("logon failed!");
-                return;
-            }
-            else if (rows == 0) {
-                console.log("no user exists with id " + sqlJson[0].userid)
-                reject();
-                return
-            }
-            else
-            {
-                console.log("rows returned for: " + JSON.stringify(rows[0]))
-                resolve(rows);
-            }
-        })
-    })
-}
-*/
 exports.dbUserSummary = dbUserSummary;
 function dbUserSummary(jsonObj) {
     var sqlJson = JSON.parse(jsonObj);
@@ -192,39 +165,6 @@ function doSQL(sqlStr, bindings, cb) {
             cb(null, err);
         }
     );
-}
-
-exports.getUserFeed = getUserFeed;
-function getUserFeed(userid) {
-    // Returns an array of the pk_users the user id is Following
-    var posts = {};
-    var comments = {};
-
-    var sqlStr = "select * from post p LEFT OUTER JOIN following f on p.userid = f.followeeid and followerid = " + userid;
-    //     "select * from "
-    //     + "post p "
-    //     + "LEFT OUTER JOIN "
-    //     + "photo ph on p.photoid = ph.pk_photo "
-    //     + "INNER JOIN following f on f.followeeid = p.userid "
-    //     + "INNER JOIN user u on u.pk_user = p.userid "
-    //     + "WHERE f.followerid = "
-    //     + userid;
-
-
-    var p = new Promise(function (resolve, reject) {
-        db.serialize(function () {
-            var sql = "SELECT * FROM POST WHERE USERID = " + userid;
-
-            db.all(sqlStr, function(err, rows) {
-                if (err) {
-                    reject(err);
-                }
-                resolve(rows);
-            });
-        });
-    });
-
-    return p;
 }
 
 exports.getEducation = getEducation;
@@ -566,3 +506,89 @@ function dbgetMessages(userid) {
 
 
 //End getMessages - Rita
+
+exports.dbGetUserFeed = dbGetUserFeed;
+function dbGetUserFeed(userid) {
+    var userSql = "select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = " + userid;
+
+    var p = new Promise(function(resolve, reject) {
+        db.serialize(function() {
+            db.all(userSql, function(err, rows) {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
+            });
+        });
+    }).then(
+        (rows) => {
+            var includedposts = [];
+            var excludedposts = [];
+            var allposts = [];
+
+            console.log(JSON.stringify(rows));
+
+            for (row of rows) {
+                if (row.userid == userid || row.followerid == userid) {
+                    console.log('Pushing to includes ' + JSON.stringify(row));
+                    includedposts.push(row);
+                } else {
+                    console.log('Pushing to excludes ' + JSON.stringify(row));
+                    excludedposts.push(row);
+                }
+            }
+
+            var postsToAddOn = [];
+
+            console.log('Includes are:  ' + JSON.stringify(includedposts));
+            console.log('Excludes are:  ' + JSON.stringify(excludedposts));
+
+            // Check this list of both arrays
+            for (excludedpost of excludedposts) {
+                for (includedpost of includedposts) {
+                    if (includedpost.referencepost == excludedpost.pk_post) {
+                        postsToAddOn.push(excludedpost);
+                    }
+                }
+            }
+
+            allposts = includedposts.concat(postsToAddOn);
+
+            console.log('Posts to addon is:  ' + JSON.stringify(postsToAddOn));
+            console.log('All Posts is:  ' + JSON.stringify(allposts));
+
+            var userFeed = {};
+            var referenceFeed = {};
+
+            for (aPost of allposts) {
+                if (aPost.referencepost == undefined || aPost.referencepost == null) {
+                    console.log('Adding to userFeed:  ' + JSON.stringify(aPost));
+                    userFeed[aPost.pk_post] = aPost;
+                } else {
+                    if (referenceFeed[aPost.referencepost] == undefined) {
+                        referenceFeed[aPost.referencepost] = [aPost];
+                    } else {
+                        referenceFeed[aPost.referencepost].push(aPost);
+                    }
+                }
+            }
+
+            console.log('User Feed contents:  ' + JSON.stringify(userFeed));
+
+            for (key in userFeed) {
+                if (referenceFeed[key] !== undefined) {
+                    userFeed[key].comments = referenceFeed[key];
+                }
+            }
+
+            // Do the sort on user feed once you have it collected.
+
+            return(userFeed);
+        },
+        (err) => {
+            console.log('Error getting posts');
+        }
+    );
+
+    return p;
+}
