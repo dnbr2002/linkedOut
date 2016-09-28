@@ -1,3 +1,19 @@
+<style>
+
+    .panel_posts {
+        border: 0;
+    }
+
+    .btn-lg {
+        padding: 10px 20px;
+        font-size: 20px;
+        border-radius: 10px;
+        width:45%;
+    }
+</style>
+
+
+
 <div ng-include='"templates/header.html"'></div>
 
 <div class="container" ng-controller="homeCtrl" ng-init="getAllData()">
@@ -63,6 +79,7 @@
         </div>
 
         <div class="panel panel-default container col-md-5 col-md-offset-1">
+            <br />
             <div id="myCarousel" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
             <ol class="carousel-indicators">
@@ -75,20 +92,34 @@
             <!-- Wrapper for slides -->
             <div class="carousel-inner" role="listbox">
                 <div class="item active">
-                <img src="images/big-data.jpg" alt="bigdata" width="500" height="400">
+                    <img src="photos/companies/dell-emc.jpg" alt="Dell" width="500" height="400">
+                </div>
+                <div class="item">
+                    <img src="photos/companies/apple_web.jpg" alt="Apple" width="500" height="400">
+                </div>
+                <div class="item">
+                    <img src="photos/companies/google.jpg" alt="Google" width="500" height="400">
+                </div>
+                <div class="item">
+                    <img src="photos/companies/hooli.jpg" alt="Hooli" width="500" height="400">
+                </div>
+                <div class="item">
+                    <img src="photos/companies/ibm.jpg" alt="ibm" width="500" height="400">
+                </div>
+                <div class="item">
+                    <img src="photos/companies/microsoft.jpg" alt="Microsoft" width="500" height="400">
+                </div>
+                <div class="item">
+                    <img src="photos/companies/mutiny.jpg" alt="Mutiny" width="500" height="400">
+                </div>
+                <div class="item">
+                    <img src="photos/companies/oracle.jpg" alt="Oracle" width="500" height="400">
+                </div>
+                <div class="item">
+                    <img src="photos/companies/piedpiper.jpg" alt="Pied Piper" width="500" height="400">
                 </div>
 
-                <div class="item">
-                <img src="images/chip.jpg" alt="chip" width="500" height="400">
-                </div>
 
-                <div class="item">
-                <img src="images/reddish.jpg" alt="red" width="500" height="400">
-                </div>
-
-                <div class="item">
-                <img src="images/compscibanner.jpg" alt="screens" width="500" height="400">
-                </div>
             </div>
 
             <!-- Left and right controls -->
@@ -101,23 +132,19 @@
                 <span class="sr-only">Next</span>
             </a>
             </div>
-
+        <br />
         </div>
 
 
     <!--<div class="panel panel-default container col-md-8 col-md-offset-2">
         </div>-->
-        <div class="btn-group btn-group-justified">
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary" ng-click="shareUpdate()">Share an update</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary" ng-click="uploadPhoto()">Upload a photo</button>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="btn btn-primary" ng-click="showAddPost = true">Add a post</button>
-            </div>
+
+
+    <div class="panel panel-default container col-md-10 col-md-offset-0 panel_posts">
+        <div class="col-md-offset-1 center">
+            <button type="button" class="btn btn-primary btn-lg" ng-click="showAddPost = true">Add a post</button>
         </div>
+
 
         <div ng-show="showAddPost">
             <div class="row" style="padding-top: 2%;">
@@ -138,10 +165,13 @@
         </div>
 
         <div ng-repeat="data in postData | orderBy : 'posttime' : true">
+
+
             <br />
             <br />
             
-            <div class="panel panel-default container col-md-8 col-md-offset-1">
+            <div class="panel panel-default container col-md-10 col-md-offset-1">
+
                 <div class="row">
                     <br />
                     <div class="col-lg-8">
@@ -174,7 +204,7 @@
             </div>
 
         </div>
-       
+       </div>
     <!--<div class="row">
 
         <ul class="pager">
