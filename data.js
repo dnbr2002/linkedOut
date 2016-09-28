@@ -195,15 +195,39 @@ function getConnection(userid, cb) {
     getData(sql, cb);
 }
 
-exports.getUnconnectted = getUnconnectted;
-function getUnconnectted(userid, cb) {
-    var sql = "SELECT  u1.username, u1.fullname, p1.photoname FROM user u1 INNER JOIN photo AS p1 ON u1.photoid  = p1.pk_photo WHERE u1.pk_user  in   (SELECT followerid from following msg where msg.followeeid NOT IN (" +userid+"))";
-    getData(sql, cb);
-}
-
 exports.dbDisconnect = dbDisconnect;
 function dbDisconnect(jsonObj, cb) {    
-    var sql = "DELETE FROM following where followerid=" + $followerid + " and followeeid=" + $userid;
+    var sqlStr1 = "DELETE FROM following where followerid=" + jsonObj.followerid + " and followeeid=" + jsonObj.userid;
+    console.log('dbDisconnect SQL  ' + sqlStr1);
+    var p = new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.run(sqlStr1, function(err)
+            {
+                if (err)
+                {
+                    console.log('SQL failed:  ' + sqlStr1);
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });            
+        });
+    });
+
+    p.then(
+        (data) => {
+            cb('success');
+        },
+        (err) => {
+            cb(null, err);
+        }
+    );
+}
+
+exports.dbConnect = dbConnect;
+function dbConnect(jsonObj, cb) {
+    var sql = "Insert into following (followerid, followeeid) values ($followerid, $userid)";
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
