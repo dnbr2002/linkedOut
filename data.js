@@ -196,7 +196,7 @@ function getConnection(userid, cb) {
 }
 
 exports.dbDisconnect = dbDisconnect;
-function dbDisconnect(jsonObj, cb) {    
+function dbDisconnect(jsonObj, cb) {
     var sqlStr1 = "DELETE FROM following where followerid=" + jsonObj.followerid + " and followeeid=" + jsonObj.userid;
     console.log('dbDisconnect SQL  ' + sqlStr1);
     var p = new Promise((resolve, reject) => {
@@ -211,7 +211,7 @@ function dbDisconnect(jsonObj, cb) {
                 else {
                     resolve();
                 }
-            });            
+            });
         });
     });
 
@@ -683,18 +683,21 @@ function dbGetUserFeed(userid) {
 
 exports.dbGetNotFollowing = dbGetNotFollowing;
 function dbGetNotFollowing(userid) {
-    var ffSql = "select followeeid from following where followerid = " + userid;
+    var ffSql = "select followerid from following where followeeid = " + userid;
     var userSql = "select * from user u left outer join photo ph on u.photoid = ph.pk_photo";
 
     var p = new Promise(function(resolve, reject) {
-        db.serialize(function() {
+        db.serialize(function()
+        {
+            // console.log("Executing SQL:  " + ffSql);
+
             db.all(ffSql, function(err, rows) {
                 if (err) reject(err);
 
                 var leaders = [];
 
                 for (key in rows) {
-                    leaders.push(rows[key].followeeid);
+                    leaders.push(rows[key].followerid);
                 }
 
                 resolve(leaders);
@@ -705,7 +708,10 @@ function dbGetNotFollowing(userid) {
             // console.log('Leaders are:  ' + JSON.stringify(leaders));
 
             return new Promise(function(resolve, reject) {
-                db.serialize(function() {
+                db.serialize(function()
+                {
+                    // console.log("Executing SQL:  " + userSql);
+
                     db.all(userSql, function(err, users) {
                         if (err) {
                             reject(err);
