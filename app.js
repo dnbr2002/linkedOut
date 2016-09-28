@@ -436,9 +436,6 @@ app.get('/getmessages/:id', function (req, res) {
         );
 });
 
-
-
-
 app.post('/addpost', function(req, res) {
     dbApi.dbAddPost(req.body, function(data, err) {
         if (data) {
@@ -449,6 +446,18 @@ app.post('/addpost', function(req, res) {
     });
 });
 
+app.get('/getnonfollowers/:id', function(req, res) {
+    var p = dbApi.dbGetNotFollowing(req.params.id);
+
+    p.then(
+        (data) => {
+            res.status(200).send(data);
+        },
+        (err) => {
+            res.status(500).send(err);
+        }
+    )
+})
 
 
 var port = 8080;
