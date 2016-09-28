@@ -4,24 +4,13 @@
 
     <!-- <img src='../images/streetPeople.jpeg' style='position:fixed;top:0px;left:0px;width:100%;height:100%;z-index:-1;'> -->
     <br />
+    <br />
+    <br />
+    <br />
     <!--<div style="width: 80%; padding-top: 60px;">
 
     </div>-->
 
-    <div class="row">
-
-        <div class="col-lg-12">
-            <h1 class="page-header">Blog Home 2
-                <small>Blog Homepage</small>
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="../index.html">Home</a>
-                </li>
-                <li class="active">Blog Home 2</li>
-            </ol>
-        </div>
-
-    </div>
 
     <div class="panel panel-default container col-md-4 col-md-offset-1">
         <div class="panel-body">
@@ -164,7 +153,13 @@
                         </h3>
                         <p>{{data.post}}</p>
                         <h4>Leave a Comment:</h4>
-
+                        <div class="well pull-right">
+                            <div class="col-lg-6">
+                                <br />
+                                <img alt="Profile Picture" src="photos/profile/{{UserSummary.photoname}}"
+                                     height="40" width="40"><small>9:41 PM on August 24, 2013</small><br />
+                                Basic Well</div>
+                        </div>
                         <form role="form">
                             <div class="form-group">
                                 <textarea class="form-control" rows="3"></textarea>
@@ -196,3 +191,5 @@ var $ = jQuery.noConflict();
 $(document).ready(function() { 
   $('#myCarousel').carousel({ interval: 2000, cycle: true });
 });
+</script>
+
