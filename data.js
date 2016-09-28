@@ -42,10 +42,14 @@ function dbAuthenticateUser(jsonObj, cb) {
 exports.dbUserSummary = dbUserSummary;
 function dbUserSummary(jsonObj) {
     var sqlJson = JSON.parse(jsonObj);
-    console.log("PK_User: " + sqlJson);
+    console.log("PK_User dbUserSummary: " + sqlJson);
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var stmt = "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=" + sqlJson + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+//            var stmt = "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=" + sqlJson + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+            var stmt= "Select u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished from User u, Photo P, Jobs j "+
+                "where u.PK_User="+sqlJson+" and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) and j.userid="+sqlJson+" "+
+                "order by j.datefinished desc "+
+                "Limit 1";
             console.log(stmt);
 
             db.all(stmt, function (err, rows) {
@@ -515,16 +519,49 @@ function dbgetMessages(userid) {
 
 exports.dbGetUserFeed = dbGetUserFeed;
 function dbGetUserFeed(userid) {
-    var userSql = "select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = " + userid;
+    // var userSql = "select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = " + userid;
+
+    // var userSql =
+    //     "select * from "
+    //     + "(select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = "
+    //     + userid
+    //     + ") inner join user u on userid = u.pk_user";
+
+    var userSql =
+        "select * from "
+        + "("
+        + "select "
+        + " pk_post, userid, posttime, post, referencepost, followerid, followeeid, u.pk_user, username, fullname, u.photoid "
+        + " from "
+        + "(select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = "
+        + userid
+        + ") as posts "
+        + "inner join user as u on posts.userid = u.pk_user "
+        + ") "
+        + "as myposts "
+        + "left outer join "
+        + "photo ph on myposts.photoid = ph.pk_photo";
 
     var p = new Promise(function(resolve, reject) {
         db.serialize(function() {
+            // console.log('Running SQL:  ' + userSql);
+
             db.all(userSql, function(err, rows) {
                 if (err) {
                     reject(err);
                 }
                 resolve(rows);
             });
+
+            // This is how you do it with each, callback, complete fxn
+            //
+            // db.each(userSql, function(err, rows) {
+            //     // Do some stuff
+            // },
+            // function(err, numrows) {
+            //     // In here put resolve
+            //     resolve(accumulator);
+            // });
         });
     }).then(
         (rows) => {
@@ -532,22 +569,31 @@ function dbGetUserFeed(userid) {
             var excludedposts = [];
             var allposts = [];
 
-            console.log(JSON.stringify(rows));
+            // console.log(JSON.stringify(rows));
 
             for (row of rows) {
                 if (row.userid == userid || row.followerid == userid) {
-                    console.log('Pushing to includes ' + JSON.stringify(row));
+                    // console.log('Pushing to includes ' + JSON.stringify(row));
                     includedposts.push(row);
                 } else {
-                    console.log('Pushing to excludes ' + JSON.stringify(row));
+                    // console.log('Pushing to excludes ' + JSON.stringify(row));
                     excludedposts.push(row);
                 }
             }
 
             var postsToAddOn = [];
 
-            console.log('Includes are:  ' + JSON.stringify(includedposts));
-            console.log('Excludes are:  ' + JSON.stringify(excludedposts));
+            // console.log('Includes are:  ' + JSON.stringify(includedposts));
+            // console.log('Excludes are:  ' + JSON.stringify(excludedposts));
+
+            var sortFxn = function(a, b) {
+                if (a.posttime < b.posttime) return 1
+                else if (a.posttime > b.posttime) return -1
+                else return 0
+            }
+
+            includedposts.sort(sortFxn);
+            excludedposts.sort(sortFxn);
 
             // Check this list of both arrays
             for (excludedpost of excludedposts) {
@@ -560,15 +606,15 @@ function dbGetUserFeed(userid) {
 
             allposts = includedposts.concat(postsToAddOn);
 
-            console.log('Posts to addon is:  ' + JSON.stringify(postsToAddOn));
-            console.log('All Posts is:  ' + JSON.stringify(allposts));
+            // console.log('Posts to addon is:  ' + JSON.stringify(postsToAddOn));
+            // console.log('All Posts is:  ' + JSON.stringify(allposts));
 
             var userFeed = {};
             var referenceFeed = {};
 
             for (aPost of allposts) {
                 if (aPost.referencepost == undefined || aPost.referencepost == null) {
-                    console.log('Adding to userFeed:  ' + JSON.stringify(aPost));
+                    // console.log('Adding to userFeed:  ' + JSON.stringify(aPost));
                     userFeed[aPost.pk_post] = aPost;
                 } else {
                     if (referenceFeed[aPost.referencepost] == undefined) {
@@ -579,7 +625,7 @@ function dbGetUserFeed(userid) {
                 }
             }
 
-            console.log('User Feed contents:  ' + JSON.stringify(userFeed));
+            // console.log('User Feed contents:  ' + JSON.stringify(userFeed));
 
             for (key in userFeed) {
                 if (referenceFeed[key] !== undefined) {
@@ -589,7 +635,13 @@ function dbGetUserFeed(userid) {
 
             // Do the sort on user feed once you have it collected.
 
-            return(userFeed);
+            var userFeedArr = [];
+
+            for (key in userFeed) {
+                userFeedArr.push(userFeed[key]);
+            }
+
+            return(userFeedArr);
         },
         (err) => {
             console.log('Error getting posts');
