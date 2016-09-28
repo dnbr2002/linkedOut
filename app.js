@@ -74,7 +74,7 @@ app.get('/getuserfeed/:id', function(req, res) {
 
     p.then(
         (data) => {
-            console.log('feed:  ' + JSON.stringify(data));
+            // console.log('feed:  ' + JSON.stringify(data));
             res.status(200).send(data);
         },
         (err) => {
