@@ -61,7 +61,7 @@ app.post('/adduser', function (req, res) {
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/uploads/')
+        cb(null, './public/photos/post')
     },
     filename: function (req, file, cb) {
         req.body.generatedname = new Date().getTime() + file.originalname;
