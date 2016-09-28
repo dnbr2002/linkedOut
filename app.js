@@ -337,7 +337,7 @@ app.get('/home/:id', function (req, res) {
 
 app.get('/posts/:id', function (req, res) {
     console.log("req params:  " + req.params.id);
-    dbApi.getUserFeed(req.params.id).then(
+    dbApi.dbGetUserFeed(req.params.id).then(
         function (data) {
             console.log("app.get success");
             res.status(200).send(data);
