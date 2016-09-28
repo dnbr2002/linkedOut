@@ -644,3 +644,60 @@ function dbGetUserFeed(userid) {
 
     return p;
 }
+
+exports.dbGetNotFollowing = dbGetNotFollowing;
+function dbGetNotFollowing(userid) {
+    var ffSql = "select followeeid from following where followerid = " + userid;
+    var userSql = "select * from user u left outer join photo ph on u.photoid = ph.pk_photo";
+
+    var p = new Promise(function(resolve, reject) {
+        db.serialize(function() {
+            db.all(ffSql, function(err, rows) {
+                if (err) reject(err);
+
+                var leaders = [];
+
+                for (key in rows) {
+                    leaders.push(rows[key].followeeid);
+                }
+
+                resolve(leaders);
+            })
+        });
+    }).then(
+        (leaders) => {
+            // console.log('Leaders are:  ' + JSON.stringify(leaders));
+
+            return new Promise(function(resolve, reject) {
+                db.serialize(function() {
+                    db.all(userSql, function(err, users) {
+                        if (err) {
+                            reject(err);
+                        }
+
+
+                        var nonUsers = users.filter(function(nonUserEle, index, array) {
+                            if (leaders.find(function(userEle, index, array) {
+                                    return userEle === nonUserEle.pk_user;
+                                }) !== undefined) {
+
+                                // In this case the find call on leaders found a match
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        });
+
+                        // console.log('Non Users are:  ' + JSON.stringify(nonUsers));
+
+                        resolve(nonUsers);
+                    })
+                });
+            });
+        }
+    ).catch(function(reason) {
+        console.log('getting not following failed:  ' + reason);
+    });
+
+    return p;
+}
