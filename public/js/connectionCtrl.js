@@ -1,5 +1,5 @@
 'use strict';
-angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $rootScope, DataService) {
+angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $rootScope, $http, DataService) {
 
 	$scope.getAllData = function() {
 		console.log("getAllData Getting called");
@@ -26,4 +26,20 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 			});
 		};
 	}		
+
+	$scope.disconnect = function(followerid){	
+		console.log("In disconnect " + followerid);
+        $http({
+			method: 'POST',
+			url: '/disconnect',
+			data: {
+				userid:$rootScope.$id,
+				followerid:followerid								
+			}
+		}).success(function(response){
+			console.log("success");
+		}).error(function(error){
+			console.log("error");
+		});
+    }
 });
