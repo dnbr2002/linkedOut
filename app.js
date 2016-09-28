@@ -337,7 +337,7 @@ app.get('/home/:id', function (req, res) {
 
 app.get('/posts/:id', function (req, res) {
     console.log("req params:  " + req.params.id);
-    dbApi.getUserFeed(req.params.id).then(
+    dbApi.dbGetUserFeed(req.params.id).then(
         function (data) {
             console.log("app.get success");
             res.status(200).send(data);
@@ -382,6 +382,16 @@ app.get('/getskills/:id', function (req, res) {
 
 app.get('/connect/:id', function(req, res) {
     dbApi.getConnection(req.params.id, function(data, err) {
+        if (data) {
+            res.status(200).send(data);
+        } else {
+            res.status(500).send('fail');
+        }
+    })
+})
+
+app.get('/unconnectted/:id', function(req, res) {
+    dbApi.getUnconnectted(req.params.id, function(data, err) {
         if (data) {
             res.status(200).send(data);
         } else {
