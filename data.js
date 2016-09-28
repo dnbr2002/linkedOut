@@ -245,6 +245,12 @@ function getSkills(userid, cb) {
     getData(sql, cb);
 }
 
+exports.getConnection = getConnection;
+function getConnection(userid, cb) {
+    var sql = "Select u.FullName, u.username, p.Photoname from User u, Photo P, following f where f.followeeid=" + userid + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+    getData(sql, cb);
+}
+
 function getData(sql, cb) {
     // Run SQL and pass results to callback
     var p = new Promise(function (resolve, reject) {
