@@ -504,44 +504,51 @@ function dbgetMessages(userid) {
 exports.dbGetUserFeed = dbGetUserFeed;
 function dbGetUserFeed(userid) {
     var userSql = "select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = " + userid;
-    var includedposts = [];
-    var excludedposts = [];
-
 
     var p = new Promise(function(resolve, reject) {
         db.serialize(function() {
-            db.each(userSql, function(err, row) {
+            db.all(userSql, function(err, rows) {
                 if (err) {
                     reject(err);
                 }
-
-                if (row.userid == userid || row.followerid == userid) {
-                    includedposts.push(row);
-                } else {
-                    excludedposts.push(row);
-                }
-
+                resolve(rows);
             });
-
-            resolve();
-
         });
     }).then(
-        () => {
+        (rows) => {
+            var includedposts = [];
+            var excludedposts = [];
+            var allposts = [];
+
+            console.log(JSON.stringify(rows));
+
+            for (row of rows) {
+                if (row.userid == userid || row.followerid == userid) {
+                    console.log('Pushing to includes ' + JSON.stringify(row));
+                    includedposts.push(row);
+                } else {
+                    console.log('Pushing to excludes ' + JSON.stringify(row));
+                    excludedposts.push(row);
+                }
+            }
+
             var postsToAddOn = [];
 
+            console.log('Includes are:  ' + JSON.stringify(includedposts));
+            console.log('Excludes are:  ' + JSON.stringify(excludedposts));
+
             // Check this list of both arrays
-            for (exludedpost of excludedposts) {
+            for (excludedpost of excludedposts) {
                 for (includedpost of includedposts) {
                     if (includedpost.referencepost == excludedpost.pk_post) {
-                        postsToAddon.push(excludedpost);
+                        postsToAddOn.push(excludedpost);
                     }
                 }
             }
 
-            if (postsToAddon.length > 0) {
+            if (postsToAddOn.length > 0) {
                 // Add these to included posts.
-                var allposts = includedposts.concat(postsToAddon);
+                allposts = includedposts.concat(postsToAddOn);
             }
 
             // Run sort routine.
@@ -555,11 +562,15 @@ function dbGetUserFeed(userid) {
             //     }
             // });
 
+            console.log('Posts to addon is:  ' + JSON.stringify(postsToAddOn));
+            console.log('All Posts is:  ' + JSON.stringify(allposts));
+
             var userFeed = {};
             var referenceFeed = {};
 
-            for (aPost in allposts) {
+            for (aPost of allposts) {
                 if (aPost.referencepost == undefined || aPost.referencepost == null) {
+                    console.log('Adding to userFeed:  ' + JSON.stringify(aPost));
                     userFeed[aPost.pk_post] = aPost;
                 } else {
                     if (referenceFeed[aPost.referencepost] == undefined) {
@@ -570,15 +581,17 @@ function dbGetUserFeed(userid) {
                 }
             }
 
+            console.log('User Feed contents:  ' + JSON.stringify(userFeed));
+
             for (key in userFeed) {
                 if (referenceFeed[key] !== undefined) {
                     userFeed[key].comments = referenceFeed[key];
                 }
             }
-            
+
             // Do the sort on user feed once you have it collected.
 
-            resolve(userFeed);
+            return(userFeed);
         },
         (err) => {
             console.log('Error getting posts');
