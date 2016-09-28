@@ -500,3 +500,90 @@ function dbgetMessages(userid) {
 
 
 //End getMessages - Rita
+
+exports.dbGetUserFeed = dbGetUserFeed;
+function dbGetUserFeed(userid) {
+    var userSql = "select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = " + userid;
+    var includedposts = [];
+    var excludedposts = [];
+
+
+    var p = new Promise(function(resolve, reject) {
+        db.serialize(function() {
+            db.each(userSql, function(err, row) {
+                if (err) {
+                    reject(err);
+                }
+
+                if (row.userid == userid || row.followerid == userid) {
+                    includedposts.push(row);
+                } else {
+                    excludedposts.push(row);
+                }
+
+            });
+
+            resolve();
+
+        });
+    }).then(
+        () => {
+            var postsToAddOn = [];
+
+            // Check this list of both arrays
+            for (exludedpost of excludedposts) {
+                for (includedpost of includedposts) {
+                    if (includedpost.referencepost == excludedpost.pk_post) {
+                        postsToAddon.push(excludedpost);
+                    }
+                }
+            }
+
+            if (postsToAddon.length > 0) {
+                // Add these to included posts.
+                var allposts = includedposts.concat(postsToAddon);
+            }
+
+            // Run sort routine.
+            // allposts.sort(function(a, b) {
+            //     if (a < b) {
+            //         return 1;
+            //     } else if (a > b) {
+            //         return -1;
+            //     } else {
+            //         return 0;
+            //     }
+            // });
+
+            var userFeed = {};
+            var referenceFeed = {};
+
+            for (aPost in allposts) {
+                if (aPost.referencepost == undefined || aPost.referencepost == null) {
+                    userFeed[aPost.pk_post] = aPost;
+                } else {
+                    if (referenceFeed[aPost.referencepost] == undefined) {
+                        referenceFeed[aPost.referencepost] = [aPost];
+                    } else {
+                        referenceFeed[aPost.referencepost].push(aPost);
+                    }
+                }
+            }
+
+            for (key in userFeed) {
+                if (referenceFeed[key] !== undefined) {
+                    userFeed[key].comments = referenceFeed[key];
+                }
+            }
+            
+            // Do the sort on user feed once you have it collected.
+
+            resolve(userFeed);
+        },
+        (err) => {
+            console.log('Error getting posts');
+        }
+    );
+
+    return p;
+}
