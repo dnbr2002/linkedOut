@@ -54,7 +54,8 @@ function dbUserSummary(jsonObj) {
             var stmt = 
                 "SELECT u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished "
                 + "FROM User u inner join Photo p on u.photoid = p.pk_photo "
-                + "left outer join jobs j on j.userid = u.pk_user where u.pk_user = " + sqlJson;
+                + "left outer join jobs j on j.userid = u.pk_user where u.pk_user = " + sqlJson+" "
+                + "order by j.datefinished desc Limit 1";
             console.log(stmt);
 
             db.all(stmt, function (err, rows) {
