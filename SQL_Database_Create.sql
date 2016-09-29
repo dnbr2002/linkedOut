@@ -56,7 +56,7 @@ Create Table messages(
     pk_messages INTEGER NOT NULL PRIMARY KEY,
     messengerid int,
     messageeid int,
-    subject text,
+    reply text,
     message text,
     FOREIGN KEY(messengerid) REFERENCES user(pk_user),
     FOREIGN KEY(messageeid) REFERENCES user(pk_user)
@@ -86,6 +86,6 @@ CREATE TABLE skills(
     pk_skills INTEGER NOT NULL PRIMARY KEY,
     userid  int,
     skill TEXT,
-    skilldesc TEXT,    
+    skilldesc TEXT,
     FOREIGN Key(userid) References user(pk_user)
 );
