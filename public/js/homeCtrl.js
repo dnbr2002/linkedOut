@@ -1,4 +1,20 @@
 'use strict';
+
+angular.module('tutorialWebApp').directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+
+            element.bind('change', function () {
+                scope.$apply(function () {
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);
 angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootScope, $location, $http, DataService, currentUser) {
     console.log("home controller called");
     $scope.currentUser = currentUser;
@@ -38,7 +54,6 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
     }
 
 
-
     $scope.shareUpdate = function () {
         console.log("shareUpdate called");
 
@@ -51,27 +66,24 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
 
     $scope.addPost = function () {
         $scope.showAddPost = false;
-        var filename = $scope.filename;
-        console.log("multer filename: "+ filename);
-        $http({
-            method: 'POST',
-            url: '/addpost',
-            data: {
-                userid: currentUser.pk_user,
-                posttime: (new Date).toUTCString(),
-                post: $scope.postbody
-                file:
-            }
-        }).success(function (response) {
+        var fd = new FormData();
+        fd.append('avatar', $scope.filecontents);
+        fd.append('post', $scope.postbody);
+        fd.append('userid', currentUser.pk_user);
+        $http.post('/addpost', fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function (response) {
             console.log("Home ctrl add post success");
             $scope.post = "";
             getPosts();
-        }).error(function (error) {
-            console.log("error");
+        })
+        .error(function (error) {
+            console.log(error);
         });
 
     };
-
 
 
     $scope.addComment = function (postId) {
