@@ -374,7 +374,7 @@ function dbAddPost(userid, post, referencepost = null, generatedName = null)
         referencepost = null;
     }
 
-    var sqlStr1 = "INSERT INTO POST (userid, post, referencepost) VALUES (" + userid + ", " + asMyQuote(post) + ", " + referencepost + ");";
+    var sqlStr1 = "INSERT INTO POST (userid, post, referencepost) VALUES (" + userid + ", \"" + post + "\", " + referencepost + ");";
     var sqlStr2 = "SELECT LAST_INSERT_ROWID() AS dakey";
 
     var p = new Promise(function(resolve, reject)
