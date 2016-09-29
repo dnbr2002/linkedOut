@@ -507,6 +507,16 @@ app.get('/getmessages/:id', function (req, res) {
  });
  */
 
+app.post('/messageback', function(req, res) {
+    dbApi.dbMessageback(req.body, function (data, err) {
+        if (data) {
+            res.status(200).send('success');
+        } else {
+            res.status(500).send('failure');
+        }
+    });
+ });
+
 app.get('/getnonfollowers/:id', function (req, res) {
     var p = dbApi.dbGetNotFollowing(req.params.id);
 
