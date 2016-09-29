@@ -2,6 +2,8 @@
 
 angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $location, $rootScope, DataService, currentUser) {
     console.log("loginCtrl called");
+    // console.log('signInFormError = ' + $parent.signInFormError);
+
     // page.setPage("Login","login-layout");
     $scope.loginIn = function() {
         console.log("in login() method " + $scope.email + $scope.pwd);
@@ -35,7 +37,7 @@ angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $locat
 					// 	$location.path('/organisation');
 					// }
 				}).error(function(err) {
-				    $scope.signInFormError = err.message;
+				    $scope.signInFormError = "Login error!  Username or password incorrect";
 			    });
 		}
 	}
