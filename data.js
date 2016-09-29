@@ -183,8 +183,8 @@ function dbCreateUser(jsonObj, cb) {
     ).then(
         (data) =>
         {
-            console.log()
-            cb(data)
+            console.log('Data going back is:  ' + data);
+            cb(data);
         },
         (err) =>
         {
