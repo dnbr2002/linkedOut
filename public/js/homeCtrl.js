@@ -67,7 +67,7 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
     $scope.addPost = function () {
         $scope.showAddPost = false;
         var fd = new FormData();
-        fd.append('avatar', $scope.filecontents);
+        fd.append('file', $scope.filecontents);
         fd.append('post', $scope.postbody);
         fd.append('userid', currentUser.pk_user);
         $http.post('/addpost', fd, {

@@ -318,7 +318,7 @@ app.post('/attachpicture', function (req, res) {
 });
 
 function addPicture(req, res) {
-    var upload = multer({storage: storage}).single('avatar');
+    var upload = multer({storage: storage}).single('file');
     var userName;
     var userId;
 
