@@ -37,7 +37,7 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 				followerid:followerid								
 			}
 		}).success(function(response){
-			console.log("success");
+			console.log("disconnect success");
 			$scope.getAllData();
 		}).error(function(error){
 			console.log("error");
@@ -54,7 +54,7 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 				followerid:followerid								
 			}
 		}).success(function(response){
-			console.log("success");
+			console.log("connect success");
 			$scope.getAllData();
 		}).error(function(error){
 			console.log("error");
