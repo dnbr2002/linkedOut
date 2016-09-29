@@ -476,20 +476,18 @@ app.post('/connect', function (req, res) {
 
 
 // getMessages - rita
-app.get('/getmessages/:id', function (req, res) {
+app.get('/getUsersNotSendingMessages/:id', function (req, res) {
     console.log("In app.js req params:  " + req.params.id);
-    dbApi.dbgetMessages(req.params.id).then(
+    dbApi.dbgetUsersNotSendingMessages(req.params.id).then(
         (rows) => {
-        console.log("in app.js sending message data:", rows);
-    res.status(200).send(rows);
-}
-    ).
-    catch(
+            console.log("in app.js sending message data:", rows);
+            res.status(200).send(rows);
+        }
+    ).catch(
         (err) => {
-        res.status(500).send('fail');
-}
-    )
-    ;
+            res.status(500).send('fail');
+        }
+        );
 });
 /*
  app.post('/addpost', function(req, res) {
