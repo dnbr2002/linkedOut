@@ -1,6 +1,7 @@
 'use strict';
 angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootScope, $location, $http, DataService, currentUser) {
     console.log("home controller called");
+    $scope.currentUser = currentUser;
 
     $scope.commentInput = {};
 
