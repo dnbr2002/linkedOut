@@ -25,6 +25,7 @@ Insert into following (followerid, followeeid) values (4, 1);
 Insert into following (followerid, followeeid) values (2, 3);
 Insert into following (followerid, followeeid) values (2, 4);
 Insert into following (followerid, followeeid) values (1, 5);
+Insert into following (followerid, followeeid) values (5, 1);
 Insert Into likes (likerid, likeeid, postid) values (2,1,1);
 Insert Into likes (likerid, likeeid, postid) values (1,2,2);
 Insert Into photo (photoname, mimetype) values ('User1.jpg','Image/Jpeg');
