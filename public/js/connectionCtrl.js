@@ -4,7 +4,7 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 	$scope.getAllData = function() {
 		console.log("getAllData Getting called");
 		getAllConnections();
-		getUnConnectteds();
+		getUnConnectted();
 
 		function getAllConnections (){
 			var uri = "/connect/" + $rootScope.$id;		
@@ -16,8 +16,8 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 			});
 		};
 
-		function getUnConnectteds (){
-			var uri = "/unconnectted/" + $rootScope.$id;		
+		function getUnConnectted (){
+			var uri = "/getnonfollowers/" + $rootScope.$id;		
 			DataService.getData(uri,[]).success(function(response){
 				$scope.unconnecttedList = response;
 				console.log("unconnecttedList: "+JSON.stringify(response));				
@@ -37,7 +37,25 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 				followerid:followerid								
 			}
 		}).success(function(response){
-			console.log("success");
+			console.log("disconnect success");
+			$scope.getAllData();
+		}).error(function(error){
+			console.log("error");
+		});
+    }
+
+	$scope.connect = function(followerid){	
+		console.log("In connect " + followerid);
+        $http({
+			method: 'POST',
+			url: '/connect',
+			data: {
+				userid:$rootScope.$id,
+				followerid:followerid								
+			}
+		}).success(function(response){
+			console.log("connect success");
+			$scope.getAllData();
 		}).error(function(error){
 			console.log("error");
 		});

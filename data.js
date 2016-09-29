@@ -1,7 +1,7 @@
 //const dbFileName = "linkedOutSimple.sqlite";
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database('linkedOutSimple.sqlite');
-
+var fs = require('fs');
 
 exports.dbAuthenticateUser = dbAuthenticateUser;
 
@@ -110,7 +110,7 @@ function mapDataElements(jsonObj) {
 
 exports.dbCreateUser = dbCreateUser;
 function dbCreateUser(jsonObj, cb) {
-    var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD, PHOTOID) VALUES ($username, $fullname, $password, $photoid)";
+    var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD) VALUES ($username, $fullname, $password)";
 
     // var parms = [];
     // parms.push(jsonObj.username);
@@ -195,15 +195,39 @@ function getConnection(userid, cb) {
     getData(sql, cb);
 }
 
-exports.getUnconnectted = getUnconnectted;
-function getUnconnectted(userid, cb) {
-    var sql = "SELECT  u1.username, u1.fullname, p1.photoname FROM user u1 INNER JOIN photo AS p1 ON u1.photoid  = p1.pk_photo WHERE u1.pk_user  in   (SELECT followerid from following msg where msg.followeeid NOT IN (" +userid+"))";
-    getData(sql, cb);
+exports.dbDisconnect = dbDisconnect;
+function dbDisconnect(jsonObj, cb) {
+    var sqlStr1 = "DELETE FROM following where followerid=" + jsonObj.followerid + " and followeeid=" + jsonObj.userid;
+    console.log('dbDisconnect SQL  ' + sqlStr1);
+    var p = new Promise((resolve, reject) => {
+        db.serialize(() => {
+            db.run(sqlStr1, function(err)
+            {
+                if (err)
+                {
+                    console.log('SQL failed:  ' + sqlStr1);
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    });
+
+    p.then(
+        (data) => {
+            cb('success');
+        },
+        (err) => {
+            cb(null, err);
+        }
+    );
 }
 
-exports.dbDisconnect = dbDisconnect;
-function dbDisconnect(jsonObj, cb) {    
-    var sql = "DELETE FROM following where followerid=" + $followerid + " and followeeid=" + $userid;
+exports.dbConnect = dbConnect;
+function dbConnect(jsonObj, cb) {
+    var sql = "Insert into following (followerid, followeeid) values ($followerid, $userid)";
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
@@ -533,43 +557,57 @@ function dbGetUserFeed(userid) {
     //     + userid
     //     + ") inner join user u on userid = u.pk_user";
 
-    var userSql =
-        "select * from "
-        + "("
-        + "select "
-        + " pk_post, userid, posttime, post, referencepost, followerid, followeeid, u.pk_user, username, fullname, u.photoid "
-        + " from "
-        + "(select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = "
-        + userid
-        + ") as posts "
-        + "inner join user as u on posts.userid = u.pk_user "
-        + ") "
-        + "as myposts "
-        + "left outer join "
-        + "photo ph on myposts.photoid = ph.pk_photo";
+    // var userSql =
+    //     "select * from "
+    //     + "("
+    //     + "select "
+    //     + " pk_post, userid, posttime, post, referencepost, followerid, followeeid, u.pk_user, username, fullname, u.photoid "
+    //     + " from "
+    //     + "(select * from post p left outer join following f on p.userid = f.followeeid and f.followerid = "
+    //     + userid
+    //     + ") as posts "
+    //     + "inner join user as u on posts.userid = u.pk_user "
+    //     + ") "
+    //     + "as myposts "
+    //     + "left outer join "
+    //     + "photo ph on myposts.photoid = ph.pk_photo";
 
-    var p = new Promise(function(resolve, reject) {
-        db.serialize(function() {
-            // console.log('Running SQL:  ' + userSql);
-
-            db.all(userSql, function(err, rows) {
-                if (err) {
-                    reject(err);
-                }
-                resolve(rows);
-            });
-
-            // This is how you do it with each, callback, complete fxn
-            //
-            // db.each(userSql, function(err, rows) {
-            //     // Do some stuff
-            // },
-            // function(err, numrows) {
-            //     // In here put resolve
-            //     resolve(accumulator);
-            // });
-        });
+    var p = new Promise((resolve, reject) =>
+    {
+        fs.readFile('userfeed.sql', 'utf-8', (err, data) =>
+        {
+            if (err)
+            {
+                reject(err);
+            }
+            var bigSQL = data.replace('$USERID', userid);
+            // console.log('The read SQL is:  ' + bigSQL);
+            resolve(bigSQL);
+        })
     }).then(
+        (filedata) =>
+        {
+            return new Promise((resolve, reject) =>
+            {
+                db.serialize(function()
+                {
+                    // console.log('Running SQL:  ' + filedata);
+                    db.all(filedata, function(err, rows)
+                    {
+                        if (err)
+                        {
+                            reject(err);
+                        }
+                        resolve(rows);
+                    });
+                });
+            });
+        },
+        (err) =>
+        {
+            console.log("Error reading SQL file");
+        }
+    ).then(
         (rows) => {
             var includedposts = [];
             var excludedposts = [];
@@ -659,39 +697,47 @@ function dbGetUserFeed(userid) {
 
 exports.dbGetNotFollowing = dbGetNotFollowing;
 function dbGetNotFollowing(userid) {
-    var ffSql = "select followeeid from following where followerid = " + userid;
+    var ffSql = "select followerid from following where followeeid = " + userid;
     var userSql = "select * from user u left outer join photo ph on u.photoid = ph.pk_photo";
 
-    var p = new Promise(function(resolve, reject) {
-        db.serialize(function() {
-            db.all(ffSql, function(err, rows) {
-                if (err) reject(err);
-
+    var p = new Promise(function(resolve, reject)
+    {
+        db.serialize(function()
+        {
+            // console.log("Executing SQL:  " + ffSql);
+            db.all(ffSql, function(err, rows)
+            {
+                if (err)
+                    reject(err);
                 var leaders = [];
-
-                for (key in rows) {
-                    leaders.push(rows[key].followeeid);
+                for (key in rows)
+                {
+                    leaders.push(rows[key].followerid);
                 }
-
                 resolve(leaders);
             })
         });
     }).then(
-        (leaders) => {
+        (leaders) =>
+        {
             // console.log('Leaders are:  ' + JSON.stringify(leaders));
-
-            return new Promise(function(resolve, reject) {
-                db.serialize(function() {
-                    db.all(userSql, function(err, users) {
-                        if (err) {
+            return new Promise(function(resolve, reject)
+            {
+                db.serialize(function()
+                {
+                    // console.log("Executing SQL:  " + userSql);
+                    db.all(userSql, function(err, users)
+                    {
+                        if (err)
+                        {
                             reject(err);
                         }
-
-
-                        var nonUsers = users.filter(function(nonUserEle, index, array) {
-                            if (leaders.find(function(userEle, index, array) {
-                                    return userEle === nonUserEle.pk_user;
-                                }) !== undefined) {
+                        var nonUsers = users.filter(function(nonUserEle, index, array)
+                        {
+                            if (leaders.find(function(userEle, index, array)
+                            {
+                                return userEle === nonUserEle.pk_user;
+                            }) !== undefined) {
 
                                 // In this case the find call on leaders found a match
                                 return false;
@@ -701,15 +747,14 @@ function dbGetNotFollowing(userid) {
                         });
 
                         // console.log('Non Users are:  ' + JSON.stringify(nonUsers));
-
                         resolve(nonUsers);
                     })
                 });
             });
         }
-    ).catch(function(reason) {
+    ).catch(function(reason)
+    {
         console.log('getting not following failed:  ' + reason);
     });
-
     return p;
 }

@@ -61,7 +61,7 @@ app.post('/adduser', function (req, res) {
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/uploads/')
+        cb(null, './public/photos/posts')
     },
     filename: function (req, file, cb) {
         req.body.generatedname = new Date().getTime() + file.originalname;
@@ -441,18 +441,19 @@ app.get('/connect/:id', function (req, res) {
     })
 })
 
-app.get('/unconnectted/:id', function (req, res) {
-    dbApi.getUnconnectted(req.params.id, function (data, err) {
-        if (data) {
-            res.status(200).send(data);
-        } else {
-            res.status(500).send('fail');
-        }
-    })
-})
-
 app.post('/disconnect', function (req, res) {
     dbApi.dbDisconnect(req.body, function (data, err) {
+
+        if (data) {
+            res.status(200).send('success');
+        } else {
+            res.status(500).send('failure');
+        }
+    });
+});
+
+app.post('/connect', function (req, res) {
+    dbApi.dbConnect(req.body, function (data, err) {
         if (data) {
             res.status(200).send('success');
         } else {

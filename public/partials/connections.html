@@ -1,7 +1,7 @@
 <div ng-include='"templates/header.html"'></div>
 
 <div ng-controller="connectionCtrl" ng-init="getAllData()">
-	<div style="width: 80%; padding-top: 25px;">
+	<div class="panel panel-default container col-md-10 col-md-offset-1">
 		<div class="row" style="padding-top: 10px;">
 			<div class="col-xs-9">
 				<div class="row">
@@ -65,7 +65,7 @@
 											<div class="col-xs-6" style="margin-top: -15px;">
 												<h5>&nbsp;&nbsp;&nbsp;&nbsp;{{data.username}}</h5>
 											</div>
-											<button type="button" class="btn btn-primary" ng-click="connect() data-toggle="tooltip" title="To connect"">Connect</button>
+											<button type="button" class="btn btn-primary" ng-click="connect(data.pk_user)" data-toggle="tooltip" title="To connect"">Connect</button>
 										</div>	
 									</div>
 									</br>
