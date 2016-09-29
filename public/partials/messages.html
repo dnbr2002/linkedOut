@@ -1,47 +1,64 @@
-<!--<div class="col-xs-9" ng-repeat="data in messageData">
-		<table class="table table-striped table-hover table-condensed">
-			<tr>
-				<th colspan={{maxCols}}>
-					<img alt="Profile Picture" src="photos/profile/{{data.photoname}}"
-					<h2>{{data.senderName}}</h2>
-				</th>
-			</tr>
-			<tr>
-				<td>{{data.message}}</td>
-			</tr>
-		</table>
-	</div>
-    </div>-->
+<div ng-include='"templates/header.html"'></div>
+<div ng-controller="messageCtrl">
+	<div class="panel panel-default container col-md-10 col-md-offset-1">
+		<div class="row" style="padding-top: 10px;">
+			<div class="col-xs-11">
 
+				<div class="panel-body">
+					<div ng-repeat="data in messageData">
 
-	<div class="panel panel-default" style="padding: 0;">
-		<div class="panel-body">
-			<div ng-repeat="data in messageData">
-				<div class="col-xs-1" col-xs-offset-2>
-					<img alt="Profile Picture" src="photos/profile/{{data.photoname}}" height="50" width="50">
-					<h5 class="text-primary">{{data.fullname}}</h5>
-				</div>
-				<!--<div class="col-xs-6">-->
-					<!-- col-xs-pull-3 -->
-					<div class="panel-body">
-					<div class="row">
-						<div class="col-xs-4" style="margin-top: -15px;">
-							<h4>{{data.message}}</h4>
-							<button type="button" class="btn btn-success" ng-click="response(currentuser)" data-toggle="tooltip" title="To respond">Respond</button>
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="panel panel-default" style="padding: 0;">
+									<div class="panel-body">
+										<div class="col-xs-1" col-xs-offset-2>
+											<img alt="Profile Picture" src="photos/profile/{{data.photoname}}" height="50" width="50">
+											<h5 class="text-primary">{{data.fullname}}</h5>
+										</div>
+
+										<div class="panel-body">
+											<div class="row">
+												<div class="col-xs-4" style="margin-top: -15px;">
+													<h4>{{data.message}}</h4>
+													<button type="button" class="btn btn-success" ng-click="showRespond[data.pk_user] = true" data-toggle="tooltip" title="To respond">Respond</button>
+												</div>
+
+												<div ng-show="showRespond[data.pk_user]">
+													<div class="row" style="padding-top: 2%;">
+														<div class="col-xs-3" style="margin-left: 10%;">
+															<h5>
+																<strong>Respond here: </strong>
+															</h5>
+														</div>
+														<div class="col-xs-7">
+															<textarea class="form-control" rows="5" ng-model="messagebk[data.pk_user]"></textarea>
+														</div>
+
+													</div>
+													<div class="row">
+														<div class="col-xs-11">
+															<button class="btn btn-primary pull-right" ng-click="respondMessage(data.pk_user)">Message Respond</button>
+														</div>
+													</div>
+												</div>
+
+												<div class="col-xs-6" style="margin-top: -15px;">
+
+												</div>
+											</div>
+											</br>
+										</div>
+										</br>
+									</div>
+									<div class="panel-footer text-center">
+
+									</div>
+								</div>
+							</div>
 						</div>
-										
-						<div class="col-xs-6" style="margin-top: -15px;">
-							
-						</div>
-						</div>
-						</br>
 					</div>
-				</br>
-					</div>
 				</div>
-				
-			
 			</div>
-	
-		<div class="panel-footer text-center"></div>
-
+		</div>
+	</div>
+</div>

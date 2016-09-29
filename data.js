@@ -601,7 +601,7 @@ function dbgetMessages(userid) {
 
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var sql = "SELECT u1.username, u1.fullname, p1.photoname, p1.mimetype, msg.message,  msg.subject  FROM messages msg " +
+            var sql = "SELECT u1.username, u1.fullname, u1.pk_user, p1.photoname, p1.mimetype, msg.message,  msg.subject  FROM messages msg " +
                 " INNER JOIN user AS u1 ON u1.pk_user  = msg.messengerid " +
                 " INNER JOIN photo AS p1 ON p1.pk_photo   = u1.photoid " +
                 " WHERE  msg.messageeid = " + userid;
@@ -618,6 +618,11 @@ function dbgetMessages(userid) {
     });
 }
 
+exports.dbMessageback = dbMessageback;
+function dbMessageback(jsonObj, cb) {
+    var sql = "Insert into messages (messengerid, messageeid, message) values ($messengerid, $messageeid, $message)";
+    doSQL(sql, mapDataElements(jsonObj), cb);
+}
 
 //End getMessages - Rita
 
