@@ -46,8 +46,9 @@ function dbUserSummary(jsonObj) {
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
 //            var stmt = "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=" + sqlJson + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
+
             var stmt= "Select u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished from User u, Photo P, Jobs j "+
-                "where u.PK_User="+sqlJson+" and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) and j.userid="+sqlJson+" "+
+                "where u.PK_User="+sqlJson+" and p.Photoname=(select Photoname from Photo where PK_Photo="+sqlJson+") and j.userid="+sqlJson+" "+
                 "order by j.datefinished desc "+
                 "Limit 1";
             console.log(stmt);
