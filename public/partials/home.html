@@ -28,7 +28,7 @@
     </div>-->
 
 
-    <div class="panel panel-default container col-md-4 col-md-offset-1">
+    <div class="panel panel-default container col-md-4 col-md-offset-1" style="padding: 0;">
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-3">
@@ -75,11 +75,13 @@
                 </div>
             </div>
         </div>
+        <div class="panel-footer text-center">
 
         </div>
+        </div>
 
-        <div class="panel panel-default container col-md-5 col-md-offset-1">
-            <br />
+        <div class="panel panel-default container col-md-5 col-md-offset-1" style="padding: 0;">
+            <h4><small>Imagine yourself here........</small></h4>
             <div id="myCarousel" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
             <ol class="carousel-indicators">
@@ -92,32 +94,36 @@
             <!-- Wrapper for slides -->
             <div class="carousel-inner" role="listbox">
                 <div class="item active">
-                    <img src="photos/companies/dell-emc.jpg" alt="Dell" width="500" height="400">
+                    <a href="http://www.dell.com" target="_blank"> <img src="photos/companies/dell-emc.jpg" alt="Dell" width="500" height="400"></a>
                 </div>
                 <div class="item">
-                    <img src="photos/companies/apple_web.jpg" alt="Apple" width="500" height="400">
+                    <a href="http://www.apple.com" target="_blank"><img src="photos/companies/apple_web.jpg" alt="Apple" width="500" height="400"></a>
                 </div>
                 <div class="item">
-                    <img src="photos/companies/google.jpg" alt="Google" width="500" height="400">
+                    <a href="http://www.ssa.gov/" target="_blank"><img src="photos/companies/ssa.jpg" alt="SSA" width="500" height="400"></a>
                 </div>
                 <div class="item">
-                    <img src="photos/companies/hooli.jpg" alt="Hooli" width="500" height="400">
+                    <a href="http://www.google.com" target="_blank"><img src="photos/companies/google.jpg" alt="Google" width="500" height="400"></a>
                 </div>
                 <div class="item">
-                    <img src="photos/companies/ibm.jpg" alt="ibm" width="500" height="400">
+                    <a href="http://www.hooli.com" target="_blank"><img src="photos/companies/hooli.jpg" alt="Hooli" width="500" height="400"></a>
                 </div>
                 <div class="item">
-                    <img src="photos/companies/microsoft.jpg" alt="Microsoft" width="500" height="400">
+                    <a href="http://www.ibm.com" target="_blank"><img src="photos/companies/ibm.jpg" alt="ibm" width="500" height="400"></a>
                 </div>
                 <div class="item">
-                    <img src="photos/companies/mutiny.jpg" alt="Mutiny" width="500" height="400">
+                    <a href="http://www.microsoft.com" target="_blank"><img src="photos/companies/microsoft.jpg" alt="Microsoft" width="500" height="400"></a>
                 </div>
                 <div class="item">
-                    <img src="photos/companies/oracle.jpg" alt="Oracle" width="500" height="400">
+                    <a href="http://www.amc.com/shows/halt-and-catch-fire" target="_blank"> <img src="photos/companies/mutiny.jpg" alt="Mutiny" width="500" height="400"></a>
                 </div>
                 <div class="item">
-                    <img src="photos/companies/piedpiper.jpg" alt="Pied Piper" width="500" height="400">
+                    <a href="http://www.oracle.com" target="_blank"> <img src="photos/companies/oracle.jpg" alt="Oracle" width="500" height="400"></a>
                 </div>
+                <div class="item">
+                <a href="http://www.piedpiper.com/" target="_blank"><img src="photos/companies/piedpiper.jpg" alt="Pied Piper" width="500" height="400"></a>
+            </div>
+
 
 
             </div>
@@ -133,6 +139,10 @@
             </a>
             </div>
         <br />
+            <div class="panel-footer text-center">
+                <!--<button class="btn btn-primary"
+                    ng-click="modifyEmployment(null)">Add Employment</button>-->
+            </div>
         </div>
 
 
@@ -140,7 +150,7 @@
         </div>-->
 
 
-    <div class="panel panel-default container col-md-10 col-md-offset-0 panel_posts">
+    <div class="col-md-10 col-md-offset-0 panel_posts">
         <div class="col-md-offset-1 center">
             <button type="button" class="btn btn-primary btn-lg" ng-click="showAddPost = true">Add a post</button>
         </div>
@@ -155,7 +165,10 @@
                 </div>
                 <div class="col-xs-7">
                     <textarea class="form-control" rows="5" ng-model="postbody"></textarea>
+                    <h4>Upload a photo with you post!!!</h4>
+                    <input type="file" file-model="filecontents" name="photofile">
                 </div>
+
             </div>
             <div class="row">
                 <div class="col-xs-11">
@@ -163,48 +176,68 @@
                 </div>
             </div>
         </div>
+        <br />
+    </div>
 
         <div ng-repeat="data in postData | orderBy : 'posttime' : true">
 
 
             <br />
             <br />
-            
-            <div class="panel panel-default container col-md-10 col-md-offset-1">
+
+            <div class="panel panel-default container col-md-10 col-md-offset-1" style="padding: 0;">
 
                 <div class="row">
-                    <br />
+                   <br />
                     <div class="col-lg-8">
-                        <img alt="Profile Picture" src="photos/profile/{{data.photoname}}"
+                        <img alt="Profile Picture" src="photos/profile/{{data.userphotoname}}"
                             height="75" width="75">
-                        <h3>Post
-                            <small>{{data.posttime}}</small>
+                        <br />
+                        <small>Post time: {{data.posttime}}</small>
+                        <h3>
+                            <div ng-if="data.postphotoname"><img alt="Profile Picture" src="photos/posts/{{data.postphotoname}}"
+                                 height="200" width="400">
+                                <div ng-if="!data.postphotoname"><img alt="Profile Picture" src="images/conn2.jpg"
+                                                                     height="200" width="400"></div>
+
                         </h3>
                         <p>{{data.post}}</p>
                         <h4>Leave a Comment:</h4>
                         <div ng-repeat="comment in data.comments | orderBy : 'posttime' : true">
-                        <div class="well pull-right">
+                        <div class="well">
                             <div class="col-lg-6">
                                 <br />
-                                <img alt="Profile Picture" src="photos/profile/{{comment.photoname}}"
-                                     height="40" width="40"><small>{{comment.posttime}}</small><br />
+                                <img alt="Profile Picture" src="photos/profile/{{comment.userphotoname}}"
+                                     height="40" width="40"><small>Comment Time:  {{comment.posttime}}</small><br />
                                 {{comment.post}}</div>
+
+
+                           <!-- <div ng-model="referencepost">{{referencepost}}</div> -->
+
                         </div>
                         </div>
+
+
                         <form role="form">
                             <div class="form-group">
-                                <textarea class="form-control" rows="3"></textarea>
+
+                                <textarea class="form-control" rows="5" ng-model="commentInput[data.pk_post]"></textarea>
+                                <br />
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button class="btn btn-primary" ng-click="addComment(data.pk_post)">Comment</button>
                         </form>
-                        <hr>
+                        <br />
                     </div>
 
+                </div>
+                <div class="panel-footer text-center">
+                    <!--<button class="btn btn-primary"
+                        ng-click="modifyEmployment(null)">Add Employment</button>-->
                 </div>
             </div>
 
         </div>
-       </div>
+
     <!--<div class="row">
 
         <ul class="pager">

@@ -46,10 +46,16 @@ function dbUserSummary(jsonObj) {
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
 //            var stmt = "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=" + sqlJson + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
-            var stmt= "Select u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished from User u, Photo P, Jobs j "+
-                "where u.PK_User="+sqlJson+" and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) and j.userid="+sqlJson+" "+
-                "order by j.datefinished desc "+
-                "Limit 1";
+
+            // var stmt= "Select u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished from User u, Photo P, Jobs j "+
+            //     "where u.PK_User="+sqlJson+" and p.Photoname=(select Photoname from Photo where PK_Photo= u.photoid) and j.userid="+sqlJson+" "+
+            //     "order by j.datefinished desc "+
+            //     "Limit 1";
+            var stmt =
+                "SELECT u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished "
+                + "FROM User u inner join Photo p on u.photoid = p.pk_photo "
+                + "left outer join jobs j on j.userid = u.pk_user where u.pk_user = " + sqlJson+" "
+                + "order by j.datefinished desc Limit 1";
             console.log(stmt);
 
             db.all(stmt, function (err, rows) {
@@ -67,19 +73,32 @@ function dbUserSummary(jsonObj) {
     })
 }
 
-function loginUser(userId, cb) {
+exports.loginUser = loginUser;
+
+function loginUser(jsonObj, cb) {
     var p = new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var sql = "SELECT u.pk_user, u.fullname from user u where u.username = " + asMyQuote(userId);
+            var sql = "SELECT u.pk_user, u.fullname, u.password from user u where u.username = " + asMyQuote(jsonObj.email);
 
-            console.log(sql);
+            // console.log(sql);
 
             db.all(sql, function (err, rows) {
-                if (rows !== undefined && rows.length === 1) {
-                    console.log('User exists')
-                    resolve(rows[0]);
-                } else {
-                    console.log('User does not exist')
+                if (rows !== undefined && rows.length === 1)
+                {
+                    // Also check the password.
+                    // console.log('User exists');
+                    if (rows[0].password === jsonObj.password)
+                    {
+                        resolve(rows[0]);
+                    }
+                    else
+                    {
+                        reject("Username or password is wrong.");
+                    }
+                }
+                else
+                {
+                    // console.log('User does not exist')
                     reject("User does not exist");
                 }
             });
@@ -110,15 +129,75 @@ function mapDataElements(jsonObj) {
 
 exports.dbCreateUser = dbCreateUser;
 function dbCreateUser(jsonObj, cb) {
-    var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD) VALUES ($username, $fullname, $password)";
+    // Check to see if user already exists.
+    var p = new Promise(function (resolve, reject)
+    {
+        db.serialize(function ()
+        {
+            var sql = "SELECT u.pk_user, u.fullname, u.photoid from user u where u.username = " + asMyQuote(jsonObj.username);
+            console.log(sql);
+            db.all(sql, function (err, rows)
+            {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                if (rows !== undefined && rows.length >= 1)
+                {
+                    console.log('User exists');
+                    reject('existing');
+                }
+                else
+                {
+                    console.log('User does not exist');
+                    resolve('newuser');
+                }
+            });
+        });
+    }).then(
+        (data) =>
+        {
+            return new Promise(function(resolve, reject)
+            {
+                var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD, PHOTOID) VALUES ($username, $fullname, $password, 1)";
+                db.serialize(function()
+                {
+                    console.log('Runnng SQL ' + sql);
 
-    // var parms = [];
-    // parms.push(jsonObj.username);
-    // parms.push(jsonObj.fullname);
-    // parms.push(jsonObj.password);
-    // parms.push(jsonObj.photoid);
+                    db.run(sql, mapDataElements(jsonObj), function (err)
+                    {
+                        if (err)
+                        {
+                            console.log('SQL failed:  ' + JSON.stringify(bindings));
+                            reject(err);
+                        }
+                        else
+                        {
+                            console.log('SQL succeeded:  ' + sql);
+                            resolve(jsonObj);
+                        }
+                    });
 
-    doSQL(sql, mapDataElements(jsonObj), cb);
+                });
+            });
+        },
+        (err) =>
+        {
+            console.log('Error on user lookup was ' + err);
+            return err;
+        }
+    ).then(
+        (data) =>
+        {
+            console.log('Data going back is:  ' + data);
+            cb(data);
+        },
+        (err) =>
+        {
+            console.log('Sending ' + err);
+            cb(null, err);
+        }
+    );
 }
 
 exports.dbAddComment = dbAddComment;
@@ -127,11 +206,11 @@ function dbAddComment(jsonObj, cb) {
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
-exports.dbAddPost = dbAddPost;
-function dbAddPost(jsonObj, cb) {
-    var sql = "Insert into post (userid, posttime, post) values ($userid, $posttime, $postbody)";
-    doSQL(sql, mapDataElements(jsonObj), cb);
-}
+// exports.dbAddPost = dbAddPost;
+// function dbAddPost(jsonObj, cb) {
+//     var sql = "Insert into post (userid, posttime, post) values ($userid, $posttime, $postbody)";
+//     doSQL(sql, mapDataElements(jsonObj), cb);
+// }
 
 exports.dbAddEducation = dbAddEducation;
 function dbAddEducation(jsonObj, cb) {
@@ -255,37 +334,37 @@ function getData(sql, cb) {
     );
 }
 
-exports.loginUser = loginUser;
-
-function loginUser(userId, cb) {
-    var p = new Promise(function (resolve, reject) {
-        db.serialize(function () {
-            var sql = "SELECT u.pk_user, u.fullname, u.photoid from user u where u.username = " + asMyQuote(userId);
-
-            console.log(sql);
-
-            db.all(sql, function (err, rows) {
-                if (rows !== undefined && rows.length === 1) {
-                    console.log('User exists')
-                    resolve(rows[0]);
-                } else {
-                    console.log('User does not exist')
-                    reject("User does not exist");
-                }
-            });
-        });
-    });
-
-    p.then(
-        function (data) {
-            // console.log('Sending back ' + JSON.stringify(data));
-            cb(data);
-        },
-        function (err) {
-            cb(null, err);
-        }
-    )
-}
+// exports.loginUser = loginUser;
+//
+// function loginUser(userId, cb) {
+//     var p = new Promise(function (resolve, reject) {
+//         db.serialize(function () {
+//             var sql = "SELECT u.pk_user, u.fullname, u.photoid from user u where u.username = " + asMyQuote(userId);
+//
+//             console.log(sql);
+//
+//             db.all(sql, function (err, rows) {
+//                 if (rows !== undefined && rows.length === 1) {
+//                     console.log('User exists')
+//                     resolve(rows[0]);
+//                 } else {
+//                     console.log('User does not exist')
+//                     reject("User does not exist");
+//                 }
+//             });
+//         });
+//     });
+//
+//     p.then(
+//         function (data) {
+//             // console.log('Sending back ' + JSON.stringify(data));
+//             cb(data);
+//         },
+//         function (err) {
+//             cb(null, err);
+//         }
+//     )
+// }
 
 exports.dbAddPost = dbAddPost;
 function dbAddPost(userid, post, referencepost = null, generatedName = null)
@@ -527,23 +606,28 @@ function dbgetMessages(userid) {
 
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var sql = "SELECT u1.username AS loggedUser, u2.username AS senderName, subject, message from messages msg " +
-                " INNER JOIN user AS u1 ON msg.messengerid = u1.pk_user " +
-                " INNER JOIN user AS u2  ON msg.messageeid = u2.pk_user " +
-                " where msg.messengerid = " + userid;
-
+            var sql = "SELECT u1.username, u1.fullname, u1.pk_user, p1.photoname, p1.mimetype, msg.message,  msg.subject  FROM messages msg " +
+                " INNER JOIN user AS u1 ON u1.pk_user  = msg.messengerid " +
+                " INNER JOIN photo AS p1 ON p1.pk_photo   = u1.photoid " +
+                " WHERE  msg.messageeid = " + userid;
+            console.log('getmessage query stmt is ' + sql);
             db.all(sql, function (err, rows) {
                 if (err) {
                     reject(err);
                     return;
                 }
                 resolve(rows);
+                console.log(rows);
             });
         });
     });
 }
 
-
+exports.dbMessageback = dbMessageback;
+function dbMessageback(jsonObj, cb) {
+    var sql = "Insert into messages (messengerid, messageeid, message) values ($messengerid, $messageeid, $message)";
+    doSQL(sql, mapDataElements(jsonObj), cb);
+}
 
 //End getMessages - Rita
 
