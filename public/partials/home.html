@@ -155,7 +155,10 @@
                 </div>
                 <div class="col-xs-7">
                     <textarea class="form-control" rows="5" ng-model="postbody"></textarea>
+                    <h4>Upload a photo with you post!!!</h4>
+                    <input type="file" file-model="filecontents" name="photofile">
                 </div>
+
             </div>
             <div class="row">
                 <div class="col-xs-11">
@@ -181,7 +184,9 @@
                         <small>Post time: {{data.posttime}}</small>
                         <h3>
                             <div ng-if="data.postphotoname"><img alt="Profile Picture" src="photos/posts/{{data.postphotoname}}"
-                                 height="200" width="400"></div>
+                                 height="200" width="400">
+                                <div ng-if="!data.postphotoname"><img alt="Profile Picture" src="images/conn2.jpg"
+                                                                     height="200" width="400"></div>
 
                         </h3>
                         <p>{{data.post}}</p>

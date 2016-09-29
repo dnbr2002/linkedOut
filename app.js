@@ -49,10 +49,15 @@ app.post('/login', function (request, response) {
 app.post('/adduser', function (req, res) {
     // Need to call add to photo table.
     dbApi.dbCreateUser(req.body, function (data, err) {
-        if (data !== null) {
+        if (data !== null && data !== 'existing')
+        {
             // console.log('Successful insert');
             res.status(200).send(data);
-        } else {
+        }
+        else if (data !== null && data === 'existing') {
+            res.status(404).send(data);
+        }
+        else {
             console.log('Call failed');
             res.status(500).send(err);
         }
@@ -313,7 +318,7 @@ app.post('/attachpicture', function (req, res) {
 });
 
 function addPicture(req, res) {
-    var upload = multer({storage: storage}).single('avatar');
+    var upload = multer({storage: storage}).single('file');
     var userName;
     var userId;
 
