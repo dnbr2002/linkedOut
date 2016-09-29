@@ -1,5 +1,5 @@
 'use strict';
-angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $rootScope, $http, DataService) {
+angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $rootScope, $http, DataService, currentUser) {
 
 	$scope.getAllData = function() {
 		console.log("getAllData Getting called");
@@ -7,7 +7,7 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 		getUnConnectted();
 
 		function getAllConnections (){
-			var uri = "/connect/" + $rootScope.$id;		
+			var uri = "/connect/" + currentUser.pk_user;		
 			DataService.getData(uri,[]).success(function(response){
 				$scope.connecttedList = response;
 				console.log("connectionList: "+JSON.stringify(response));				
@@ -17,7 +17,7 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 		};
 
 		function getUnConnectted (){
-			var uri = "/getnonfollowers/" + $rootScope.$id;		
+			var uri = "/getnonfollowers/" + currentUser.pk_user;		
 			DataService.getData(uri,[]).success(function(response){
 				$scope.unconnecttedList = response;
 				console.log("unconnecttedList: "+JSON.stringify(response));				
@@ -33,7 +33,7 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 			method: 'POST',
 			url: '/disconnect',
 			data: {
-				userid:$rootScope.$id,
+				userid:currentUser.pk_user,
 				followerid:followerid								
 			}
 		}).success(function(response){
@@ -50,7 +50,7 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 			method: 'POST',
 			url: '/connect',
 			data: {
-				userid:$rootScope.$id,
+				userid:currentUser.pk_user,
 				followerid:followerid								
 			}
 		}).success(function(response){
