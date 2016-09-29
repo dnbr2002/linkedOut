@@ -51,7 +51,7 @@ function dbUserSummary(jsonObj) {
             //     "where u.PK_User="+sqlJson+" and p.Photoname=(select Photoname from Photo where PK_Photo= u.photoid) and j.userid="+sqlJson+" "+
             //     "order by j.datefinished desc "+
             //     "Limit 1";
-            var stmt = 
+            var stmt =
                 "SELECT u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished "
                 + "FROM User u inner join Photo p on u.photoid = p.pk_photo "
                 + "left outer join jobs j on j.userid = u.pk_user where u.pk_user = " + sqlJson;

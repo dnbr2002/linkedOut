@@ -3,7 +3,7 @@ INSERT INTO user (username, fullname,password, photoid) values ('User2@fakeemail
 INSERT INTO user (username, fullname,password, photoid) values ('User3@fakeemail.com', 'HerbS', 'User3',4);
 INSERT INTO user (username, fullname,password, photoid) values ('User4@fakeemail.com', 'JohnnyM', 'User4',5);
 INSERT INTO user (username, fullname,password, photoid) values ('User5@fakeemail.com', 'MarcC', 'User5',6);
-INSERT INTO user (username, fullname,password, photoid) values ('joe@mail.com', 'Joe Sixpack', 'password',7);
+INSERT INTO user (username, fullname,password, photoid) values ('joe@mail.com', 'Joe Sixpack', 'password',1);
 Insert into post (userid, post, photoid) values (1,'I am the man!', 6);
 Insert into post (userid, post, photoid) values (2,'Reboot it!!', 7);
 Insert into post (userid, post, photoid) values (3,'User 3 First Post', 8);

@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('tutorialWebApp').controller('registrationCtrl', function($scope, $location, $rootScope, $http, DataService, currentUser)
 {
     console.log("registrationCtrl called");
@@ -34,7 +32,15 @@ angular.module('tutorialWebApp').controller('registrationCtrl', function($scope,
                         $scope.registrationError = "User creation failed, try again.";
                     }
                     $location.path('/register');
+
+                    $("#createme").shake(3, 7, 800);
                 }
             );
+    }
+
+
+    $scope.clearErr = function()
+    {
+        $scope.registrationError = '';
     }
 });
