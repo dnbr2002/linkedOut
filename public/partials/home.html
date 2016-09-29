@@ -173,12 +173,16 @@
             <div class="panel panel-default container col-md-10 col-md-offset-1">
 
                 <div class="row">
-                    <br />
+                   <br />
                     <div class="col-lg-8">
-                        <img alt="Profile Picture" src="photos/profile/{{data.photoname}}"
+                        <img alt="Profile Picture" src="photos/profile/{{data.userphotoname}}"
                             height="75" width="75">
-                        <h3>Post
-                            <small>{{data.posttime}}</small>
+                        <br />
+                        <small>Post time: {{data.posttime}}</small>
+                        <h3>
+                            <div ng-if="data.postphotoname"><img alt="Profile Picture" src="photos/posts/{{data.postphotoname}}"
+                                 height="200" width="400"></div>
+
                         </h3>
                         <p>{{data.post}}</p>
                         <h4>Leave a Comment:</h4>
@@ -186,7 +190,7 @@
                         <div class="well">
                             <div class="col-lg-6">
                                 <br />
-                                <img alt="Profile Picture" src="photos/profile/{{comment.photoname}}"
+                                <img alt="Profile Picture" src="photos/profile/{{comment.userphotoname}}"
                                      height="40" width="40"><small>{{comment.posttime}}</small><br />
                                 {{comment.post}}</div>
 
