@@ -13,7 +13,7 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
 
 
     function getPosts() {
-        var uriPosts = "/posts/" + $rootScope.$id;
+        var uriPosts = "/posts/" + currentUser.pk_user;
         console.log(uriPosts);
 
         DataService.getData(uriPosts, []).success(function (response) {
@@ -28,7 +28,7 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
      * Function for getting User Summary data data for the user
      */
     function getUserSummary() {
-        var uriEmployment = "/home/" + $rootScope.$id;
+        var uriEmployment = "/home/" + currentUser.pk_user;
         DataService.getData(uriEmployment, []).success(function (response) {
             $scope.UserSummary = response;
             //console.log("User Summary:  " + JSON.stringify(response));
@@ -44,19 +44,6 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
 
     };
 
-    // function shareUpdate() {
-    //         console.log("shareUpdate called");
-    //         // var uriPosts = "/posts/" + $rootScope.$id;
-    //         // console.log(uriPosts);
-
-    //         // DataService.getData(uriPosts, []).success(function(response) {
-    //         //     $scope.postData = response;
-    //         //     console.log("getPosts: "+ JSON.stringify(response));
-    //         // }).error(function(err) {
-    //         //     console.log(err);
-    //         // });
-    //     }
-
     $scope.uploadPhoto = function () {
         console.log("uploadPhoto called");
 
@@ -68,7 +55,7 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
             method: 'POST',
             url: '/addpost',
             data: {
-                userid: $rootScope.$id,
+                userid: currentUser.pk_user,
                 posttime: (new Date).toUTCString(),
                 post: $scope.postbody
             }
@@ -95,7 +82,7 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
             method: 'POST',
             url: '/addcomment',
             data: {
-                userid: $rootScope.$id,
+                userid: currentUser.pk_user,
                 post: text,
                 refpostid: postId
             }
