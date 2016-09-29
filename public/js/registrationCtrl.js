@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('tutorialWebApp').controller('registrationCtrl', function($scope, $location, $rootScope, $http, DataService, currentUser)
 {
     console.log("registrationCtrl called");

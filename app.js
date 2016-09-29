@@ -49,8 +49,7 @@ app.post('/login', function (request, response) {
 app.post('/adduser', function (req, res) {
     // Need to call add to photo table.
     dbApi.dbCreateUser(req.body, function (data, err) {
-        if (data !== null && data !== 'existing')
-        {
+        if (data !== null && data !== 'existing') {
             // console.log('Successful insert');
             res.status(200).send(data);
         }
