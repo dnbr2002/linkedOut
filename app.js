@@ -476,9 +476,9 @@ app.post('/connect', function (req, res) {
 
 
 // getMessages - rita
-app.get('/getUsersNotSendingMessages/:id', function (req, res) {
+app.get('/getmessages/:id', function (req, res) {
     console.log("In app.js req params:  " + req.params.id);
-    dbApi.dbgetUsersNotSendingMessages(req.params.id).then(
+    dbApi.dbgetMessages(req.params.id).then(
         (rows) => {
             console.log("in app.js sending message data:", rows);
             res.status(200).send(rows);
