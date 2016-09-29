@@ -40,5 +40,6 @@ angular.module('tutorialWebApp').value('currentUser',{
 	email: "test@fakeemail.com",
 	fullname: "Sample Fullname",
 	userLastLogin:"-1",
-	photoid:-1
+	photoid:-1,
+	pk_user:-1
 });
