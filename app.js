@@ -51,7 +51,7 @@ app.post('/adduser', function (req, res) {
     dbApi.dbCreateUser(req.body, function (data, err) {
         if (data) {
             console.log('Successful insert');
-            res.status(200).send(data);
+            res.status(200).send(req.body);
         } else {
             console.log('Call failed');
             res.status(500).send('failure');

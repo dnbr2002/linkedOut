@@ -1,0 +1,238 @@
+DROP TABLE IF EXISTS userauthenticate;
+
+CREATE TABLE IF NOT EXISTS userauthenticate (
+  userid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  username VARCHAR(25) NOT NULL,
+  password VARCHAR(50) NULL DEFAULT NULL,
+  approved INTEGEREGER(1) NULL DEFAULT 0,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  lastlogin DATETIME NULL DEFAULT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uc_username ON userauthenticate (username ASC);
+
+DROP TABLE IF EXISTS certifications;
+
+CREATE TABLE IF NOT EXISTS certifications (
+    certificationid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    userid INTEGER(11) NOT NULL,
+    cname VARCHAR(50) NULL DEFAULT NULL,
+    cauthority VARCHAR(50) NULL DEFAULT NULL,
+    clicensenumber VARCHAR(50) NULL DEFAULT NULL,
+    curl VARCHAR(50) NULL DEFAULT NULL,
+    cstartdate DATE NULL DEFAULT NULL,
+    cenddate DATE NULL DEFAULT NULL,
+    creationdate DATE NULL DEFAULT NULL,
+    modifydate DATE NULL DEFAULT NULL,
+    CONSTRAINT certifications_ibfk_1
+        FOREIGN KEY (userid)
+        REFERENCES userauthenticate (userid)
+);
+
+
+CREATE INDEX IF NOT EXISTS fk_userid ON certifications (userid ASC);
+
+DROP TABLE IF EXISTS posts ;
+
+CREATE TABLE IF NOT EXISTS posts (
+  userid INTEGER(11) NOT NULL,
+  postid INTEGER(11) NOT NULL PRIMARY KEY AUTOINCREMENT,
+  postheadline VARCHAR(25) NULL DEFAULT NULL,
+  postbody VARCHAR(1000) NULL DEFAULT NULL,
+  likes INTEGER(11) NULL DEFAULT '0',
+  comments INTEGER(11) NULL DEFAULT '0',
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT posts_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid)
+);
+
+CREATE INDEX IF NOT EXISTS fk_userid ON posts (userid ASC);
+
+DROP TABLE IF EXISTS comments ;
+
+CREATE TABLE IF NOT EXISTS comments (
+  postid INTEGER(11) NOT NULL,
+  commentid INTEGER(11) NOT NULL PRIMARY KEY AUTOINCREMENT,
+  userid INTEGER(11) NOT NULL,
+  commentbody VARCHAR(250) NULL DEFAULT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT comments_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid),
+  CONSTRAINT comments_ibfk_2
+    FOREIGN KEY (postid)
+    REFERENCES posts (postid)
+);
+
+CREATE INDEX IF NOT EXISTS fk_userid ON comments (userid ASC);
+
+CREATE INDEX IF NOT EXISTS fk_postid ON comments (postid ASC);
+
+DROP TABLE IF EXISTS education ;
+
+CREATE TABLE IF NOT EXISTS education (
+  educationid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  userid INTEGER(11) NOT NULL,
+  school VARCHAR(50) NULL DEFAULT NULL,
+  startdate DATE NULL DEFAULT NULL,
+  enddate DATE NULL DEFAULT NULL,
+  currentlydoing INTEGER(1) NULL DEFAULT '0',
+  degree VARCHAR(50) NULL DEFAULT NULL,
+  field VARCHAR(50) NULL DEFAULT NULL,
+  grade DECIMAL(4,1) NULL DEFAULT NULL,
+  activities VARCHAR(250) NULL DEFAULT NULL,
+  description VARCHAR(1000) NULL DEFAULT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT education_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid));
+
+CREATE INDEX IF NOT EXISTS education_ibfk_1 ON education (userid ASC);
+
+DROP TABLE IF EXISTS experience ;
+
+CREATE TABLE IF NOT EXISTS experience (
+  userid INTEGER(11) NOT NULL,
+  experienceid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  companyname VARCHAR(100) NULL DEFAULT NULL,
+  title VARCHAR(50) NULL DEFAULT NULL,
+  location VARCHAR(50) NULL DEFAULT NULL,
+  startdate DATE NULL DEFAULT NULL,
+  enddate DATE NULL DEFAULT NULL,
+  currentlyworking INTEGER(1) NULL DEFAULT '0',
+  description VARCHAR(1000) NULL DEFAULT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT experience_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid)
+);
+
+CREATE INDEX IF NOT EXISTS experience_ibfk_1 ON experience (userid ASC);
+
+DROP TABLE IF EXISTS following ;
+
+CREATE TABLE IF NOT EXISTS following (
+  userid INTEGER(11) NOT NULL,
+  category TEXT CHECK(category IN ('company','school') ) NULL DEFAULT NULL,
+  organisationid INTEGER(11) NULL DEFAULT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT following_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid),
+  CONSTRAINT following_ibfk_2
+    FOREIGN KEY (organisationid)
+    REFERENCES userauthenticate (userid)
+);
+
+
+CREATE INDEX IF NOT EXISTS fk_userid ON following (userid ASC);
+
+CREATE INDEX IF NOT EXISTS fk_organisationid ON following (organisationid ASC);
+
+
+DROP TABLE IF EXISTS honorsandawards ;
+
+CREATE TABLE IF NOT EXISTS honorsandawards (
+  userid INTEGER(11) NOT NULL,
+  title VARCHAR(50) NULL DEFAULT NULL,
+  occupation VARCHAR(50) NULL DEFAULT NULL,
+  issuer VARCHAR(50) NULL DEFAULT NULL,
+  dateofissue DATE NULL DEFAULT NULL,
+  description VARCHAR(250) NULL DEFAULT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT honorsandawards_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid)
+);
+
+CREATE INDEX IF NOT EXISTS fk_userid ON honorsandawards (userid ASC);
+
+
+-- -----------------------------------------------------
+-- Table languages
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS languages;
+
+CREATE TABLE IF NOT EXISTS languages (
+  userid INTEGER(11) NOT NULL,
+  languages VARCHAR(25) NULL DEFAULT NULL,
+  proficiency VARCHAR(25) NULL DEFAULT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT languages_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid)
+);
+
+CREATE INDEX IF NOT EXISTS fk_userid ON languages (userid ASC);
+
+
+
+-- -----------------------------------------------------
+-- Table likes
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS likes (
+  postid INTEGER(11) NOT NULL,
+  userid INTEGER(11) NOT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT likes_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid),
+  CONSTRAINT likes_ibfk_2
+    FOREIGN KEY (postid)
+    REFERENCES posts (postid)
+);
+
+CREATE INDEX IF NOT EXISTS fk_userid ON likes (userid ASC);
+
+CREATE INDEX IF NOT EXISTS fk_postid ON likes (postid ASC);
+
+
+-- -----------------------------------------------------
+-- Table organisation
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS organisation ;
+
+CREATE TABLE IF NOT EXISTS organisation (
+  userid INTEGER(11) NULL DEFAULT NULL,
+  organisationname VARCHAR(50) NULL DEFAULT NULL,
+  organisationtype TEXT CHECK(organisationtype IN ('company','school') ) NULL DEFAULT NULL,
+  photo VARCHAR(50) NULL DEFAULT NULL,
+  following INTEGER(11) NULL DEFAULT NULL,
+  creationdate DATE NULL DEFAULT NULL,
+  modifydate DATE NULL DEFAULT NULL,
+  CONSTRAINT organisation_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid)
+);
+
+CREATE INDEX IF NOT EXISTS fk_userid ON organisation (userid ASC);
+
+-- -----------------------------------------------------
+-- Table userdetails
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS userdetails ;
+
+CREATE TABLE IF NOT EXISTS userdetails (
+  userid INTEGER(11) NOT NULL,
+  firstname VARCHAR(25) NULL DEFAULT NULL,
+  lastname VARCHAR(25) NULL DEFAULT NULL,
+  email VARCHAR(40) NULL DEFAULT NULL,
+  photo VARCHAR(50) NULL DEFAULT NULL,
+  country VARCHAR(50) NULL DEFAULT NULL,
+  state VARCHAR(50) NULL DEFAULT NULL,
+  city VARCHAR(50) NULL DEFAULT NULL,
+  PRIMARY KEY (userid),
+  CONSTRAINT userdetails_ibfk_1
+    FOREIGN KEY (userid)
+    REFERENCES userauthenticate (userid)
+);
