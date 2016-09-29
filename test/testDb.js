@@ -1,15 +1,20 @@
-var dbint = require('../db');
+var dbMgr = require('../db');
+var dbApi = require('../data');
 
 var chai = require('chai');
 var expect = require("chai").expect;
 var chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised); 
-chai.should(); 
+chai.use(chaiAsPromised);
+chai.should();
 
 var assert = chai.assert;
 
-before(function() {
-  dbinit.createDB();
+dbMgr.createDB();
+
+describe('Test data API', function() {
+    describe('User should login', function() {
+        
+    });
 });
 
 // describe('test getting tweet stream', function () {
