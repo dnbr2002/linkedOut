@@ -4,12 +4,12 @@ var db = require('../data');
 
 var chai = require('chai');
 var expect = require("chai").expect;
-chai.should(); 
+chai.should();
 
 var assert = chai.assert;
 
 before(function() {
-  dbInit.createDB();  
+  dbInit.createDB();
 });
 
 describe('Linked Out DB tests', function () {
@@ -21,19 +21,19 @@ describe('Linked Out DB tests', function () {
     });
 
     describe('testing basic funtions', function() {
-        it('login function should return valid user', function(done) {            
+        it('login function should return valid user', function(done) {
             var emailAddr = "User1@fakeemail.com";
             db.loginUser(emailAddr, function cb(){
                 cb(data);
-            });  
-            done();          
-        });     
+            });
+            done();
+        });
 
         it('getAllPost for user1 function should return some posts', function(done) {
             var userid = '1';
             db.dbGetUserFeed(userid).then(
                 (listings) => {
-                    assert.isAtLeast(listings.length, 7, 'there are 7 posts by user1');                    
+                    assert.isAtLeast(listings.length, 7, 'there are 7 posts by user1');
                 },
                 (fail) => {
                     console.log(fail);
@@ -49,28 +49,28 @@ describe('Linked Out DB tests', function () {
                 },
                 (fail) => {
                     console.log(fail);
-                                      
+
                 });
-                done();  
-        });  
+                done();
+        });
 
         it('getEducation for user1 function should return 2 items', function(done) {
             var userid = '1';
             db.getEducation(userid, function cb(){
                 cb(data);
-                assert.isAtLeast(data.length, 2, 'there are 2 education records by user1');     
-            });  
-            done();             
-        });      
+                assert.isAtLeast(data.length, 2, 'there are 2 education records by user1');
+            });
+            done();
+        });
 
         it('getFollowers for user1 function should return 2 items', function(done) {
             var userid = '1';
             db.getConnection(userid, function cb(){
                 cb(data);
-                assert.isAtLeast(data.length, 2, 'there are 2 followers to user1');     
-            });  
-            done();              
-        });    
+                assert.isAtLeast(data.length, 2, 'there are 2 followers to user1');
+            });
+            done();
+        });
 
          it('getNonFollowers for user1 function should return 13 items', function(done) {
             var userid = '1';
@@ -82,17 +82,17 @@ describe('Linked Out DB tests', function () {
                     console.log(fail);
                 });
                 done();
-        });        
+        });
 
         // it('createNewUser function should return new user ID', function(done) {
-            
+
         //     var UserObj = function(email, name) {
         //         this.email = email;
         //         this.name = name;
         //     };
 
         //     var user = new UserObj(Math.random().toString(36).substring(7), "Chris Ellis");
-           
+
         //     db.createNewUser(user).then(
         //         (result) => {
         //             var json = JSON.stringify(eval("(" + result + ")"));
@@ -101,6 +101,6 @@ describe('Linked Out DB tests', function () {
         //         }
         //     );
 
-        // });          
+        // });
     });
 });

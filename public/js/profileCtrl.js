@@ -14,10 +14,10 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 
 		function getUserSummary (res){
             console.log("am i getting here");
-            console.log($rootScope.$id);
+            console.log(currentUser.pk_user);
             $http({
                 method: 'GET',
-                url: '/home/'+$rootScope.$id
+                url: '/home/'+currentUser.pk_user
             }).success(function(response){
                 console.log("success");
                 console.log();
@@ -35,7 +35,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 	 */
 		function getEducationList() {
 			// console.log("in getEducationList");
-			var uriEducation = "/geteducation/" + $rootScope.$id;
+			var uriEducation = "/geteducation/" + currentUser.pk_user;
 			// console.log("uriEducation: " + uriEducation);
 			DataService.getData(uriEducation, []).success(function(response) {
 				$scope.educationData = response;
@@ -49,7 +49,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 		 * Function for getting Employment data for the user
 		 */
 		function getEmploymentList() {
-			var uriEmployment = "/getjobs/" + $rootScope.$id;
+			var uriEmployment = "/getjobs/" + currentUser.pk_user;
 			console.log("uriEmployment: " + uriEmployment);
 			DataService.getData(uriEmployment, []).success(function(response) {
 				$scope.employmentData = response;
@@ -63,7 +63,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 		 * Function for getting Skills data for the user
 		 */
 		function getSkillsList() {
-			var uriSkills = "/getskills/" + $rootScope.$id;
+			var uriSkills = "/getskills/" + currentUser.pk_user;
 			console.log("uriSkills: " + uriSkills);
 			DataService.getData(uriSkills, []).success(function(response) {
 				$scope.skillsData = response;
@@ -214,7 +214,7 @@ angular.module('tutorialWebApp').controller("profileCtrl", function($scope, $roo
 	 * Function to get user profile details
 	 */
 	function getUserDetails(){
-		var uri = "/userdtls/"+$rootScope.userid;
+		var uri = "/userdtls/"+currentUser.pk_user;
 		DataService.getData(uri,[]).success(function(response){
 			$scope.myProperties = response.data;
 		}).error(function(err){

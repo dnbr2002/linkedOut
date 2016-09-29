@@ -34,7 +34,7 @@ app.post('/login', function (request, response) {
 
     console.log('Body content is:  ' + JSON.stringify(request.body));
 
-    dbApi.loginUser(request.body.email, function (data, err) {
+    dbApi.loginUser(request.body, function (data, err) {
         if (data) {
             console.log("Sending login success");
             response.status(200).send(data);
@@ -49,12 +49,12 @@ app.post('/login', function (request, response) {
 app.post('/adduser', function (req, res) {
     // Need to call add to photo table.
     dbApi.dbCreateUser(req.body, function (data, err) {
-        if (data) {
-            console.log('Successful insert');
+        if (data !== null) {
+            // console.log('Successful insert');
             res.status(200).send(data);
         } else {
             console.log('Call failed');
-            res.status(500).send('failure');
+            res.status(500).send(err);
         }
     });
 });
@@ -476,21 +476,20 @@ app.post('/connect', function (req, res) {
 
 
 // getMessages - rita
-app.get('/getmessages/:id', function (req, res) {
+app.get('/getUsersNotSendingMessages/:id', function (req, res) {
     console.log("In app.js req params:  " + req.params.id);
-    dbApi.dbgetMessages(req.params.id).then(
+    dbApi.dbgetUsersNotSendingMessages(req.params.id).then(
         (rows) => {
-        console.log("in app.js sending message data:", rows);
-    res.status(200).send(rows);
-}
-    ).
-    catch(
+            console.log("in app.js sending message data:", rows);
+            res.status(200).send(rows);
+        }
+    ).catch(
         (err) => {
-        res.status(500).send('fail');
-}
-    )
-    ;
+            res.status(500).send('fail');
+        }
+        );
 });
+
 /*
  app.post('/addpost', function(req, res) {
  dbApi.dbAddPost(req.body, function(data, err) {

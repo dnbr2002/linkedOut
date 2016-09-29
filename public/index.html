@@ -34,7 +34,9 @@
 
 <!-- Our Website Content Goes Here -->
 
-<div ng-view></div>
+   <div ng-include='"templates/header.html"'></div>
+
+    <div ng-view></div>
 
 
 <!-- Vendor: Javascripts -->
@@ -52,6 +54,7 @@
 <script type="text/javascript" src="js/homeCtrl.js"></script>
 <script type="text/javascript" src="js/messageCtrl.js"></script>
 <script type="text/javascript" src="js/connectionCtrl.js"></script>
+<script type="text/javascript" src="js/registrationCtrl.js"></script>
 
 <!--Services-->
 <script type="text/javascript" src="js/services/dataService.js"></script>
