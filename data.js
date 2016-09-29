@@ -110,7 +110,7 @@ function mapDataElements(jsonObj) {
 
 exports.dbCreateUser = dbCreateUser;
 function dbCreateUser(jsonObj, cb) {
-    var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD, PHOTOID) VALUES ($username, $fullname, $password, $photoid)";
+    var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD) VALUES ($username, $fullname, $password)";
 
     // var parms = [];
     // parms.push(jsonObj.username);
@@ -127,11 +127,11 @@ function dbAddComment(jsonObj, cb) {
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
-exports.dbAddPost = dbAddPost;
-function dbAddPost(jsonObj, cb) {
-    var sql = "Insert into post (userid, posttime, post) values ($userid, $posttime, $postbody)";
-    doSQL(sql, mapDataElements(jsonObj), cb);
-}
+// exports.dbAddPost = dbAddPost;
+// function dbAddPost(jsonObj, cb) {
+//     var sql = "Insert into post (userid, posttime, post) values ($userid, $posttime, $postbody)";
+//     doSQL(sql, mapDataElements(jsonObj), cb);
+// }
 
 exports.dbAddEducation = dbAddEducation;
 function dbAddEducation(jsonObj, cb) {
