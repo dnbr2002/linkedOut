@@ -60,3 +60,12 @@ insert into user (username, fullname, password, photoid) values ('corporate@muti
 insert into user (username, fullname, password, photoid) values ('corporate@hp.com', "Hewlett Packard Inc.", "password", null);
 insert into user (username, fullname, password, photoid) values ('corporate@ibm.com', "Hooli", "password", null);
 insert into user (username, fullname, password, photoid) values ('mikee@dell.com', "Hooli", "password", null);
+insert into messages (messengerid, messageeid, subject,message) values ('1', "3", "Accept Follow Request", "Please accept");
+insert into messages (messengerid, messageeid, subject,message) values ('1', "4", "Hello", "I have some news, call me");
+insert into messages (messengerid, messageeid, subject,message) values ('1', "5", "Follow him", "Lewis is online now");
+insert into messages (messengerid, messageeid, subject,message) values ('2', "4", "Remarks", "Update your jobs");
+insert into messages (messengerid, messageeid, subject,message) values ('5', "6", "Touching base", "Hey there!");
+insert into messages (messengerid, messageeid, subject,message) values ('6', "3", "Accept Follow Request", "Done");
+insert into messages (messengerid, messageeid, subject,message) values ('4', "1", "Accept Follow Request", "Not sure if I know you?");
+insert into messages (messengerid, messageeid, subject,message) values ('1', "6", "Unfollow 'cos", "I am quitting");
+insert into messages (messengerid, messageeid, subject,message) values ('5', "2", "Its time to call", "Response needed");
