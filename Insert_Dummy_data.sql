@@ -123,10 +123,16 @@ Insert Into photo (photoname, mimetype) values ('23','Image/png);
 Insert Into photo (photoname, mimetype) values ('24','Image/png);
 Insert Into photo (photoname, mimetype) values ('25','Image/png);
 
-
-
-
-
 INSERT INTO user (username, fullname,password, photoid) values ('MAllison@fakeemail.com', 'Mose-Allison', 'Mose', 12);
 INSERT INTO user (username, fullname,password, photoid) values ('MAllison@fakeemail.com', 'Mose-Allison', 'Mose', 12);
 INSERT INTO user (username, fullname,password, photoid) values ('MAllison@fakeemail.com', 'Mose-Allison', 'Mose', 12);
+insert into messages (messengerid, messageeid, reply,message) values ('25', "12", "", "When is our next show?!");
+insert into messages (messengerid, messageeid, reply,message) values ('25', "16", "", "Checkout Twitter!");
+insert into messages (messengerid, messageeid, reply,message) values ('33', "2", "", "I have time tomorrow, stop by");
+insert into messages (messengerid, messageeid, reply,message) values ('26', "33", "", "No rains here!");
+insert into messages (messengerid, messageeid, reply,message) values ('21', "25", "", "We need some latest tools to fix this");
+insert into messages (messengerid, messageeid, reply,message) values ('19', "4", "", "On road trip until next month");
+insert into messages (messengerid, messageeid, reply,message) values ('2', "1", "", "Checkout these concerts");
+insert into messages (messengerid, messageeid, reply,message) values ('6', "5", "", "Come to our Diversity Day Celebrations");
+insert into messages (messengerid, messageeid, reply,message) values ('7', "2", "", "When is our next show?!");
+insert into messages (messengerid, messageeid, reply,message) values ('21', "1", "", "Checkout Twitter!");
