@@ -51,6 +51,8 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
 
     $scope.addPost = function () {
         $scope.showAddPost = false;
+        var filename = $scope.filename;
+        console.log("multer filename: "+ filename);
         $http({
             method: 'POST',
             url: '/addpost',
@@ -58,6 +60,7 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
                 userid: currentUser.pk_user,
                 posttime: (new Date).toUTCString(),
                 post: $scope.postbody
+                file:
             }
         }).success(function (response) {
             console.log("Home ctrl add post success");
