@@ -123,9 +123,9 @@ Insert Into photo (photoname, mimetype) values ('23','Image/png);
 Insert Into photo (photoname, mimetype) values ('24','Image/png);
 Insert Into photo (photoname, mimetype) values ('25','Image/png);
 
-INSERT INTO user (username, fullname,password, photoid) values ('MAllison@fakeemail.com', 'Mose-Allison', 'Mose', 12);
-INSERT INTO user (username, fullname,password, photoid) values ('MAllison@fakeemail.com', 'Mose-Allison', 'Mose', 12);
-INSERT INTO user (username, fullname,password, photoid) values ('MAllison@fakeemail.com', 'Mose-Allison', 'Mose', 12);
+
+
+
 insert into messages (messengerid, messageeid, reply, message) values ('25', "12", "", "When is our next show?!");
 insert into messages (messengerid, messageeid, reply, message) values ('25', "16", "", "Checkout Twitter!");
 insert into messages (messengerid, messageeid, reply, message) values ('33', "2", "", "I have time tomorrow, stop by");
