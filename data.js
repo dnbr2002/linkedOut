@@ -47,10 +47,15 @@ function dbUserSummary(jsonObj) {
         db.serialize(function () {
 //            var stmt = "Select u.FullName, p.Photoname from User u, Photo P where u.PK_User=" + sqlJson + " and p.Photoname=(select p.Photoname from Photo p, User u where u.PhotoId=p.PK_Photo) ";
 
-            var stmt= "Select u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished from User u, Photo P, Jobs j "+
-                "where u.PK_User="+sqlJson+" and p.Photoname=(select Photoname from Photo where PK_Photo="+sqlJson+") and j.userid="+sqlJson+" "+
-                "order by j.datefinished desc "+
-                "Limit 1";
+            // var stmt= "Select u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished from User u, Photo P, Jobs j "+
+            //     "where u.PK_User="+sqlJson+" and p.Photoname=(select Photoname from Photo where PK_Photo= u.photoid) and j.userid="+sqlJson+" "+
+            //     "order by j.datefinished desc "+
+            //     "Limit 1";
+            var stmt =
+                "SELECT u.FullName, p.Photoname, j.joblocation, j.jobtitle, j.datefinished "
+                + "FROM User u inner join Photo p on u.photoid = p.pk_photo "
+                + "left outer join jobs j on j.userid = u.pk_user where u.pk_user = " + sqlJson+" "
+                + "order by j.datefinished desc Limit 1";
             console.log(stmt);
 
             db.all(stmt, function (err, rows) {
@@ -154,7 +159,7 @@ function dbCreateUser(jsonObj, cb) {
         {
             return new Promise(function(resolve, reject)
             {
-                var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD) VALUES ($username, $fullname, $password)";
+                var sql = "INSERT INTO USER (USERNAME, FULLNAME, PASSWORD, PHOTOID) VALUES ($username, $fullname, $password, 1)";
                 db.serialize(function()
                 {
                     console.log('Runnng SQL ' + sql);
@@ -601,7 +606,7 @@ function dbgetMessages(userid) {
 
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var sql = "SELECT u1.username, u1.fullname, p1.photoname, p1.mimetype, msg.message,  msg.subject  FROM messages msg " +
+            var sql = "SELECT u1.username, u1.fullname, u1.pk_user, p1.photoname, p1.mimetype, msg.message,  msg.subject  FROM messages msg " +
                 " INNER JOIN user AS u1 ON u1.pk_user  = msg.messengerid " +
                 " INNER JOIN photo AS p1 ON p1.pk_photo   = u1.photoid " +
                 " WHERE  msg.messageeid = " + userid;
@@ -618,6 +623,11 @@ function dbgetMessages(userid) {
     });
 }
 
+exports.dbMessageback = dbMessageback;
+function dbMessageback(jsonObj, cb) {
+    var sql = "Insert into messages (messengerid, messageeid, message) values ($messengerid, $messageeid, $message)";
+    doSQL(sql, mapDataElements(jsonObj), cb);
+}
 
 //End getMessages - Rita
 

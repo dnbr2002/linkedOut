@@ -1,9 +1,7 @@
-'use strict';
-
 angular.module('tutorialWebApp').controller('registrationCtrl', function($scope, $location, $rootScope, $http, DataService, currentUser)
 {
     console.log("registrationCtrl called");
-    $scope.$parent.signInFormError = '';
+    $scope.registrationError = '';
 
     $scope.registerUser = function()
     {
@@ -27,14 +25,22 @@ angular.module('tutorialWebApp').controller('registrationCtrl', function($scope,
                     console.log(err);
                     if (err === 'existing')
                     {
-                        $scope.$parent.signInFormError = "User exists, try another username";
+                        $scope.registrationError = "User exists, try another username";
                     }
                     else
                     {
-                        $scope.$parent.signInFormError = "User creation failed, try again.";
+                        $scope.registrationError = "User creation failed, try again.";
                     }
-                    $location.path('#/register');
+                    $location.path('/register');
+
+                    $("#createme").shake(3, 7, 800);
                 }
             );
+    }
+
+
+    $scope.clearErr = function()
+    {
+        $scope.registrationError = '';
     }
 });

@@ -38,7 +38,13 @@ angular.module('tutorialWebApp').controller('loginCtrl', function($scope, $locat
 					// }
 				}).error(function(err) {
 				    $scope.signInFormError = "Login error!  Username or password incorrect";
+                    $("#signin").shake(3, 7, 800);
 			    });
 		}
 	}
+
+    $scope.clearErr = function()
+    {
+        $scope.signInFormError = '';
+    }
 });
