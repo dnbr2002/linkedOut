@@ -24,6 +24,6 @@ angular.module('tutorialWebApp').controller("messageCtrl", function ($scope, $ro
         );
     }
 
+   
 
 });
-

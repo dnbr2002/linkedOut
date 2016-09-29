@@ -1,6 +1,15 @@
 'use strict';
-angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootScope, $location, $http, DataService) {
+angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootScope, $location, $http, DataService, currentUser) {
     console.log("home controller called");
+
+    $scope.commentInput = {};
+
+    $scope.getAllData = function () {
+        console.log("Collecting data for view from homeCtrl");
+        getUserSummary();
+        getPosts();
+    }
+
 
     function getPosts() {
         var uriPosts = "/posts/" + $rootScope.$id;
@@ -14,51 +23,20 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
         });
     }
 
-    $scope.getAllData = function () {
-        console.log("Collecting data for view from homeCtrl");
-        getUserSummary();
-        getPosts();
-
-        /*
-                function getUserSummary (res){
-                    console.log("am i getting here");
-                    console.log($rootScope.$id);
-                    $http({
-                        method: 'GET',
-                        url: '/home/'+$rootScope.$id
-                    }).success(function(response){
-                        console.log("success");
-                        console.log();
-        
-                        $scope.UserSummary=response;
-                        console.log("my rows: "+JSON.stringify(response));
-        
-                    }).error(function(error){
-                        console.log("error");
-                    });
-                };
-                */
-
-        /**
-         * Function for getting Employment data for the user
-         */
-
-
-        /**
-         * Function for getting Employment data for the user
-         */
-        function getUserSummary() {
-            var uriEmployment = "/home/" + $rootScope.$id;
-            DataService.getData(uriEmployment, []).success(function (response) {
-                $scope.UserSummary = response;
-                console.log("User Summary:  " + JSON.stringify(response));
-            }).error(function (err) {
-                console.log(err);
-            });
-        }
-
-
+    /**
+     * Function for getting User Summary data data for the user
+     */
+    function getUserSummary() {
+        var uriEmployment = "/home/" + $rootScope.$id;
+        DataService.getData(uriEmployment, []).success(function (response) {
+            $scope.UserSummary = response;
+            //console.log("User Summary:  " + JSON.stringify(response));
+        }).error(function (err) {
+            console.log(err);
+        });
     }
+
+
 
     $scope.shareUpdate = function () {
         console.log("shareUpdate called");
@@ -94,11 +72,38 @@ angular.module('tutorialWebApp').controller("homeCtrl", function ($scope, $rootS
                 post: $scope.postbody
             }
         }).success(function (response) {
-            console.log("success");
+            console.log("Home ctrl add post success");
             $scope.post = "";
             getPosts();
         }).error(function (error) {
             console.log("error");
+        });
+
+    };
+
+
+
+    $scope.addComment = function (postId) {
+
+
+        var text = $scope.commentInput[postId];
+        console.log("comment text:", text);
+        console.log("postid: ", postId);
+
+        $http({
+            method: 'POST',
+            url: '/addcomment',
+            data: {
+                userid: $rootScope.$id,
+                post: text,
+                refpostid: postId
+            }
+        }).success(function (response) {
+            console.log("success");
+            $scope.commentInput[postId] = "";
+            getPosts();
+        }).error(function (error) {
+            console.log("homectrl add comment error");
         });
 
     };

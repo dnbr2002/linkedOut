@@ -600,22 +600,22 @@ function dbgetMessages(userid) {
 
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var sql = "SELECT u1.username AS loggedUser, u2.username AS senderName, subject, message from messages msg " +
-                " INNER JOIN user AS u1 ON msg.messengerid = u1.pk_user " +
-                " INNER JOIN user AS u2  ON msg.messageeid = u2.pk_user " +
-                " where msg.messengerid = " + userid;
-
+            var sql = "SELECT u1.username, u1.fullname, p1.photoname, p1.mimetype, msg.message,  msg.subject  FROM messages msg " +
+                " INNER JOIN user AS u1 ON u1.pk_user  = msg.messengerid " +
+                " INNER JOIN photo AS p1 ON p1.pk_photo   = u1.photoid " +
+                " WHERE  msg.messageeid = " + userid;
+            console.log('getmessage query stmt is ' + sql);
             db.all(sql, function (err, rows) {
                 if (err) {
                     reject(err);
                     return;
                 }
                 resolve(rows);
+                console.log(rows);
             });
         });
     });
 }
-
 
 
 //End getMessages - Rita

@@ -79,7 +79,7 @@
         </div>
 
         <div class="panel panel-default container col-md-5 col-md-offset-1">
-            <br />
+            <h4><small>Imagine yourself here........</small></h4>
             <div id="myCarousel" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
             <ol class="carousel-indicators">
@@ -169,35 +169,46 @@
 
             <br />
             <br />
-            
+
             <div class="panel panel-default container col-md-10 col-md-offset-1">
 
                 <div class="row">
-                    <br />
+                   <br />
                     <div class="col-lg-8">
-                        <img alt="Profile Picture" src="photos/profile/{{data.photoname}}"
+                        <img alt="Profile Picture" src="photos/profile/{{data.userphotoname}}"
                             height="75" width="75">
-                        <h3>Post
-                            <small>{{data.posttime}}</small>
+                        <br />
+                        <small>Post time: {{data.posttime}}</small>
+                        <h3>
+                            <div ng-if="data.postphotoname"><img alt="Profile Picture" src="photos/posts/{{data.postphotoname}}"
+                                 height="200" width="400"></div>
+
                         </h3>
                         <p>{{data.post}}</p>
                         <h4>Leave a Comment:</h4>
                         <div ng-repeat="comment in data.comments | orderBy : 'posttime' : true">
-                        <div class="well pull-right">
+                        <div class="well">
                             <div class="col-lg-6">
                                 <br />
-                                <img alt="Profile Picture" src="photos/profile/{{comment.photoname}}"
+                                <img alt="Profile Picture" src="photos/profile/{{comment.userphotoname}}"
                                      height="40" width="40"><small>{{comment.posttime}}</small><br />
                                 {{comment.post}}</div>
+
+
+                           <!-- <div ng-model="referencepost">{{referencepost}}</div> -->
+
                         </div>
                         </div>
+
+
                         <form role="form">
                             <div class="form-group">
-                                <textarea class="form-control" rows="3"></textarea>
+
+                                <textarea class="form-control" rows="5" ng-model="commentInput[data.pk_post]"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button class="btn btn-primary" ng-click="addComment(data.pk_post)">Comment</button>
                         </form>
-                        <hr>
+
                     </div>
 
                 </div>
