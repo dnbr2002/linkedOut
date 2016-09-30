@@ -197,10 +197,9 @@
                         <br />
                         <small>Post time: {{data.posttime}}</small>
                         <h3>
-                            <div ng-if="data.postphotoname"><img alt="Profile Picture" src="photos/posts/{{data.postphotoname}}"
+                            <div ng-if="data.postphotoname"><img alt="Post Picture" src="photos/posts/{{data.postphotoname}}"
                                  height="200" width="400">
-                                <div ng-if="!data.postphotoname"><img alt="Profile Picture" src="images/conn2.jpg"
-                                                                     height="200" width="400"></div>
+                            </div>
 
                         </h3>
                         <p>{{data.post}}</p>
