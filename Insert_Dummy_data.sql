@@ -35,7 +35,7 @@ Insert Into photo (photoname, mimetype) values ('User4.jpg','Image/Jpeg');
 Insert Into photo (photoname, mimetype) values ('User5.jpg','Image/Jpeg');
 Insert Into photo (photoname, mimetype) values ('theman.jpg','Image/Jpeg');
 Insert Into photo (photoname, mimetype) values ('reboot.jpg','Image/Jpeg');
-Insert Into messages (messengerid, messageeid, reply, message) values ('1','2','first reply', 'first message text');
+Insert Into messages (messengerid, messageeid, message) values (1, 2, 'first message text');
 Insert Into education (userid, school, datestart, datefinished, degree) values (1,'University of Viriginia','10/1/2009', '6/1/2013','BS in Information System');
 Insert Into education (userid, school, datestart, datefinished, degree) values (1,'University of Maryland','9/1/2013', '6/1/2015','MS in Computer Science');
 Insert Into education (userid, school, datestart, datefinished, degree) values (2,'University of Phoenix','10/1/2011', '6/1/2015','BS');
@@ -61,15 +61,15 @@ insert into user (username, fullname, password, photoid) values ('corporate@muti
 insert into user (username, fullname, password, photoid) values ('corporate@hp.com', "Hewlett Packard Inc.", "password", null);
 insert into user (username, fullname, password, photoid) values ('corporate@ibm.com', "Hooli", "password", null);
 insert into user (username, fullname, password, photoid) values ('mikee@dell.com', "Hooli", "password", null);
-insert into messages (messengerid, messageeid, reply, message) values (3, 1, "Accept Follow Request", "Please accept");
-insert into messages (messengerid, messageeid, reply, message) values (1, 4, "Hello", "I have some news, call me");
-insert into messages (messengerid, messageeid, reply, message) values (5, 1, "Follow him", "Lewis is online now");
-insert into messages (messengerid, messageeid, reply, message) values (2, 4, "Remarks", "Update your jobs");
-insert into messages (messengerid, messageeid, reply, message) values (5, 6, "Touching base", "Hey there!");
-insert into messages (messengerid, messageeid, reply, message) values (6, 1, "Accept Follow Request", "Done");
-insert into messages (messengerid, messageeid, reply, message) values (4, 1, "Accept Follow Request", "Not sure if I know you?");
-insert into messages (messengerid, messageeid, reply, message) values (1, 6, "Unfollow 'cos", "I am quitting");
-insert into messages (messengerid, messageeid, reply, message) values (5, 2, "Its time to call", "Response needed");
+insert into messages (messengerid, messageeid, message) values (3, 1, "Please accept");
+insert into messages (messengerid, messageeid, message) values (1, 4, "I have some news, call me");
+insert into messages (messengerid, messageeid, message) values (5, 1, "Lewis is online now");
+insert into messages (messengerid, messageeid, message) values (2, 4, "Update your jobs");
+insert into messages (messengerid, messageeid, message) values (5, 6, "Hey there!");
+insert into messages (messengerid, messageeid, message) values (6, 1, "Done");
+insert into messages (messengerid, messageeid, message) values (4, 1, "Not sure if I know you?");
+insert into messages (messengerid, messageeid, message) values (1, 6, "I am quitting");
+insert into messages (messengerid, messageeid, message) values (5, 2, "Response needed");
 
 INSERT INTO user (username, fullname,password, photoid) values ('MAllison@fakeemail.com', 'Mose-Allison', 'Mose', 12);
 Insert Into photo (photoname, mimetype) values (12,'Image/Jpeg');
@@ -96,13 +96,13 @@ INSERT INTO user (username, fullname,password, photoid) values ('Jonathan@fakeem
 Insert Into photo (photoname, mimetype) values (17,'Image/png');
 
 INSERT INTO user (username, fullname,password, photoid) values ('scott@hawaii.com', 'Five-0', 'Scott', 18);
-INSERT INTO user (username, fullname,password, photoid) values ('jerry@hawaii.com', 'Jerry', 'FiveO Geek)', 19);
-INSERT INTO user (username, fullname,password, photoid) values ('alex@hhawaii.com', 'Alex OLoughin, 'Alex', 20);
+INSERT INTO user (username, fullname,password, photoid) values ('jerry@hawaii.com', 'Jerry', 'FiveO Geek', 19);
+INSERT INTO user (username, fullname,password, photoid) values ('alex@hhawaii.com', 'Alex OLoughin', 'Alex', 20);
 INSERT INTO user (username, fullname,password, photoid) values ('drew@hawaii.com', 'Drew', 'Big Brother', 1);
 INSERT INTO user (username, fullname,password, photoid) values ('kimn@hawaii.com', 'Daniel', 'Dae Kim', 21);
 
 INSERT INTO user (username, fullname,password, photoid) values ('gary@ncis.com', 'Gary Glasberg', 'Boss', 18);
-INSERT INTO user (username, fullname,password, photoid) values ('Cotey@ncis.com', 'Cote Pablo', 'Ziva)', 22);
+INSERT INTO user (username, fullname,password, photoid) values ('Cotey@ncis.com', 'Cote Pablo', 'Ziva', 22);
 INSERT INTO user (username, fullname,password, photoid) values ('emily@ncis.com', 'Emily Wickersham', 'emily', 23);
 INSERT INTO user (username, fullname,password, photoid) values ('mike@hncis.com', 'Michael', 'M. Weatherly', 24);
 INSERT INTO user (username, fullname,password, photoid) values ('mark@ncis.com', 'Mark Harmon', 'M. Hamon', 25);
@@ -114,7 +114,7 @@ Insert Into photo (photoname, mimetype) values (21,'Image/png');
 Insert Into photo (photoname, mimetype) values (22,'Image/png');
 Insert Into photo (photoname, mimetype) values (23,'Image/png');
 Insert Into photo (photoname, mimetype) values (24,'Image/png');
-Insert Into photo (photoname, mimetype) values (25,'Image/png.);
+Insert Into photo (photoname, mimetype) values (25,'Image/png');
 
 
 
@@ -127,4 +127,4 @@ insert into messages (messengerid, messageeid,  message) values (21, 25, "We nee
 insert into messages (messengerid, messageeid,  message) values (19, 4,  "On road trip until next month");
 insert into messages (messengerid, messageeid,  message) values (2, 1,  "Checkout these concerts");
 insert into messages (messengerid, messageeid,  message) values (6, 5,  "Come to our Diversity Day Celebrations");
-insert into messages (messengerid, messageeid, message) values (7, 2",  "When is our next show?!");
+insert into messages (messengerid, messageeid, message) values (7, 2,  "When is our next show?!");
