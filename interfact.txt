@@ -1,0 +1,10 @@
+For attach picture POST with
+avatar: picture
+username: TEXT
+userid: INT
+
+For making post POST with multipart/form data
+userid: INT
+post: TEXT
+referencepost: TEXT (optional)
+avatar: picture (optional)

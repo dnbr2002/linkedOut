@@ -270,13 +270,13 @@ function getSkills(userid, cb) {
 
 exports.getConnection = getConnection;
 function getConnection(userid, cb) {
-    var sql = "SELECT  u1.username, u1.fullname, u1.pk_user, p1.photoname FROM user u1 INNER JOIN photo AS p1 ON u1.photoid  = p1.pk_photo WHERE u1.pk_user  in   (SELECT followerid from following msg where msg.followeeid=" + userid+") and u1.pk_user NOT IN (" +userid+")";
+    var sql = "SELECT  u1.username, u1.fullname, u1.pk_user, p1.photoname FROM user u1 INNER JOIN photo AS p1 ON u1.photoid  = p1.pk_photo WHERE u1.pk_user  in   (SELECT followeeid from following msg where msg.followerid=" + userid + ") and u1.pk_user NOT IN (" +userid+")";
     getData(sql, cb);
 }
 
 exports.dbDisconnect = dbDisconnect;
 function dbDisconnect(jsonObj, cb) {
-    var sqlStr1 = "DELETE FROM following where followerid=" + jsonObj.followerid + " and followeeid=" + jsonObj.userid;
+    var sqlStr1 = "DELETE FROM following where followeeid=" + jsonObj.followeeid + " and followerid=" + jsonObj.userid;
     console.log('dbDisconnect SQL  ' + sqlStr1);
     var p = new Promise((resolve, reject) => {
         db.serialize(() => {
@@ -306,7 +306,7 @@ function dbDisconnect(jsonObj, cb) {
 
 exports.dbConnect = dbConnect;
 function dbConnect(jsonObj, cb) {
-    var sql = "Insert into following (followerid, followeeid) values ($followerid, $userid)";
+    var sql = "Insert into following (followerid, followeeid) values ($userid, $followerid)";
     doSQL(sql, mapDataElements(jsonObj), cb);
 }
 
@@ -314,11 +314,13 @@ function getData(sql, cb) {
     // Run SQL and pass results to callback
     var p = new Promise(function (resolve, reject) {
         db.serialize(function () {
+            console.log('Running SQL:  ' + sql);
             db.all(sql, function (err, rows) {
                 if (err) {
                     reject(err);
                     return;
                 }
+                console.log("Running SQL got:  " + JSON.stringify(rows));
                 resolve(rows)
             })
         });
@@ -609,7 +611,7 @@ function dbgetMessages(userid) {
             var sql = "SELECT u1.username, u1.fullname, u1.pk_user, p1.photoname, p1.mimetype, msg.message, msg.pk_messages  FROM messages msg " +
                 " INNER JOIN user AS u1 ON u1.pk_user  = msg.messengerid " +
                 " INNER JOIN photo AS p1 ON p1.pk_photo   = u1.photoid " +
-                " WHERE  msg.messageeid = " + userid + 
+                " WHERE  msg.messageeid = " + userid +
                 " AND msg.reply is NULL";
             console.log('getmessage query stmt is ' + sql);
             db.all(sql, function (err, rows) {
@@ -625,7 +627,7 @@ function dbgetMessages(userid) {
 }
 
 exports.dbMessageback = dbMessageback;
-function dbMessageback(jsonObj, cb) {   
+function dbMessageback(jsonObj, cb) {
     var updSql = "UPDATE messages SET reply = '" + jsonObj.message + "' WHERE pk_messages = " + jsonObj.pk_message;
     console.log('Executing ' + updSql);
 
@@ -728,8 +730,8 @@ function dbGetUserFeed(userid) {
 
             var postsToAddOn = [];
 
-            // console.log('Includes are:  ' + JSON.stringify(includedposts));
-            // console.log('Excludes are:  ' + JSON.stringify(excludedposts));
+            console.log('Includes are:  ' + JSON.stringify(includedposts));
+            console.log('Excludes are:  ' + JSON.stringify(excludedposts));
 
             var sortFxn = function(a, b) {
                 if (a.posttime < b.posttime) return 1
@@ -751,8 +753,8 @@ function dbGetUserFeed(userid) {
 
             allposts = includedposts.concat(postsToAddOn);
 
-            // console.log('Posts to addon is:  ' + JSON.stringify(postsToAddOn));
-            // console.log('All Posts is:  ' + JSON.stringify(allposts));
+            console.log('Posts to addon is:  ' + JSON.stringify(postsToAddOn));
+            console.log('All Posts is:  ' + JSON.stringify(allposts));
 
             var userFeed = {};
             var referenceFeed = {};
@@ -798,35 +800,38 @@ function dbGetUserFeed(userid) {
 
 exports.dbGetNotFollowing = dbGetNotFollowing;
 function dbGetNotFollowing(userid) {
-    var ffSql = "select followerid from following where followeeid = " + userid;
+    var ffSql = "select followeeid from following where followerid = " + userid;
     var userSql = "select * from user u left outer join photo ph on u.photoid = ph.pk_photo";
 
     var p = new Promise(function(resolve, reject)
     {
         db.serialize(function()
         {
-            // console.log("Executing SQL:  " + ffSql);
+            console.log("Executing SQL:  " + ffSql);
             db.all(ffSql, function(err, rows)
             {
                 if (err)
                     reject(err);
                 var leaders = [];
-                for (key in rows)
+                console.log(JSON.stringify(rows));
+                for (row of rows)
                 {
-                    leaders.push(rows[key].followerid);
+                    console.log('Pushing ' + row.followeeid);
+                    leaders.push(row.followeeid);
                 }
+
                 resolve(leaders);
             })
         });
     }).then(
         (leaders) =>
         {
-            // console.log('Leaders are:  ' + JSON.stringify(leaders));
+            console.log('Leaders are:  ' + JSON.stringify(leaders));
             return new Promise(function(resolve, reject)
             {
                 db.serialize(function()
                 {
-                    // console.log("Executing SQL:  " + userSql);
+                    console.log("Executing SQL:  " + userSql);
                     db.all(userSql, function(err, users)
                     {
                         if (err)
@@ -847,7 +852,7 @@ function dbGetNotFollowing(userid) {
                             }
                         });
 
-                        // console.log('Non Users are:  ' + JSON.stringify(nonUsers));
+                        console.log('Non Users are:  ' + JSON.stringify(nonUsers));
                         resolve(nonUsers);
                     })
                 });

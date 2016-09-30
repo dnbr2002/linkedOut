@@ -7,34 +7,34 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 		getUnConnectted();
 
 		function getAllConnections (){
-			var uri = "/connect/" + currentUser.pk_user;		
+			var uri = "/connect/" + currentUser.pk_user;
 			DataService.getData(uri,[]).success(function(response){
 				$scope.connecttedList = response;
-				console.log("connectionList: "+JSON.stringify(response));				
+				console.log("connectionList: "+JSON.stringify(response));
 			}).error(function(err){
 				console.log(err.message);
 			});
 		};
 
 		function getUnConnectted (){
-			var uri = "/getnonfollowers/" + currentUser.pk_user;		
+			var uri = "/getnonfollowers/" + currentUser.pk_user;
 			DataService.getData(uri,[]).success(function(response){
 				$scope.unconnecttedList = response;
-				console.log("unconnecttedList: "+JSON.stringify(response));				
+				console.log("unconnecttedList: "+JSON.stringify(response));
 			}).error(function(err){
 				console.log(err.message);
 			});
 		};
-	}		
+	}
 
-	$scope.disconnect = function(followerid){	
-		console.log("In disconnect " + followerid);
+	$scope.disconnect = function(followeeid){
+		console.log("In disconnect " + followeeid);
         $http({
 			method: 'POST',
 			url: '/disconnect',
 			data: {
 				userid:currentUser.pk_user,
-				followerid:followerid								
+				followeeid:followeeid
 			}
 		}).success(function(response){
 			console.log("disconnect success");
@@ -44,14 +44,14 @@ angular.module('tutorialWebApp').controller("connectionCtrl", function($scope, $
 		});
     }
 
-	$scope.connect = function(followerid){	
+	$scope.connect = function(followerid){
 		console.log("In connect " + followerid);
         $http({
 			method: 'POST',
 			url: '/connect',
 			data: {
 				userid:currentUser.pk_user,
-				followerid:followerid								
+				followerid:followerid
 			}
 		}).success(function(response){
 			console.log("connect success");

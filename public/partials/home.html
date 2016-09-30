@@ -206,16 +206,12 @@
                         <h4>Leave a Comment:</h4>
                         <div ng-repeat="comment in data.comments | orderBy : 'posttime' : true">
                         <div class="well">
-                            <div class="col-lg-6">
+
                                 <br />
                                 <img alt="Profile Picture" src="photos/profile/{{comment.userphotoname}}"
                                      height="40" width="40"><small>Comment Time:  {{comment.posttime}}</small><br />
                                 {{comment.post}}</div>
 
-
-                           <!-- <div ng-model="referencepost">{{referencepost}}</div> -->
-
-                        </div>
                         </div>
 
 
@@ -253,8 +249,7 @@
 
 <script type="text/javascript">
 var $ = jQuery.noConflict();
-$(document).ready(function() { 
+$(document).ready(function() {
   $('#myCarousel').carousel({ interval: 2000, cycle: true });
 });
 </script>
-

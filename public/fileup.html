@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <div>
+
+          <form action="/auth/google">
+              <input class="btn btn-primary btn-xs" type="submit" value="Login with Google" />
+          </form>
+
+          <form action="/addpicture" method="post" enctype="multipart/form-data">
+              File: <input type="file" name="avatar" />
+              <br />
+              <input type="text" name="username" />
+              <input type="text" name="userid" />
+              <input class="btn btn-primary btn-xs" type="submit" value="Submit" />
+          </form>
+          <form action="/addpicture" method="post" class="form-horizontal">
+              <fieldset>
+                <legend>File Upload Test</legend>
+                <div class="form-group">
+                    <label for="inputEmail" class="col-lg-2 control-label">Filename</label>
+                    <div class="col-lg-10">
+                            <input type="file" class="form-control" id="avatar" name="avatar">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="textArea" class="col-lg-2 control-label">Comments</label>
+                        <div class="col-lg-10">
+                            <textarea name="comments" class="form-control" rows="3" id="textArea"></textarea>
+                            <div class="form-group">
+      <div class="col-lg-10 col-lg-offset-2">
+        <button type="reset" class="btn btn-default">Cancel</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+      </div>
+    </body>
+</html>
