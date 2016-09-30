@@ -41,6 +41,7 @@ angular.module('tutorialWebApp').controller("messageCtrl", function ($scope, $ro
         }).success(function(response){
             console.log("success");
             $scope.messagebk[fromid] = "";
+            getMessageList();
         }).error(function(error){
             console.log("error");
         });
