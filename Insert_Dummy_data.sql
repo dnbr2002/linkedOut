@@ -1,19 +1,22 @@
-INSERT INTO user (username, fullname,password, photoid) values ('User1@fakeemail.com', 'GreggyP', 'User1',1);
-INSERT INTO user (username, fullname,password, photoid) values ('User2@fakeemail.com', 'BobbyK', 'User2',2);
-INSERT INTO user (username, fullname,password, photoid) values ('User3@fakeemail.com', 'HerbS', 'User3',3);
-INSERT INTO user (username, fullname,password, photoid) values ('User4@fakeemail.com', 'JohnnyM', 'User4',4);
-INSERT INTO user (username, fullname,password, photoid) values ('User5@fakeemail.com', 'MarcC', 'User5',5);
-INSERT INTO user (username, fullname,password, photoid) values ('joe@mail.com', 'Joe Sixpack', 'password',6);
-insert into user (username, fullname, password, photoid) values ('corporate@hooli.com', "Hooli Inc.", "password", 7);
-insert into user (username, fullname, password, photoid) values ('corporate@google.com', "Google Inc.", "password", 8);
-insert into user (username, fullname, password, photoid) values ('corporate@apple.com', "Apple Computer", "password", 9);
-insert into user (username, fullname, password, photoid) values ('corporate@piedpiper.com', "Pied Piper, a Compression Company", "password", 10);
-insert into user (username, fullname, password, photoid) values ('billg@microsoft.com', "Microsoft", "password", 11);
-insert into user (username, fullname, password, photoid) values ('larry@oracle.com', "Oracle", "password", 12);
-insert into user (username, fullname, password, photoid) values ('corporate@mutiny.com', "Mutiny", "password", 13);
-insert into user (username, fullname, password, photoid) values ('corporate@hp.com', "Hewlett Packard Inc.", "password", 14);
-insert into user (username, fullname, password, photoid) values ('corporate@ibm.com', "IBM", "password", 15);
+INSERT INTO user (username, fullname,password, photoid) values ('User1@fakeemail.com', 'GreggyP', 'User1',2);
+INSERT INTO user (username, fullname,password, photoid) values ('User2@fakeemail.com', 'BobbyK', 'User2',3);
+INSERT INTO user (username, fullname,password, photoid) values ('User3@fakeemail.com', 'HerbS', 'User3',4);
+INSERT INTO user (username, fullname,password, photoid) values ('User4@fakeemail.com', 'JohnnyM', 'User4',5);
+INSERT INTO user (username, fullname,password, photoid) values ('User5@fakeemail.com', 'MarcC', 'User5',6);
+INSERT INTO user (username, fullname,password, photoid) values ('joe@mail.com', 'Joe Sixpack', 'password',7);
+insert into user (username, fullname, password, photoid) values ('corporate@hooli.com', "Hooli Inc.", "password", 8);
+insert into user (username, fullname, password, photoid) values ('corporate@google.com', "Google Inc.", "password", 9);
+insert into user (username, fullname, password, photoid) values ('corporate@apple.com', "Apple Computer", "password", 10);
+insert into user (username, fullname, password, photoid) values ('corporate@piedpiper.com', "Pied Piper, a Compression Company", "password", 11);
+insert into user (username, fullname, password, photoid) values ('billg@microsoft.com', "Microsoft", "password", 12);
+insert into user (username, fullname, password, photoid) values ('larry@oracle.com', "Oracle", "password", 13);
+insert into user (username, fullname, password, photoid) values ('corporate@mutiny.com', "Mutiny", "password", 14);
+insert into user (username, fullname, password, photoid) values ('corporate@hp.com', "Hewlett Packard Inc.", "password", 15);
+insert into user (username, fullname, password, photoid) values ('corporate@ibm.com', "IBM", "password", 16);
+insert into user (username, fullname, password, photoid) values ('User6@fakeemail.com', "Dinesh", "User6", 17);
+insert into user (username, fullname, password, photoid) values ('User7@fakeemail.com', "Gilfoyle", "User7", 18);
 
+Insert Into photo (photoname, mimetype) values ('conn.jpg','Image/Jpeg');
 Insert Into photo (photoname, mimetype) values ('User1.jpg','Image/Jpeg');
 Insert Into photo (photoname, mimetype) values ('User2.jpg','Image/Jpeg');
 Insert Into photo (photoname, mimetype) values ('User3.jpg','Image/Jpeg');
@@ -29,21 +32,26 @@ Insert Into photo (photoname, mimetype) values ('oracle.jpg','Image/jpeg');
 Insert Into photo (photoname, mimetype) values ('mutiny.jpg','Image/jpeg');
 Insert Into photo (photoname, mimetype) values ('hp.jpg','Image/jpeg');
 Insert Into photo (photoname, mimetype) values ('IBM.jpg','Image/png');
+Insert Into photo (photoname, mimetype) values ('dinesh.jpg','Image/jpeg');
+Insert Into photo (photoname, mimetype) values ('gilfoyle.jpg','Image/png');
+Insert Into photo (photoname, mimetype) values ('reboot.jpg','Image/png');
+Insert Into photo (photoname, mimetype) values ('theman.jpg','Image/Jpeg');
 
 
-Insert into post (userid, post, photoid) values (1,'I am the man!', 6);
-Insert into post (userid, post, photoid) values (2,'Reboot it!!', 7);
-Insert into post (userid, post, photoid) values (3,'User 3 First Post', 8);
-Insert into post (userid, post, photoid) values (4,'User 4 First Post', 9);
-Insert into post (userid, post, photoid) values (1,'User 1 Second Post', 10);
-Insert into post (userid, post, photoid) values (1,'User 1 Third Post', 11);
-Insert into post (userid, post, photoid) values (5,'User 5 First Post', 12);
+
+
+Insert into post (userid, post, photoid) values (1,'I am the man!', 20);
+Insert into post (userid, post, photoid) values (2,'Reboot it!!', 19);
+Insert into post (userid, post, photoid) values (3,'Hello Linked Users', 8);
+Insert into post (userid, post, photoid) values (4,'Google it!!', 9);
+Insert into post (userid, post, photoid) values (1,'I like Apple', 10);
+Insert into post (userid, post, photoid) values (1,'Middle out Baby!!', 11);
+Insert into post (userid, post, photoid) values (5,'Lets make the world a better place', 8);
 Insert Into post (userid, referencepost, post) values (2, 1, 'no Im the man!!');
 Insert Into post (userid, referencepost, post) values (4, 2, 'you said it');
 Insert Into post (userid, referencepost, post) values (1, 3, 'Comment on post id 3');
 Insert Into post (userid, referencepost, post) values (1, 4, 'Comment on post id 4');
-Insert Into post (userid, referencepost, post) values (1, 1, 'Comment on post id 1 Again');
-Insert Into post (userid, referencepost, post) values (2, 1, 'Comment on post id 1 Yet Again');
+
 
 Insert into following (followerid, followeeid) values (1, 1);
 Insert into following (followerid, followeeid) values (1, 2);
