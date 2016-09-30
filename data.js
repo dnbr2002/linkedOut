@@ -606,10 +606,11 @@ function dbgetMessages(userid) {
 
     return new Promise(function (resolve, reject) {
         db.serialize(function () {
-            var sql = "SELECT u1.username, u1.fullname, u1.pk_user, p1.photoname, p1.mimetype, msg.message  FROM messages msg " +
+            var sql = "SELECT u1.username, u1.fullname, u1.pk_user, p1.photoname, p1.mimetype, msg.message, msg.pk_messages  FROM messages msg " +
                 " INNER JOIN user AS u1 ON u1.pk_user  = msg.messengerid " +
                 " INNER JOIN photo AS p1 ON p1.pk_photo   = u1.photoid " +
-                " WHERE  msg.messageeid = " + userid;
+                " WHERE  msg.messageeid = " + userid + 
+                " AND msg.reply is NULL";
             console.log('getmessage query stmt is ' + sql);
             db.all(sql, function (err, rows) {
                 if (err) {
@@ -624,9 +625,25 @@ function dbgetMessages(userid) {
 }
 
 exports.dbMessageback = dbMessageback;
-function dbMessageback(jsonObj, cb) {
-    var sql = "Insert into messages (messengerid, messageeid, message) values ($messengerid, $messageeid, $message)";
-    doSQL(sql, mapDataElements(jsonObj), cb);
+function dbMessageback(jsonObj, cb) {   
+    var updSql = "UPDATE messages SET reply = '" + jsonObj.message + "' WHERE pk_messages = " + jsonObj.pk_message;
+    console.log('Executing ' + updSql);
+
+    return new Promise(function(resolve, reject) {
+            db.serialize(function() {
+                db.exec(updSql, function(err) {
+                    if (err) {
+                        console.log('SQL failed:  ' + updSql);
+                        reject(err);
+                        return;
+                    }
+
+                    console.log('SQL succeeded:  ' + updSql);
+                    resolve('success');
+                });
+            });
+        }
+    );
 }
 
 //End getMessages - Rita

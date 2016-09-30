@@ -26,7 +26,7 @@ angular.module('tutorialWebApp').controller("messageCtrl", function ($scope, $ro
         );
     }
 
-    $scope.respondMessage = function (fromid) {
+    $scope.respondMessage = function (fromid, messageid) {
         $scope.showRespond[fromid] = false;
         var text = $scope.messagebk[fromid];
         console.log("respondMessge: $scope.messagebk " + text);
@@ -34,8 +34,7 @@ angular.module('tutorialWebApp').controller("messageCtrl", function ($scope, $ro
             method: 'POST',
             url: '/messageback',
             data: {
-                messengerid:currentUser.pk_user,
-                messageeid:fromid,
+                pk_message:messageid,
                 message:text				
             }
         }).success(function(response){
