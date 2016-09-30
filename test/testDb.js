@@ -33,7 +33,7 @@ describe('Linked Out DB tests', function () {
             var userid = '1';
             db.dbGetUserFeed(userid).then(
                 (listings) => {
-                    assert.isAtLeast(listings.length, 7, 'there are 7 posts by user1');
+                    assert.isAtLeast(listings.length, 7, 'there are more than 7 posts by user1');
                 },
                 (fail) => {
                     console.log(fail);
@@ -58,7 +58,7 @@ describe('Linked Out DB tests', function () {
             var userid = '1';
             db.getEducation(userid, function cb(){
                 cb(data);
-                assert.isAtLeast(data.length, 2, 'there are 2 education records by user1');
+                assert.isAtLeast(data.length, 2, 'there are at least 2 education records by user1');
             });
             done();
         });
@@ -67,7 +67,7 @@ describe('Linked Out DB tests', function () {
             var userid = '1';
             db.getConnection(userid, function cb(){
                 cb(data);
-                assert.isAtLeast(data.length, 2, 'there are 2 followers to user1');
+                assert.isAtLeast(data.length, 2, 'there are at least 2 followers to user1');
             });
             done();
         });
@@ -76,7 +76,7 @@ describe('Linked Out DB tests', function () {
             var userid = '1';
             db.dbGetNotFollowing(userid).then(
                 (listings) => {
-                    assert.isAtLeast(listings.length, 13, 'there are 13 non followers to user1');
+                    assert.isAtLeast(listings.length, 13, 'there are at least 13 non followers to user1');
                 },
                 (fail) => {
                     console.log(fail);
